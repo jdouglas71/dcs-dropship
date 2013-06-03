@@ -12,21 +12,7 @@ License: GPL
 //Template Config File
 require_once(dirname(__FILE__)."/config.php");
 
-/** HOOKS **/
-
-/* This calls dcs_dropship_init() function when wordpress initializes. */
-add_action('init', 'dcs_dropship_init');
-add_action('wp_head', 'dcs_dropship_js_header' );
-
-/* Runs when Plugin is activated. */
-register_activation_hook( __FILE__, 'dcs_dropship_install' );
-
-/* Runs on plugin deactivated. */
-register_deactivation_hook( __FILE__, 'dcs_dropship_uninstall' );
-
-/** Admin Stuff **/
-add_action( 'admin_menu', 'dcs_dropship_admin_menu' );
-
+/** ADMIN STUFF **/
 /**
  * Add our admin menu to the dashboard.
  */
@@ -34,6 +20,7 @@ function dcs_dropship_admin_menu()
 {
 	add_options_page( 'DCS Dropship', 'DCS Dropship', 'administrator', 'dcs_dropship', 'dcs_dropship_admin_page');
 }
+add_action( 'admin_menu', 'dcs_dropship_admin_menu' );
 
 /**
  * Show the admin page.
@@ -44,8 +31,18 @@ function dcs_dropship_admin_page()
 }
 
 /** SHORTCODES **/
+/**
+ * Inventory page shortcode.
+ */
+function dcs_dropship_inventory_page_shortcode($atts, $content=null)
+{
+	$retval = "Inventory Page";
 
-/** FUNCTIONS **/
+	return $retval;
+}
+add_shortcode( 'dcs_dropship_inventory_page', 'dcs_dropship_inventory_page_shortcode' );
+
+/** HOOKS **/
 /**
  * Installer function
  */
@@ -65,6 +62,7 @@ function dcs_dropship_install()
 		update_option(DCS_DROPSHIP_KEY, "test key");
 	}
 }
+register_activation_hook( __FILE__, 'dcs_dropship_install' );
 
 /**
  * Uninstall Function.
@@ -76,6 +74,8 @@ function dcs_dropship_uninstall()
 	//Clear out options
 	delete_option( DCS_DROPSHIP_VERSION );
 }
+register_deactivation_hook( __FILE__, 'dcs_dropship_uninstall' );
+
 
 /**
  * Called on init of WordPress.
@@ -89,6 +89,8 @@ function dcs_dropship_init()
 		$dcs_dropship_version = get_option( DCS_DROPSHIP_VERSION );
 	}
 }
+add_action('init', 'dcs_dropship_init');
+
 
 /**
  * Set up header for AJAX calls.
@@ -136,5 +138,6 @@ function dcs_dropship_js_header()
 	</script>
 	<?php
 }
+add_action('wp_head', 'dcs_dropship_js_header' );
 
 ?>

@@ -4,15 +4,6 @@
 //require_once(ABSPATH . WPINC . '/registration.php');
 
 /**
- * Login form
- */
-function dcs_dropship_form($width="100%")
-{
-    $retval = "";
-    return $retval;
-}
-
-/**
  * Logging to file.                                       
  */
 function dcsLogToFile($msg)
