@@ -1,0 +1,53 @@
+/**
+* DCS Dropship Plugin Styles
+*/
+
+.dcs_dropship_label
+{
+	margin: 5px;
+}
+
+
+.dcs_dropship_input
+{
+	margin: 5px;
+	border-radius: 5px;
+}
+
+.dcs_dropship_submit
+{
+	margin: 5px 5px 5px 0px;
+	border-radius: 5px;
+}
+
+.dcs_dropship_div
+{
+	padding: 5px;
+}
+
+.hs_membership_div
+{
+	padding: 5px;
+}
+
+.dcs_dropship_header
+{
+
+}
+
+.dcs_dropship_login_message
+{
+   	color: blue;
+}
+
+.dcs_dropship_message
+{
+   	color: blue;
+}
+
+.dcs_dropship_error_message
+{
+   	color: red;
+}
+
+
