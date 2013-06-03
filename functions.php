@@ -8,7 +8,22 @@
  */ 
 function dcs_dropship_inventory_page()
 {
-	return get_option( DCS_DROPSHIP_INVENTORY_DATA_URL );
+	$retval = "";
+	$response = wp_remote_post( get_option(DCS_DROPSHIP_INVENTORY_DATA_URL) );
+
+	if( is_wp_error( $response ) ) 
+	{
+	   $error_message = $response->get_error_message();
+	   $retval .= "Something went wrong: $error_message";
+	} 
+	else 
+	{
+	   $retval .= 'Response:<pre>';
+	   $retval .= dcsVarDumpStr( $response );
+	   $retval .= '</pre>';
+	}
+
+	return $retval;
 }
 
 /**
