@@ -4,6 +4,14 @@
 //require_once(ABSPATH . WPINC . '/registration.php');
 
 /**
+ * Inventory Page
+ */ 
+function dcs_dropship_inventory_page()
+{
+	return get_option( DCS_DROPSHIP_INVENTORY_DATA_URL );
+}
+
+/**
  * Logging to file.                                       
  */
 function dcsLogToFile($msg)

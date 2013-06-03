@@ -36,7 +36,7 @@ function dcs_dropship_admin_page()
  */
 function dcs_dropship_inventory_page_shortcode($atts, $content=null)
 {
-	$retval = "Inventory Page";
+	$retval = dcs_dropship_inventory_page();
 
 	return $retval;
 }
@@ -61,6 +61,20 @@ function dcs_dropship_install()
 	{
 		update_option(DCS_DROPSHIP_KEY, "test key");
 	}
+
+	if( !add_option(DCS_DROPSHIP_INVENTORY_DATA_URL, "test key") )
+	{
+		update_option(DCS_DROPSHIP_INVENTORY_DATA_URL, "test key");
+	}
+	if( !add_option(DCS_DROPSHIP_PRODUCT_DATA_URL, "test key") )
+	{
+		update_option(DCS_DROPSHIP_PRODUCT_DATA_URL, "test key");
+	}
+	if( !add_option(DCS_DROPSHIP_ORDERS_URL, "test key") )
+	{
+		update_option(DCS_DROPSHIP_ORDERS_URL, "test key");
+	}
+
 }
 register_activation_hook( __FILE__, 'dcs_dropship_install' );
 
