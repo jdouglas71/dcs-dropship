@@ -8,8 +8,64 @@
  */ 
 function dcs_dropship_inventory_page()
 {
+	$retval = dcs_dropship_remote_get( DCS_DROPSHIP_INVENTORY_DATA_URL );
+
+	return $retval;
+}
+
+/**
+ *  Order Invoice Page
+ */ 
+function dcs_dropship_order_invoice_page()
+{
+	$retval = dcs_dropship_remote_get( DCS_DROPSHIP_ORDER_INVOICE_DATA_URL );
+
+	return $retval;
+}
+
+/**
+ * Product Page
+ */ 
+function dcs_dropship_product_page()
+{
+	$retval = dcs_dropship_remote_get( DCS_DROPSHIP_PRODUCT_DATA_URL );
+
+	return $retval;
+}
+
+/**
+ * Order Status Page
+ */ 
+function dcs_dropship_order_status_page()
+{
+	$retval = dcs_dropship_remote_get( DCS_DROPSHIP_ORDER_STATUS_DATA_URL );
+
+	return $retval;
+}
+/**
+ * Tracking Page
+ */ 
+function dcs_dropship_tracking_page()
+{
+	$retval = dcs_dropship_remote_get( DCS_DROPSHIP_TRACKING_DATA_URL );
+
+	return $retval;
+}
+
+/**
+ * Pull from the remote url.
+ */ 
+function dcs_dropship_remote_get($option_name)
+{
 	$retval = "";
-	$response = wp_remote_post( get_option(DCS_DROPSHIP_INVENTORY_DATA_URL) );
+	$response = wp_remote_post( get_option($option_name) );
+
+	//JGD: Not sure if we need this.
+	//if (in_array('curl', get_loaded_extensions())) 
+	//{
+	//	$ch = curl_init();
+	//	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	//}
 
 	if( is_wp_error( $response ) ) 
 	{

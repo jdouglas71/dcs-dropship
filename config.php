@@ -21,6 +21,9 @@ define('DCS_DROPSHIP_KEY', 'dcs-dropship-key' );
 define('DCS_DROPSHIP_INVENTORY_DATA_URL', 'dcs-dropship-inventory-data-url' );
 define('DCS_DROPSHIP_PRODUCT_DATA_URL', 'dcs-dropship-product-data-url' );
 define('DCS_DROPSHIP_ORDERS_URL', 'dcs-dropship-orders-url' );
+define('DCS_DROPSHIP_ORDER_STATUS_DATA_URL', 'dcs-dropship-order-status-data-url' );
+define('DCS_DROPSHIP_TRACKING_DATA_URL', 'dcs-dropship-tracking-data-url' );
+define('DCS_DROPSHIP_ORDER_INVOICE_DATA_URL', 'dcs-dropship-order-invoice-data-url' );
 
 /** Scripts */
 require_once(DCS_DROPSHIP_DIR.'functions.php');

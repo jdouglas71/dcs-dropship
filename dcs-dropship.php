@@ -12,6 +12,7 @@ License: GPL
 //Template Config File
 require_once(dirname(__FILE__)."/config.php");
 
+//******************************************************************************************************************************//
 /** ADMIN STUFF **/
 /**
  * Add our admin menu to the dashboard.
@@ -30,6 +31,7 @@ function dcs_dropship_admin_page()
 	include( 'dcs-dropship-admin.php' );
 }
 
+//******************************************************************************************************************************//
 /** SHORTCODES **/
 /**
  * Inventory page shortcode.
@@ -42,6 +44,51 @@ function dcs_dropship_inventory_page_shortcode($atts, $content=null)
 }
 add_shortcode( 'dcs_dropship_inventory_page', 'dcs_dropship_inventory_page_shortcode' );
 
+/**
+ * Order Invoice page shortcode.
+ */
+function dcs_dropship_order_invoice_page_shortcode($atts, $content=null)
+{
+	$retval = dcs_dropship_order_invoice_page();
+
+	return $retval;
+}
+add_shortcode( 'dcs_dropship_order_invoice_page', 'dcs_dropship_order_invoice_page_shortcode' );
+
+/**
+ * Product page shortcode.
+ */
+function dcs_dropship_product_page_shortcode($atts, $content=null)
+{
+	$retval = dcs_dropship_product_page();
+
+	return $retval;
+}
+add_shortcode( 'dcs_dropship_product_page', 'dcs_dropship_product_page_shortcode' );
+
+/**
+ * Order Status page shortcode.
+ */
+function dcs_dropship_order_status_page_shortcode($atts, $content=null)
+{
+	$retval = dcs_dropship_order_status_page();
+
+	return $retval;
+}
+add_shortcode( 'dcs_dropship_order_status_page', 'dcs_dropship_order_status_page_shortcode' );
+
+/**
+ * Tracking page shortcode.
+ */
+function dcs_dropship_tracking_page_shortcode($atts, $content=null)
+{
+	$retval = dcs_dropship_tracking_page();
+
+	return $retval;
+}
+add_shortcode( 'dcs_dropship_tracking_page', 'dcs_dropship_tracking_page_shortcode' );
+
+//******************************************************************************************************************************//
 /** HOOKS **/
 /**
  * Installer function
@@ -75,9 +122,25 @@ function dcs_dropship_install()
 		update_option(DCS_DROPSHIP_ORDERS_URL, "test key");
 	}
 
+	if( !add_option(DCS_DROPSHIP_ORDER_STATUS_DATA_URL, "test key") )
+	{
+		update_option(DCS_DROPSHIP_ORDER_STATUS_DATA_URL, "test key");
+	}
+
+	if( !add_option(DCS_DROPSHIP_TRACKING_DATA_URL, "test key") )
+	{
+		update_option(DCS_DROPSHIP_TRACKING_DATA_URL, "test key");
+	}
+
+	if( !add_option(DCS_DROPSHIP_ORDER_INVOICE_DATA_URL, "test key") )
+	{
+		update_option(DCS_DROPSHIP_ORDER_INVOICE_DATA_URL, "test key");
+	}
 }
 register_activation_hook( __FILE__, 'dcs_dropship_install' );
 
+//******************************************************************************************************************************//
+/** FUNCTIONS **/
 /**
  * Uninstall Function.
  */

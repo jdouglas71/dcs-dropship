@@ -6,6 +6,9 @@
 	$dcs_dropship_inventory_data_url;
 	$dcs_dropship_product_data_url;
 	$dcs_dropship_orders_url;
+	$dcs_dropship_order_status_data_url;
+	$dcs_dropship_tracking_data_url;
+	$dcs_dropship_order_invoice_data_url;
 
 	if($_POST['dcs_dropship_hidden'] == 'Y') 
 	{
@@ -19,6 +22,15 @@
 		$dcs_dropship_orders_url = $_POST['dcs_dropship_orders_url'];
 		update_option(DCS_DROPSHIP_ORDERS_URL, $dcs_dropship_orders_url);
 
+		$dcs_dropship_order_status_data_url = $_POST['dcs_dropship_order_status_data_url'];
+		update_option(DCS_DROPSHIP_ORDER_STATUS_DATA_URL, $dcs_dropship_order_status_data_url);
+
+		$dcs_dropship_tracking_data_url = $_POST['dcs_dropship_tracking_data_url'];
+		update_option(DCS_DROPSHIP_TRACKING_DATA_URL, $dcs_dropship_tracking_data_url);
+
+		$dcs_dropship_order_invoice_data_url = $_POST['dcs_dropship_order_invoice_data_url'];
+		update_option(DCS_DROPSHIP_ORDER_INVOICE_DATA_URL, $dcs_dropship_order_invoice_data_url);
+
 		?>
 		<div class="updated"><p><strong><?php _e('Options saved.' ); ?></strong></p></div>
 		<?php
@@ -29,6 +41,9 @@
 		$dcs_dropship_inventory_data_url = get_option(DCS_DROPSHIP_INVENTORY_DATA_URL);
 		$dcs_dropship_product_data_url = get_option(DCS_DROPSHIP_PRODUCT_DATA_URL);
 		$dcs_dropship_orders_url = get_option(DCS_DROPSHIP_ORDERS_URL);
+		$dcs_dropship_order_status_data_url = get_option(DCS_DROPSHIP_ORDER_STATUS_DATA_URL);
+		$dcs_dropship_tracking_data_url = get_option(DCS_DROPSHIP_TRACKING_DATA_URL);
+		$dcs_dropship_order_invoice_data_url = get_option(DCS_DROPSHIP_ORDER_INVOICE_DATA_URL);
 	}
 ?>
 
@@ -40,6 +55,9 @@
 		<p><?php _e("Inventory Data URL: " ); ?><input type="text" name="dcs_dropship_inventory_data_url" value="<?php echo $dcs_dropship_inventory_data_url; ?>" size="128"></p>
 		<p><?php _e("Product Data URL: " ); ?><input type="text" name="dcs_dropship_product_data_url" value="<?php echo $dcs_dropship_product_data_url; ?>" size="128"></p>
 		<p><?php _e("Orders In URL: " ); ?><input type="text" name="dcs_dropship_orders_url" value="<?php echo $dcs_dropship_orders_url; ?>" size="128"></p>
+		<p><?php _e("Order Status Data URL: " ); ?><input type="text" name="dcs_dropship_order_status_data_url" value="<?php echo $dcs_dropship_order_status_data_url; ?>" size="128"></p>
+		<p><?php _e("Tracking Data URL: " ); ?><input type="text" name="dcs_dropship_tracking_data_url" value="<?php echo $dcs_dropship_tracking_data_url; ?>" size="128"></p>
+		<p><?php _e("Order Invoice Data URL: " ); ?><input type="text" name="dcs_dropship_order_invoice_data_url" value="<?php echo $dcs_dropship_order_invoice_data_url; ?>" size="128"></p>
 		<p class="submit">
 		<input type="submit" name="Submit" value="<?php _e('Update Options', 'dcs_dropship_trdom' ) ?>" />
 		</p>
