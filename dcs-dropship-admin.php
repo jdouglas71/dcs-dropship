@@ -9,6 +9,8 @@
 	$dcs_dropship_order_status_data_url;
 	$dcs_dropship_tracking_data_url;
 	$dcs_dropship_order_invoice_data_url;
+	$dcs_dropship_ftp_user;
+	$dcs_dropship_ftp_password;
 
 	if($_POST['dcs_dropship_hidden'] == 'Y') 
 	{
@@ -31,6 +33,15 @@
 		$dcs_dropship_order_invoice_data_url = $_POST['dcs_dropship_order_invoice_data_url'];
 		update_option(DCS_DROPSHIP_ORDER_INVOICE_DATA_URL, $dcs_dropship_order_invoice_data_url);
 
+		$dcs_dropship_ftp_user = $_POST['dcs_dropship_ftp_user'];
+		update_option(DCS_DROPSHIP_FTP_USER, $dcs_dropship_ftp_user);
+
+		$dcs_dropship_ftp_password = $_POST['dcs_dropship_ftp_password'];
+		update_option(DCS_DROPSHIP_FTP_PASSWORD, $dcs_dropship_ftp_password);
+
+		//$dcs_dropship_ = $_POST['dcs_dropship_'];
+		//update_option(DCS_DROPSHIP_, $dcs_dropship_);
+
 		?>
 		<div class="updated"><p><strong><?php _e('Options saved.' ); ?></strong></p></div>
 		<?php
@@ -44,6 +55,9 @@
 		$dcs_dropship_order_status_data_url = get_option(DCS_DROPSHIP_ORDER_STATUS_DATA_URL);
 		$dcs_dropship_tracking_data_url = get_option(DCS_DROPSHIP_TRACKING_DATA_URL);
 		$dcs_dropship_order_invoice_data_url = get_option(DCS_DROPSHIP_ORDER_INVOICE_DATA_URL);
+		$dcs_dropship_ftp_user = get_option(DCS_DROPSHIP_FTP_USER);
+		$dcs_dropship_ftp_password = get_option(DCS_DROPSHIP_FTP_PASSWORD);
+		//$dcs_dropship_ = get_option(DCS_DROPSHIP_);
 	}
 ?>
 
@@ -58,6 +72,9 @@
 		<p><?php _e("Order Status Data URL: " ); ?><input type="text" name="dcs_dropship_order_status_data_url" value="<?php echo $dcs_dropship_order_status_data_url; ?>" size="128"></p>
 		<p><?php _e("Tracking Data URL: " ); ?><input type="text" name="dcs_dropship_tracking_data_url" value="<?php echo $dcs_dropship_tracking_data_url; ?>" size="128"></p>
 		<p><?php _e("Order Invoice Data URL: " ); ?><input type="text" name="dcs_dropship_order_invoice_data_url" value="<?php echo $dcs_dropship_order_invoice_data_url; ?>" size="128"></p>
+		<p><?php _e("Dropship FTP username: " ); ?><input type="text" name="dcs_dropship_ftp_user" value="<?php echo $dcs_dropship_ftp_user; ?>" size="64"></p>
+		<p><?php _e("Dropship FTP password: " ); ?><input type="text" name="dcs_dropship_ftp_password" value="<?php echo $dcs_dropship_ftp_password; ?>" size="64"></p>
+		<!-- <p><?php _e(": " ); ?><input type="text" name="dcs_dropship_" value="<?php echo $dcs_dropship_; ?>" size="128"></p> -->
 		<p class="submit">
 		<input type="submit" name="Submit" value="<?php _e('Update Options', 'dcs_dropship_trdom' ) ?>" />
 		</p>

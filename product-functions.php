@@ -1,9 +1,9 @@
 <?php
 
 define( 'PRODUCT_TAB_FILE_NAME', DCS_DROPSHIP_DIR."files/product.tab" );
-define( 'PRODUCT_NUM_LINES', 5 );
-define( 'PRODUCT_NUM_COLS', 3 );
-define( 'PRODUCT_NUM', 25 );
+define( 'PRODUCT_NUM_LINES', 50 );
+define( 'PRODUCT_NUM_COLS', 5 );
+define( 'PRODUCT_NUM', 250 );
 
 /**
  * Parse and Load the products.
@@ -44,8 +44,12 @@ function dcs_dropship_loadProducts()
 
 		$retval .= dcsVarDumpStr( $lineVals );
 
-		$dropshipProducts[] = $lineVals;
-		$numLines++;
+		//Let's not bother with discontinued products.
+		if( $product['status'] != "discontinued" )
+		{
+			$dropshipProducts[] = $lineVals;
+			$numLines++;
+		}
 		$numCols = 0;
 	}
 
