@@ -135,9 +135,9 @@ function dcs_dropship_generateProductCell($product)
 {
 	$retval = "";
 
-	$retval .= "<td style='padding:3px;margin:3px;vertical-align:top;'>";
-	$retval .= "<div style='width:90%;height:90%;text-align:center;vertical-align:middle;border:1px solid #bfbfbf;border-radius:5px;box-shadow:3px 3px 3px #aaaaaa;padding:3px;background-color:white;margin:3px;'>";
-	$retval .= "<img src='".$product['product_image']."' style='width:32px;text-align:center;'><br />";
+	$retval .= "<td class='dcs_dropship_product'>";
+	$retval .= "<div class='dcs_dropship_product'>";
+	$retval .= "<img class='dcs_dropship_product' src='".$product['product_image']."'><br />";
 	$retval .= $product['product_title']."<br />";
 	$retval .= "$".$product['wholesale_cost'];
 	$retval .= "</div>";

@@ -32,6 +32,18 @@ function dcs_dropship_admin_page()
 }
 
 //******************************************************************************************************************************//
+//** STYLESHEETS **/
+/**
+ * Add our stylesheets.
+ */
+function dcs_dropship_add_my_stylesheet()
+{
+	wp_register_style( 'dcs-dropship-style', plugins_url('dcs-dropship.css', __FILE__) );
+	wp_enqueue_style( 'dcs-dropship-style' );
+}
+add_action( 'wp_enqueue_scripts', 'dcs_dropship_add_my_stylesheet' );
+
+//******************************************************************************************************************************//
 /** SHORTCODES **/
 /**
  * Inventory page shortcode.
