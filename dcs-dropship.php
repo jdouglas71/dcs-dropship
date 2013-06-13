@@ -43,6 +43,56 @@ function dcs_dropship_add_my_stylesheet()
 }
 add_action( 'wp_enqueue_scripts', 'dcs_dropship_add_my_stylesheet' );
 
+//*******************************************************************************************************************//
+// Tasks
+
+/**
+ * Add Monthly to the list of schedules.
+ */
+function dcs_dropship_cron_definer($schedules)
+{  
+	$schedules['monthly'] = array(      
+		'interval'=> 2592000,      
+		'display'=>  __('Once Every 30 Days')  
+		);  
+	return $schedules;
+}
+add_filter('cron_schedules','dcs_dropship_cron_definer');   
+
+/**
+* Get the product database from dropship.
+*/
+function getProductDatabase()
+{
+	global $dropshipFTPServer;
+	global $dropshipFTPDirectory;
+
+	$conn_id = ftp_connect( $dropshipFTPServer );
+	$login_result = ftp_login( $conn_id, get_option(DCS_DROPSHIP_FTP_USER), get_option(DCS_DROPSHIP_FTP_PASSWORD) );
+	ftp_chdir( $conn_id, $dropshipFTPDirectory );
+	$contents = ftp_nlist( $conn_id, "Product_".date("Ymd")."*.tab" );
+
+	ftp_nb_get($conn_id, DCS_DROPSHIP_DIR."files/Product.tab", $contents[0], FTP_BINARY);
+}
+add_action( "dcs_dropship_get_products", "getProductDatabase" );
+
+/**
+* Get the Inventory database from dropship.
+*/
+function getInventoryDatabase()
+{
+	global $dropshipFTPServer;
+	global $dropshipFTPDirectory;
+
+	$conn_id = ftp_connect( $dropshipFTPServer );
+	$login_result = ftp_login( $conn_id, get_option(DCS_DROPSHIP_FTP_USER), get_option(DCS_DROPSHIP_FTP_PASSWORD) );
+	ftp_chdir( $conn_id, $dropshipFTPDirectory );
+	$contents = ftp_nlist( $conn_id, "Inventory_".date("Ymd")."*.tab" );
+
+	ftp_nb_get($conn_id, DCS_DROPSHIP_DIR."files/Inventory.tab", $contents[0], FTP_BINARY);
+}
+add_action( "dcs_dropship_get_inventory", "getInventoryDatabase" );
+
 //******************************************************************************************************************************//
 /** SHORTCODES **/
 /**
@@ -148,6 +198,10 @@ function dcs_dropship_install()
 	{
 		update_option(DCS_DROPSHIP_ORDER_INVOICE_DATA_URL, "test key");
 	}
+
+	//Schedule our get tasks.
+	wp_schedule_event( DCS_DROPSHIP_PRODUCT_GET_TASK_TIME, "daily", "dcs_dropship_get_products" );
+	wp_schedule_event( DCS_DROPSHIP_PRODUCT_GET_TASK_TIME, "monthly", "dcs_dropship_get_inventory" );
 }
 register_activation_hook( __FILE__, 'dcs_dropship_install' );
 
@@ -179,7 +233,6 @@ function dcs_dropship_init()
 	}
 }
 add_action('init', 'dcs_dropship_init');
-
 
 /**
  * Set up header for AJAX calls.
@@ -230,3 +283,4 @@ function dcs_dropship_js_header()
 add_action('wp_head', 'dcs_dropship_js_header' );
 
 ?>
+

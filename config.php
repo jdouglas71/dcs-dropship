@@ -12,6 +12,8 @@ define('DCS_DROPSHIP_CSS', DCS_DROPSHIP_CALLBACK_DIR."dcs-dropship.css");
 define('LOGFILE', DCS_DROPSHIP_DIR.'DCS_DROPSHIP.log');
 /** WordPress Script Debug Flag */
 define('SCRIPT_DEBUG', true );
+/**Task start time */
+define('DCS_DROPSHIP_PRODUCT_GET_TASK_TIME', 1371121200 ); //6/13/13 6AM EST
 
 /** Version */
 $dcs_dropship_version = "0.5";
