@@ -25,7 +25,11 @@ define('DCS_DROPSHIP_ORDER_STATUS_DATA_URL', 'dcs-dropship-order-status-data-url
 define('DCS_DROPSHIP_TRACKING_DATA_URL', 'dcs-dropship-tracking-data-url' );
 define('DCS_DROPSHIP_ORDER_INVOICE_DATA_URL', 'dcs-dropship-order-invoice-data-url' );
 
+global $dropshipProducts;
+global $dropshipInventory;
+
 /** Scripts */
+require_once(DCS_DROPSHIP_DIR.'product-functions.php');
 require_once(DCS_DROPSHIP_DIR.'functions.php');
 
 ?>
