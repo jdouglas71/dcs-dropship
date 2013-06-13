@@ -74,7 +74,7 @@ function getProductDatabase()
 
 	if( $contents[0] )
 	{
-		ftp_nb_get($conn_id, DCS_DROPSHIP_DIR."files/Product.tab", $contents[0], FTP_BINARY);
+		ftp_get($conn_id, DCS_DROPSHIP_DIR."files/Product.tab", $contents[0], FTP_BINARY);
 	}
 }
 add_action( "dcs_dropship_get_products", "getProductDatabase" );
@@ -94,7 +94,7 @@ function getInventoryDatabase()
 
 	if( $contents[0] != "" )
 	{
-		ftp_nb_get($conn_id, DCS_DROPSHIP_DIR."files/Inventory.tab", $contents[0], FTP_BINARY);
+		ftp_get($conn_id, DCS_DROPSHIP_DIR."files/Inventory.tab", $contents[0], FTP_BINARY);
 	}
 }
 add_action( "dcs_dropship_get_inventory", "getInventoryDatabase" );
@@ -222,6 +222,12 @@ function dcs_dropship_uninstall()
 
 	//Clear out options
 	delete_option( DCS_DROPSHIP_VERSION );
+
+	$timestamp = wp_next_scheduled( "dcs_dropship_get_products" );
+	wp_unschedule_event( $timestamp, "dcs_dropship_get_products" );
+
+	$timestamp = wp_next_scheduled( "dcs_dropship_get_inventory" );
+	wp_unschedule_event( $timestamp, "dcs_dropship_get_inventory" );
 }
 register_deactivation_hook( __FILE__, 'dcs_dropship_uninstall' );
 
