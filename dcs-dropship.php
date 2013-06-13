@@ -72,7 +72,10 @@ function getProductDatabase()
 	ftp_chdir( $conn_id, $dropshipFTPDirectory );
 	$contents = ftp_nlist( $conn_id, "Product_".date("Ymd")."*.tab" );
 
-	ftp_nb_get($conn_id, DCS_DROPSHIP_DIR."files/Product.tab", $contents[0], FTP_BINARY);
+	if( $contents[0] )
+	{
+		ftp_nb_get($conn_id, DCS_DROPSHIP_DIR."files/Product.tab", $contents[0], FTP_BINARY);
+	}
 }
 add_action( "dcs_dropship_get_products", "getProductDatabase" );
 
@@ -89,7 +92,10 @@ function getInventoryDatabase()
 	ftp_chdir( $conn_id, $dropshipFTPDirectory );
 	$contents = ftp_nlist( $conn_id, "Inventory_".date("Ymd")."*.tab" );
 
-	ftp_nb_get($conn_id, DCS_DROPSHIP_DIR."files/Inventory.tab", $contents[0], FTP_BINARY);
+	if( $contents[0] != "" )
+	{
+		ftp_nb_get($conn_id, DCS_DROPSHIP_DIR."files/Inventory.tab", $contents[0], FTP_BINARY);
+	}
 }
 add_action( "dcs_dropship_get_inventory", "getInventoryDatabase" );
 
