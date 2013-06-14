@@ -52,34 +52,39 @@
 
 td.dcs_dropship_product
 {
-	padding:3px;
-	margin:3px;
-	vertical-align:top;
+	padding: 3px;
+	margin: 3px;
+	vertical-align: top;
 	min-width: 50px;
+	width: 66px;
 }
 
 div.dcs_dropship_product
 {
-	width:90%;
-	height:90%;
-	text-align:center;
-	vertical-align:middle;
-	border:1px solid #bfbfbf;
-	border-radius:5px;
-	box-shadow:3px 3px 3px #aaaaaa;
-	background-color:white;
+	width: 90%;
+	height: 90%;
+	text-align: left;
+	vertical-align: middle;
+	border: 1px solid #bfbfbf;
+	border-radius: 5px;
+	box-shadow: 3px 3px 3px #aaaaaa;
+	background-color: white;
 }
 
 div.dcs_dropship_product_top_div
 {
-   	padding: 3px;
+   	//padding: 3px;
+}
+
+div.dcs_dropship_product_top_div
+{
+   	text-align: center;
 }
 
 img.dcs_dropship_product
 {
-	//width:32px;
-	height: 64px;
-	text-align:center;
+	height: 128px;
+	text-align: center;
 }
 
 div.dcs_dropship_product_title
@@ -87,15 +92,19 @@ div.dcs_dropship_product_title
 	font-weight: bold;
 	font-size: x-small;
 	border-bottom: 1px solid #ccc;
-	height: 35px;
+	height: 30px;
 	overflow: hidden;
+	text-align: center;
+	line-height: 99%;
+	padding: 3px;
 }
 
-span.dcs_dropship_product_price
+div.dcs_dropship_product_price
 {
    	color: green;
-	font-size: large;
+	font-size: medium;
 	font-weight: bold;
+	padding-top: 5px;
 }
 
 div.dcs_dropship_product_decoration
@@ -111,6 +120,14 @@ div.dcs_dropship_product_decoration
 	background-image: -webkit-linear-gradient(top,#e8e8e8,#f4f4f4);
 	border-bottom-right-radius: 5px;
 	border-bottom-left-radius: 5px;
+}
+
+div.dcs_dropship_product_text
+{
+   	text-align: left;
+	font-size: small;
+	line-height: 100%;
+	padding: 5px;
 }
 
 
