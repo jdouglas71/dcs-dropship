@@ -3,7 +3,7 @@
 define( 'PRODUCT_TAB_FILE_NAME', DCS_DROPSHIP_DIR."files/product.tab" );
 define( 'PRODUCT_NUM_LINES', 6 );
 define( 'PRODUCT_NUM_COLS', 3 );
-define( 'PRODUCT_NUM', 500 );
+define( 'PRODUCT_NUM', 10 );
 
 /**
  * Getter for the products.
@@ -73,6 +73,7 @@ function dcs_dropship_loadProducts()
 		{
 			$dropshipProducts[] = $lineVals;
 			$numLines++;
+
 			//Collect Categories and numbers for each.
 			if( !in_array($lineVals['category'], $dropshipCategories) )
 			{
@@ -237,6 +238,37 @@ function dcs_dropship_generateProductCell($product)
 {
 	$retval = "";
 
+	dcs_dropship_createPageForProduct( $product );
+	$existingPage = get_page_by_title( $product['sku'], ARRAY_A, "page" );
+	$company_url = $existingPage['guid'];
+
+	$retval .= "<td class='dcs_dropship_product'>";
+	$retval .= "<div class='dcs_dropship_product'>";
+	$retval .= "<div class='dcs_dropship_product_top_div'>";
+	$retval .= "<div class='dcs_dropship_product_title'>".$product['product_title']."</div><br />";
+	$retval .= "<div class='dcs_dropship_product_img_div'>";
+	$retval .= "<a href='".$company_url."'><img class='dcs_dropship_product' src='".$product['product_image']."'></a><br />";
+	$retval .= "</div>";
+	$retval .= "<div class='dcs_dropship_product_text'>";
+	$retval .= "SKU: ".$product['sku']."<br />";
+	$retval .= "Quantity: ".$product['quantity_available']."<br />";
+	$retval .= "<div class='dcs_dropship_product_price'>"."$".$product['wholesale_cost']."</span><br />";
+	$retval .= "</div>";
+	$retval .= "</div>";
+	$retval .= "<div class='dcs_dropship_product_decoration'><!-- decorative --></div>";
+	$retval .= "</div>";
+	$retval .= "</td>";
+
+	return $retval;
+}
+
+/**
+ * Generate a Page for the given product.                         
+ */
+function dcs_dropship_generateProductPage($product)
+{
+	$retval = "";
+
 	$retval .= "<td class='dcs_dropship_product'>";
 	$retval .= "<div class='dcs_dropship_product'>";
 	$retval .= "<div class='dcs_dropship_product_top_div'>";
@@ -255,6 +287,58 @@ function dcs_dropship_generateProductCell($product)
 	$retval .= "</td>";
 
 	return $retval;
+}
+
+/**
+ * Create page for product.
+ */
+function dcs_dropship_createPageForProduct($product)
+{
+	//Global for WordPress database.
+	global $wpdb;
+
+	$existingPage = get_page_by_title( $product['sku'], ARRAY_A, "page" );
+
+	if( !$existingPage )
+	{
+		$page = array();
+	
+		$page["post_type"] = "page";
+		$page["post_content"] = dcs_dropship_generateProductPage($product);
+		$page["post_parent"] = 0;
+		$page["post_author"] = "Dropship Admin";
+		$page["post_status"] = "publish";
+		$page["post_title"] = $product['sku'];
+		$page["comment_status"] = "closed";
+		$page["ping_status"] = "closed";
+		$pageid = wp_insert_post( $page );
+	
+		if( $pageid == 0 )
+		{
+			//Page not created.
+		}
+		else
+		{
+			//Add to excluded list
+			$excluded_ids_str = get_option( "ep_exclude_pages" );
+			$excluded_ids = explode( ",", $excluded_ids_str );
+			array_push( $excluded_ids, $pageid );
+			$excluded_ids = array_unique( $excluded_ids );
+			$excluded_ids_str = implode( ",", $excluded_ids );
+			delete_option( "ep_exclude_pages" );
+			add_option( "ep_exclude_pages", $excluded_ids_str, __( "Comma separated list of post and page IDs to exclude when returning pages from the get_pages function.", "exclude-pages" ) );
+		}
+	}
+	else
+	{
+		//Page exists. Make sure the content is updated.
+		$page = array();
+		$page['ID'] = $existingPage['ID'];
+
+		$page['post_content'] = dcs_dropship_generateProductPage($product);
+
+		wp_update_post( $page );
+	}
 }
 
 /**
