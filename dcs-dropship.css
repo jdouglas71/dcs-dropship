@@ -2,54 +2,6 @@
 * DCS Dropship Plugin Styles
 */
 
-.dcs_dropship_label
-{
-	margin: 5px;
-}
-
-
-.dcs_dropship_input
-{
-	margin: 5px;
-	border-radius: 5px;
-}
-
-.dcs_dropship_submit
-{
-	margin: 5px 5px 5px 0px;
-	border-radius: 5px;
-}
-
-.dcs_dropship_div
-{
-	padding: 5px;
-}
-
-.hs_membership_div
-{
-	padding: 5px;
-}
-
-.dcs_dropship_header
-{
-
-}
-
-.dcs_dropship_login_message
-{
-   	color: blue;
-}
-
-.dcs_dropship_message
-{
-   	color: blue;
-}
-
-.dcs_dropship_error_message
-{
-   	color: red;
-}
-
 td.dcs_dropship_product
 {
 	padding: 3px;
@@ -71,9 +23,11 @@ div.dcs_dropship_product
 	background-color: white;
 }
 
-div.dcs_dropship_product_top_div
+div.dcs_dropship_product_info
 {
-   	//padding: 3px;
+	text-align: left;
+	background-color: white;
+	padding: 4px;
 }
 
 div.dcs_dropship_product_top_div
@@ -83,7 +37,13 @@ div.dcs_dropship_product_top_div
 
 img.dcs_dropship_product
 {
-	height: 128px;
+	max-height: 128px;
+	text-align: center;
+}
+
+img.dcs_dropship_product_page
+{
+	max-height: 256px;
 	text-align: center;
 }
 
@@ -91,6 +51,18 @@ div.dcs_dropship_product_title
 {
 	font-weight: bold;
 	font-size: x-small;
+	border-bottom: 1px solid #ccc;
+	height: 30px;
+	overflow: hidden;
+	text-align: center;
+	line-height: 99%;
+	padding: 3px;
+}
+
+div.dcs_dropship_product_page_title
+{
+	font-weight: bold;
+	font-size: small;
 	border-bottom: 1px solid #ccc;
 	height: 30px;
 	overflow: hidden;
@@ -144,4 +116,5 @@ table.dcs_dropship_brand_table
 {
 
 }
+
 
