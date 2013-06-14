@@ -32,6 +32,11 @@ define('DCS_DROPSHIP_FTP_PASSWORD', 'dcs-dropship-ftp-password' );
 /** Globals */
 global $dropshipProducts;
 global $dropshipInventory;
+global $dropshipCategories;
+global $dropshipCategoryNumbers;
+global $dropshipBrands;
+global $dropshipBrandNumbers;
+
 global $dropshipFTPServer;
 $dropshipFTPServer = "ftp.dropship.com";
 global $dropshipFTPDirectory;

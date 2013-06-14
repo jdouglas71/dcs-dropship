@@ -206,8 +206,8 @@ function dcs_dropship_install()
 	}
 
 	//Schedule our get tasks.
-	wp_schedule_event( DCS_DROPSHIP_PRODUCT_GET_TASK_TIME, "daily", "dcs_dropship_get_products" );
-	wp_schedule_event( DCS_DROPSHIP_PRODUCT_GET_TASK_TIME, "monthly", "dcs_dropship_get_inventory" );
+	wp_schedule_event( DCS_DROPSHIP_PRODUCT_GET_TASK_TIME, "monthly", "dcs_dropship_get_products" );
+	wp_schedule_event( DCS_DROPSHIP_PRODUCT_GET_TASK_TIME, "hourly", "dcs_dropship_get_inventory" );
 }
 register_activation_hook( __FILE__, 'dcs_dropship_install' );
 
@@ -251,44 +251,8 @@ add_action('init', 'dcs_dropship_init');
  */
 function dcs_dropship_js_header()
 {
-	wp_print_scripts( array('sack') );
 	?>
 	<script type='text/javascript'>
-
-        //Add user
-        function dcs_dropship_add_user()
-        {
-            try
-            {
-                document.getElementById('hs_add_account').disabled = true;
-                var submit_message = document.getElementById('dcs_dropship_submit_message');
-                submit_message.className = "dcs_dropship_message";
-                submit_message.innerHTML = "Submitting form. Please wait...";
-    
-                var mysack = new sack("<?php echo DCS_DROPSHIP_CALLBACK_DIR; ?>dcs-dropship-ajax.php");
-                mysack.execute = 1;
-                mysack.method = 'POST';
-        
-                //Set the variables
-                mysack.setVar("action", "AddUser");
-                mysack.setVar("username", document.getElementById("hs_username").value);
-                mysack.setVar("password", document.getElementById("hs_password").value);
-                mysack.setVar("confirm_password", document.getElementById("hs_confirm_password").value);
-        
-                mysack.onError = function() { alert('An Error occurred. Please reload the page and try again.'); };
-                mysack.runAJAX();
-            }
-            catch(err)
-            {
-                var txt = "There was an error on this page.\n\n";
-                txt += "Error description: " + err.message + "\n\n";
-                txt += "Click OK to continue.\n\n";
-                alert(txt);
-            }
-
-            return true;
-		}
-
 	</script>
 	<?php
 }

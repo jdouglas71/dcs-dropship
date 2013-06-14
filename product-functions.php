@@ -3,7 +3,22 @@
 define( 'PRODUCT_TAB_FILE_NAME', DCS_DROPSHIP_DIR."files/product.tab" );
 define( 'PRODUCT_NUM_LINES', 6 );
 define( 'PRODUCT_NUM_COLS', 3 );
-define( 'PRODUCT_NUM', 250 );
+define( 'PRODUCT_NUM', 500 );
+
+/**
+ * Getter for the products.
+ */ 
+function dcs_dropship_getProducts()
+{
+	global $dropshipProducts;
+
+	if( $dropshopProducts == NULL )
+	{
+		dcs_dropship_loadProducts();
+	}
+
+	return $dropshipProducts;
+}
 
 /**
  * Parse and Load the products.
@@ -11,6 +26,11 @@ define( 'PRODUCT_NUM', 250 );
 function dcs_dropship_loadProducts()
 {
 	global $dropshipProducts;
+	global $dropshipCategories;
+	global $dropshipCategoryNumbers;
+	global $dropshipBrands;
+	global $dropshipBrandNumbers;
+
 	$retval = "";
 
     $file_handle = fopen(PRODUCT_TAB_FILE_NAME, "r");
@@ -18,6 +38,10 @@ function dcs_dropship_loadProducts()
 	$numCols = 0;
 	$keys = array();
 	$dropshipProducts = array();
+	$dropshipCategories = array();
+	$dropshipCategoryNumbers = array();
+	$dropshipBrands = array();
+	$dropshipBrandNumbers = array();
 
 	while( !feof($file_handle) && ($numLines < PRODUCT_NUM))
 	{
@@ -28,32 +52,50 @@ function dcs_dropship_loadProducts()
 		//Parse the line.
 		foreach( explode("[tAbul*Ator]", $line) as $li ) 
 		{ 
-			$retval .= "NumLines: " . $numLines . "<br />";
+			//$retval .= "NumLines: " . $numLines . "<br />";
 			if( $numLines == 0 )
 			{
-				$retval .= "Adding " . trim($li) . " as a key.<br />";
+				//$retval .= "Adding " . trim($li) . " as a key.<br />";
 				$keys[] = trim($li);
 			}
 			else
 			{
-				$retval .= "Adding " . trim($li) . " as a value for key $numCols:".$keys[$numCols].".<br />";
+				//$retval .= "Adding " . trim($li) . " as a value for key $numCols:".$keys[$numCols].".<br />";
 				$lineVals[$keys[$numCols]] = trim($li);
 			}
 			$numCols++;
 		} 
 
-		$retval .= dcsVarDumpStr( $lineVals );
+		//$retval .= dcsVarDumpStr( $lineVals );
 
 		//Let's not bother with discontinued products.
 		if( $product['status'] != "discontinued" )
 		{
 			$dropshipProducts[] = $lineVals;
 			$numLines++;
+			//Collect Categories and numbers for each.
+			if( !in_array($lineVals['category'], $dropshipCategories) )
+			{
+				$dropshipCategories[] = $lineVals['category'];
+				$dropshipCategoryNumbers[$lineVals['category']] = 0;
+			}
+			$dropshipCategoryNumbers[$lineVals['category']]++;
+
+			//Collect brands and numbers for each.
+			if( !in_array($lineVals['brand'], $dropshipBrands) )
+			{
+				$dropshipBrands[] = $lineVals['brand'];
+				$dropshipBrandNumbers[$lineVals['brand']] = 0;
+			}
+			$dropshipBrandNumbers[$lineVals['brand']]++;
 		}
 		$numCols = 0;
 	}
 
-	$retval .= dcsVarDumpStr( $dropshipProducts ) . "<br />";
+	asort( $dropshipCategories );
+	asort( $dropshipBrands );
+
+	//$retval .= dcsVarDumpStr( $dropshipProducts ) . "<br />";
 
 	return $retval;
 }
@@ -63,8 +105,9 @@ function dcs_dropship_loadProducts()
  */
 function dcs_dropship_generateProductTable($showKeys=NULL)
 {
-	global $dropshipProducts;
-	$retval = "<table border='1'>";
+	$dropshipProducts = dcs_dropship_getProducts();
+
+	$retval = "<table class='dcs_dropship_product_table'>";
 	$numLines = 1;
 
 	//$retval .= dcsVarDumpStr( $dropshipProducts );
@@ -95,7 +138,56 @@ function dcs_dropship_generateProductTable($showKeys=NULL)
 	}
 
 	$retval .= "</table>";
+	return $retval;
+}
 
+/**
+ * Display Products Categories in a table.
+ */
+function dcs_dropship_generateProductCategoryTable()
+{
+	$dropshipProducts = dcs_dropship_getProducts();
+	global $dropshipCategories;
+	global $dropshipCategoryNumbers;
+
+	$retval .= "<table class='dcs_dropship_category_table'>";
+
+	foreach( $dropshipCategories as $category )
+	{
+		$categoryDisplay = $category;
+		if( $categoryDisplay == "" ) 
+		{
+			$categoryDisplay = "Uncategorized";
+		}
+		$retval .= "<tr><td>".$categoryDisplay."</td><td>".$dropshipCategoryNumbers[$category]."</td></tr>";
+	}
+
+	$retval .= "</table>";
+	return $retval;
+}
+
+/**
+ * Display Products Brands in a table.
+ */
+function dcs_dropship_generateProductBrandTable()
+{
+	$dropshipProducts = dcs_dropship_getProducts();
+	global $dropshipBrands;
+	global $dropshipBrandNumbers;
+
+	$retval .= "<table class='dcs_dropship_brand_table'>";
+
+	foreach( $dropshipBrands as $brand )
+	{
+		$brandDisplay = $brand;
+		if( $brandDisplay == "" )
+		{
+			$brandDisplay = "n/a";
+		}
+		$retval .= "<tr><td>".$brandDisplay."</td><td>".$dropshipBrandNumbers[$brand]."</td></tr>";
+	}
+
+	$retval .= "</table>";
 	return $retval;
 }
 
@@ -104,8 +196,8 @@ function dcs_dropship_generateProductTable($showKeys=NULL)
  */
 function dcs_dropship_generatePrettyProductTable()
 {
-	global $dropshipProducts;
-	$retval = "<table cellpadding='3'>";
+	$dropshipProducts = dcs_dropship_getProducts();
+	$retval = "<table cellpadding='3' class='dcs_dropship_product_table'>";
 
 	$numCols = 1;
 	$numLines = 1;
