@@ -55,6 +55,7 @@ td.dcs_dropship_product
 	padding:3px;
 	margin:3px;
 	vertical-align:top;
+	min-width: 50px;
 }
 
 div.dcs_dropship_product
@@ -66,9 +67,12 @@ div.dcs_dropship_product
 	border:1px solid #bfbfbf;
 	border-radius:5px;
 	box-shadow:3px 3px 3px #aaaaaa;
-	padding:3px;
 	background-color:white;
-	margin:3px;
+}
+
+div.dcs_dropship_product_top_div
+{
+   	padding: 3px;
 }
 
 img.dcs_dropship_product
@@ -76,6 +80,37 @@ img.dcs_dropship_product
 	//width:32px;
 	height: 64px;
 	text-align:center;
+}
+
+div.dcs_dropship_product_title
+{
+	font-weight: bold;
+	font-size: x-small;
+	border-bottom: 1px solid #ccc;
+	height: 35px;
+	overflow: hidden;
+}
+
+span.dcs_dropship_product_price
+{
+   	color: green;
+	font-size: large;
+	font-weight: bold;
+}
+
+div.dcs_dropship_product_decoration
+{
+   	border-bottom: 1px solid #ccc;
+	border-top: 1px solid #ccc;
+	bottom: -1px;
+	left: 0;
+	position: relative;
+	width: 100%;
+	height: 1.7em;
+	background-color: #eee;
+	background-image: -webkit-linear-gradient(top,#e8e8e8,#f4f4f4);
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
 }
 
 

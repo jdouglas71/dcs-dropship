@@ -1,8 +1,8 @@
 <?php
 
 define( 'PRODUCT_TAB_FILE_NAME', DCS_DROPSHIP_DIR."files/product.tab" );
-define( 'PRODUCT_NUM_LINES', 50 );
-define( 'PRODUCT_NUM_COLS', 5 );
+define( 'PRODUCT_NUM_LINES', 5 );
+define( 'PRODUCT_NUM_COLS', 4 );
 define( 'PRODUCT_NUM', 250 );
 
 /**
@@ -108,6 +108,7 @@ function dcs_dropship_generatePrettyProductTable()
 	$retval = "<table cellpadding='3'>";
 
 	$numCols = 1;
+	$numLines = 1;
 
 	foreach( $dropshipProducts as $product )
 	{
@@ -122,6 +123,11 @@ function dcs_dropship_generatePrettyProductTable()
 			{
 				$retval .= "</tr>";
 				$numCols = 0;
+				$numLines++;
+				if( $numLines > PRODUCT_NUM_LINES )
+				{
+					break;
+				}
 			}
 			$numCols++;
 		}
@@ -141,9 +147,12 @@ function dcs_dropship_generateProductCell($product)
 
 	$retval .= "<td class='dcs_dropship_product'>";
 	$retval .= "<div class='dcs_dropship_product'>";
+	$retval .= "<div class='dcs_dropship_product_top_div'>";
+	$retval .= "<div class='dcs_dropship_product_title'>".$product['product_title']."</div><br />";
 	$retval .= "<img class='dcs_dropship_product' src='".$product['product_image']."'><br />";
-	$retval .= $product['product_title']."<br />";
-	$retval .= "$".$product['wholesale_cost'];
+	$retval .= "<span class='dcs_dropship_product_price'>"."$".$product['wholesale_cost']."</span><br />";
+	$retval .= "</div>";
+	$retval .= "<div class='dcs_dropship_product_decoration'><!-- decorative --></div>";
 	$retval .= "</div>";
 	$retval .= "</td>";
 
