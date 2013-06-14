@@ -285,9 +285,10 @@ function dcs_dropship_generateProductPage($product)
 	$retval .= "</div>";
 
 	$retval .= "<div class='dcs_dropship_product_info'>";
-	$retval .= "<div class='dcs_dropship_product_page_title'>Overview</div><br />";
+	$retval .= "<div class='dcs_dropship_product_page_title'>Details</div><br />";
 	$retval .= "<b>Product Title:</b> ".$product['product_title']."<br />";
 	$retval .= "<b>Product Group:</b> ".$product['product_group']."<br />";
+	$retval .= "<b>Category:</b> ".$product['category']."<br />";
 	$retval .= "<b>Brand:</b> ".$product['brand']."<br />";
 	$retval .= "<b>Manufacturer:</b> ".$product['manufacturer']."<br />";
 	$retval .= "<b>Description:</b> ".$product['long_description']."<br />";
