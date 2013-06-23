@@ -99,7 +99,7 @@ function dcs_dropship_loadProducts()
 		} 
 
 		//Let's not bother with discontinued products.
-		if( $product['status'] != "discontinued" )
+		if( $lineVals['status'] != "discontinued" )
 		{
 			//First line contains the keys, the rest is values.
 			if( $numLines > 0 )
@@ -412,6 +412,32 @@ function dcs_dropship_createProductDatabase($products, $useKeys, $dropTable = tr
 	dcsLogToFile( "Create table SQL: " . $sql );
 	$result = $wpdb->query( $sql );
 	dcsLogToFile( "Create Table result: " . $result );
+
+	//Create the keyStr
+	$keyStr = "(";
+	foreach( $useKeys as $key )
+	{
+		$keyStr .= $key.",";
+	}
+	$keyStr = substr( $keyStr, 0, strlen($keyStr)-1 );
+	$keyStr .= ") ";
+
+	foreach( $products as $product )
+	{
+		$sql = "INSERT INTO dcs_dropship_products ";
+		$valStr = "(";
+		foreach( $useKeys as $key )
+		{
+			$valStr .= "'".$product[$key]."',";
+		}
+		$valStr = substr( $valStr, 0, strlen($valStr)-1 );
+		$valStr .= ");";
+
+		$sql .= $keyStr . " VALUES " . $valStr;
+		dcsLogToFile( "Insert statement: " . $sql );
+		$result = $wpdb->query( $sql );
+		dcsLogToFile( "Insert result: " . $result );
+	}
 }
 
 /**
