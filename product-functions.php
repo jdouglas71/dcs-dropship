@@ -25,11 +25,46 @@ function dcs_dropship_getProducts()
  */
 function dcs_dropship_loadProducts()
 {
+	global $wpdb;
 	global $dropshipProducts;
 	global $dropshipCategories;
 	global $dropshipCategoryNumbers;
 	global $dropshipBrands;
 	global $dropshipBrandNumbers;
+
+	$useKeys = array( "sku",
+					  "category",
+					  "brand",
+					  "status",
+					  "product_title",
+					  "product_image",
+					  "quantity_available",
+					  "product_cost",
+					  "manufacturer",
+					  "long_description",
+					  "estimated_shipping_cost",
+					  "wholesale_cost",
+					  "user_defined_name_1",
+					  "user_defined_value_1",
+					  "user_defined_name_2",
+					  "user_defined_value_2",
+					  "user_defined_name_3",
+					  "user_defined_value_3",
+					  "user_defined_name_4",
+					  "user_defined_value_4",
+					  "user_defined_name_5",
+					  "user_defined_value_5",
+					  "user_defined_name_6",
+					  "user_defined_value_6",
+					  "user_defined_name_7",
+					  "user_defined_value_7",
+					  "user_defined_name_8",
+					  "user_defined_value_8",
+					  "user_defined_name_9",
+					  "user_defined_value_9",
+					  "user_defined_name_10",
+					  "user_defined_value_10"
+					);
 
 	$retval = "";
 
@@ -52,49 +87,50 @@ function dcs_dropship_loadProducts()
 		//Parse the line.
 		foreach( explode("[tAbul*Ator]", $line) as $li ) 
 		{ 
-			//$retval .= "NumLines: " . $numLines . "<br />";
 			if( $numLines == 0 )
 			{
-				//$retval .= "Adding " . trim($li) . " as a key.<br />";
 				$keys[] = trim($li);
 			}
 			else
 			{
-				//$retval .= "Adding " . trim($li) . " as a value for key $numCols:".$keys[$numCols].".<br />";
 				$lineVals[$keys[$numCols]] = trim($li);
 			}
 			$numCols++;
 		} 
 
-		//$retval .= dcsVarDumpStr( $lineVals );
-
 		//Let's not bother with discontinued products.
 		if( $product['status'] != "discontinued" )
 		{
-			$dropshipProducts[] = $lineVals;
+			//First line contains the keys, the rest is values.
+			if( $numLines > 0 )
+			{
+				$dropshipProducts[] = $lineVals;
+
+				//Collect Categories and numbers for each.
+				if( !in_array($lineVals['category'], $dropshipCategories) )
+				{
+					$dropshipCategories[] = $lineVals['category'];
+					$dropshipCategoryNumbers[$lineVals['category']] = 0;
+				}
+				$dropshipCategoryNumbers[$lineVals['category']]++;
+		
+				//Collect brands and numbers for each.
+				if( !in_array($lineVals['brand'], $dropshipBrands) )
+				{
+					$dropshipBrands[] = $lineVals['brand'];
+					$dropshipBrandNumbers[$lineVals['brand']] = 0;
+				}
+				$dropshipBrandNumbers[$lineVals['brand']]++;
+			}
+
 			$numLines++;
-
-			//Collect Categories and numbers for each.
-			if( !in_array($lineVals['category'], $dropshipCategories) )
-			{
-				$dropshipCategories[] = $lineVals['category'];
-				$dropshipCategoryNumbers[$lineVals['category']] = 0;
-			}
-			$dropshipCategoryNumbers[$lineVals['category']]++;
-
-			//Collect brands and numbers for each.
-			if( !in_array($lineVals['brand'], $dropshipBrands) )
-			{
-				$dropshipBrands[] = $lineVals['brand'];
-				$dropshipBrandNumbers[$lineVals['brand']] = 0;
-			}
-			$dropshipBrandNumbers[$lineVals['brand']]++;
 		}
 		$numCols = 0;
 	}
 
 	asort( $dropshipCategories );
 	asort( $dropshipBrands );
+	dcs_dropship_createProductDatabase( $dropshipProducts, $useKeys );
 
 	//$retval .= dcsVarDumpStr( $dropshipProducts ) . "<br />";
 
@@ -352,6 +388,42 @@ function dcs_dropship_createPageForProduct($product)
 }
 
 /**
+ * Create the product database using the passed in keys.
+ */
+function dcs_dropship_createProductDatabase($products, $useKeys, $dropTable = true)
+{
+	global $wpdb;
+
+	//Delete existing table if it exists.
+	if( $dropTable )
+	{
+		$result = $wpdb->query( "DROP TABLE dcs_dropship_products;" );
+		dcsLogToFile( "Drop table Result: " . $result . PHP_EOL );
+		$wpdb->print_error();
+	}
+
+	//Create table
+	$sql = "CREATE TABLE dcs_dropship_products (sku VARCHAR(255), PRIMARY KEY(sku));";
+	dcsLogToFile( "Alter Product database sql: " . $sql . PHP_EOL );
+	$result = $wpdb->query( $sql );
+	dcsLogToFile( "Create table Result: " . $result . PHP_EOL );
+	$wpdb->print_error();
+
+	//Add keys 
+	foreach( $keys as $key )
+	{
+		if( $key != "sku" )
+		{
+			$sql = "ALTER TABLE dcs_dropship_products ADD ".$key." VARCHAR(1024);";
+			dcsLogToFile( "Alter Product database sql: " . $sql . PHP_EOL );
+			$result = $wpdb->query( $sql );
+			dcsLogToFile( "Alter Product database result: " . $result . PHP_EOL );
+			$wpdb->print_error();
+		}
+	}
+}
+
+/**
  * Logging to file.                                       
  */
 if( !function_exists("dcsLogToFile") )
@@ -361,9 +433,9 @@ if( !function_exists("dcsLogToFile") )
 		// open file
 		$fd = fopen(LOGFILE, "a");
 		// append date/time to message
-		$str = "[" . date("Y/m/d h:i:s", mktime()) . "] " . $msg; 
+		$str = "[" . date("Y/m/d h:i:s", mktime()) . "] " . PHP_EOL . $msg; 
 		// write string
-		fwrite($fd, $str . "\n");
+		fwrite($fd, $str . PHP_EOL);
 		// close file
 		fclose($fd);
 	}
