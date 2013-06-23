@@ -402,25 +402,16 @@ function dcs_dropship_createProductDatabase($products, $useKeys, $dropTable = tr
 		$wpdb->print_error();
 	}
 
-	//Create table
-	$sql = "CREATE TABLE dcs_dropship_products (sku VARCHAR(255), PRIMARY KEY(sku));";
-	dcsLogToFile( "Alter Product database sql: " . $sql . PHP_EOL );
-	$result = $wpdb->query( $sql );
-	dcsLogToFile( "Create table Result: " . $result . PHP_EOL );
-	$wpdb->print_error();
-
-	//Add keys 
-	foreach( $keys as $key )
+	//Create the table.
+	$sql = "CREATE TABLE dcs_dropship_products ( ";
+	foreach( $useKeys as $key )
 	{
-		if( $key != "sku" )
-		{
-			$sql = "ALTER TABLE dcs_dropship_products ADD ".$key." VARCHAR(1024);";
-			dcsLogToFile( "Alter Product database sql: " . $sql . PHP_EOL );
-			$result = $wpdb->query( $sql );
-			dcsLogToFile( "Alter Product database result: " . $result . PHP_EOL );
-			$wpdb->print_error();
-		}
+		$sql .= " $key varchar(812),";
 	}
+	$sql .= " PRIMARY KEY(sku) );";
+	dcsLogToFile( "Create table SQL: " . $sql );
+	$result = $wpdb->query( $sql );
+	dcsLogToFile( "Create Table result: " . $result );
 }
 
 /**

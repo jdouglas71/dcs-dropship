@@ -62,11 +62,12 @@ add_filter('cron_schedules','dcs_dropship_cron_definer');
 /**
 * Get the product database from dropship.
 */
-function getProductDatabase()
+function dcs_dropship_getProductDatabase()
 {
 	global $dropshipFTPServer;
 	global $dropshipFTPDirectory;
 
+	dcsLogToFile( "getProductDatabase starts." );
 	$conn_id = ftp_connect( $dropshipFTPServer );
 	$login_result = ftp_login( $conn_id, get_option(DCS_DROPSHIP_FTP_USER), get_option(DCS_DROPSHIP_FTP_PASSWORD) );
 	ftp_chdir( $conn_id, $dropshipFTPDirectory );
@@ -74,19 +75,28 @@ function getProductDatabase()
 
 	if( $contents[0] )
 	{
-		ftp_get($conn_id, DCS_DROPSHIP_DIR."files/Product.tab", $contents[0], FTP_BINARY);
+		if( ftp_get($conn_id, DCS_DROPSHIP_DIR."files/Product.tab", $contents[0], FTP_BINARY) )
+		{
+			dcsLogToFile( "Product FTP get successful." );
+		}
+		else
+		{
+			dcsLogToFile( "Product FTP get failed." );
+		}
 	}
+	dcsLogToFile( "getProductDatabase ends." );
 }
-add_action( "dcs_dropship_get_products", "getProductDatabase" );
+add_action( "dcs_dropship_get_products", "dcs_dropship_getProductDatabase" );
 
 /**
 * Get the Inventory database from dropship.
 */
-function getInventoryDatabase()
+function dcs_dropship_getInventoryDatabase()
 {
 	global $dropshipFTPServer;
 	global $dropshipFTPDirectory;
 
+	dcsLogToFile( "getInventoryDatabase starts." );
 	$conn_id = ftp_connect( $dropshipFTPServer );
 	$login_result = ftp_login( $conn_id, get_option(DCS_DROPSHIP_FTP_USER), get_option(DCS_DROPSHIP_FTP_PASSWORD) );
 	ftp_chdir( $conn_id, $dropshipFTPDirectory );
@@ -94,10 +104,18 @@ function getInventoryDatabase()
 
 	if( $contents[0] != "" )
 	{
-		ftp_get($conn_id, DCS_DROPSHIP_DIR."files/Inventory.tab", $contents[0], FTP_BINARY);
+		if( ftp_get($conn_id, DCS_DROPSHIP_DIR."files/Inventory.tab", $contents[0], FTP_BINARY) )
+		{
+			dcsLogToFile( "Inventory FTP get successful." );
+		}
+		else
+		{
+			dcsLogToFile( "Inventory FTP get successful." );
+		}
 	}
+	dcsLogToFile( "getProductInventory ends." );
 }
-add_action( "dcs_dropship_get_inventory", "getInventoryDatabase" );
+add_action( "dcs_dropship_get_inventory", "dcs_dropship_getInventoryDatabase" );
 
 //******************************************************************************************************************************//
 /** SHORTCODES **/
