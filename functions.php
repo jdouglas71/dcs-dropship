@@ -32,44 +32,9 @@ function dcs_dropship_order_invoice_page()
  */ 
 function dcs_dropship_product_page()
 {
-	$showKeys = array( "sku",
-					   "category",
-					   "brand",
-					   "status",
-					   "product_title",
-					   "product_image",
-					   "quantity_available",
-					   "product_cost",
-					   "manufacturer",
-					   "long_description",
-					   "estimated_shipping_cost",
-					   "wholesale_cost",
-					   "user_defined_name_1",
-					   "user_defined_value_1",
-					   "user_defined_name_2",
-					   "user_defined_value_2",
-					   "user_defined_name_3",
-					   "user_defined_value_3",
-					   "user_defined_name_4",
-					   "user_defined_value_4",
-					   "user_defined_name_5",
-					   "user_defined_value_5",
-					   "user_defined_name_6",
-					   "user_defined_value_6",
-					   "user_defined_name_7",
-					   "user_defined_value_7",
-					   "user_defined_name_8",
-					   "user_defined_value_8",
-					   "user_defined_name_9",
-					   "user_defined_value_9",
-					   "user_defined_name_10",
-					   "user_defined_value_10"
-					 );
-
-	$retval = dcs_dropship_generatePrettyProductTable( );
-	//$retval = dcs_dropship_generateProductTable();
-	//$retval .= "<br/>".dcs_dropship_generateProductCategoryTable();
-	//$retval .= "<br/>".dcs_dropship_generateProductBrandTable();
+	//$retval = dcs_dropship_generatePrettyProductTable( );
+	$retval = "<h3>Categories</h3>".dcs_dropship_generateProductCategoryTable();
+	$retval .= "<br/><h3>Brands</h3>".dcs_dropship_generateProductBrandTable();
 
 	return $retval;
 }

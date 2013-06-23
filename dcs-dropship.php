@@ -85,6 +85,8 @@ function dcs_dropship_getProductDatabase()
 		}
 	}
 	dcsLogToFile( "getProductDatabase ends." );
+
+	dcs_dropship_loadProductsFromFile();
 }
 add_action( "dcs_dropship_get_products", "dcs_dropship_getProductDatabase" );
 
