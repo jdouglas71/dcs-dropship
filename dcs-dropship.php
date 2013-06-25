@@ -116,6 +116,8 @@ function dcs_dropship_getInventoryDatabase()
 		}
 	}
 	dcsLogToFile( "getProductInventory ends." );
+
+	dcs_dropship_loadInventoryFromFile();
 }
 add_action( "dcs_dropship_get_inventory", "dcs_dropship_getInventoryDatabase" );
 

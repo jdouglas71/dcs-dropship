@@ -432,6 +432,79 @@ function dcs_dropship_loadProductsFromFile()
 }
 
 /**
+ * Parse the Inventory file, update the database.
+ */
+function dcs_dropship_loadInventoryFromFile()
+{
+	global $wpdb;
+
+	$useKeys = array( "sku",
+					  "status",
+					  "quantity_available",
+					  "product_cost",
+					  "wholesale_cost"
+					);
+
+	$retval = "";
+
+    $file_handle = fopen(INVENTORY_TAB_FILE_NAME, "r");
+	$numLines = 0;
+	$numCols = 0;
+	$keys = array();
+
+	while( !feof($file_handle) && ($numLines < PRODUCT_NUM))
+	{
+		$line = fgets($file_handle);
+		$line = str_replace( array("\t") , array("[tAbul*Ator]") , $line ); 
+		$lineVals = array();
+
+		//Parse the line.
+		foreach( explode("[tAbul*Ator]", $line) as $li ) 
+		{ 
+			if( $numLines == 0 )
+			{
+				$keys[] = trim($li);
+			}
+			else
+			{
+				$lineVals[$keys[$numCols]] = trim($li);
+			}
+			$numCols++;
+		} 
+
+		//Let's not bother with discontinued products.
+		if( $lineVals['status'] != "discontinued" )
+		{
+			//First line contains the keys, the rest is values.
+			if( $numLines > 0 )
+			{
+				//Update the database
+				$sql = "UPDATE dcs_dropship_products SET ";
+				foreach( $lineVals as $key => $val )
+				{
+					if( $key != 'sku' )
+					{
+						$sql .= "$key = '$val',";
+					}
+				}
+				$sql = substr( $sql, 0, strlen($sql)-1 );
+				$sql .= " WHERE sku='".$lineVals['sku']."';";
+				dcsLogToFile( "Update sql: " . $sql );
+				$result = $wpdb->query( $sql );
+				dcsLogToFile( "Update result: " . $result );
+			}
+
+			$numLines++;
+		}
+		$numCols = 0;
+	}
+
+	//$retval .= dcsVarDumpStr( $dropshipProducts ) . "<br />";
+
+	return $retval;
+}
+
+/**
  * Create the product database using the passed in keys.
  */
 function dcs_dropship_createProductDatabase($products, $useKeys, $dropTable = true)
