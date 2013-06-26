@@ -151,7 +151,7 @@ add_shortcode( 'dcs_dropship_order_invoice_page', 'dcs_dropship_order_invoice_pa
 function dcs_dropship_product_page_shortcode($atts, $content=null)
 {
 	//TEST CODE
-	dcs_dropship_loadProductsFromFile();
+	//dcs_dropship_loadProductsFromFile();
 	//dcs_dropship_loadInventoryFromFile();
 	//$retval = "Inventory Loaded.";
 	//TEST CODE ENDS

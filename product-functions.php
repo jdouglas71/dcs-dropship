@@ -4,7 +4,7 @@ define( 'PRODUCT_TAB_FILE_NAME', DCS_DROPSHIP_DIR."files/product.tab" );
 define( 'INVENTORY_TAB_FILE_NAME', DCS_DROPSHIP_DIR."files/Inventory.tab" );
 define( 'PRODUCT_NUM_LINES', 6 );
 define( 'PRODUCT_NUM_COLS', 3 );
-define( 'PRODUCT_NUM', 1500 );
+define( 'PRODUCT_NUM', 3000 );
 
 /**
  * Getter for the products.
@@ -365,6 +365,8 @@ function dcs_dropship_loadProductsFromFile()
 
 	dcsLogToFile( "LoadProductsFromFile begins..." );
 
+	dcs_dropship_createProductDatabase( array(), $useKeys );
+
     $file_handle = fopen(PRODUCT_TAB_FILE_NAME, "r");
 	if( $file_handle != false )
 	{
@@ -408,6 +410,7 @@ function dcs_dropship_loadProductsFromFile()
 				if( $numLines > 0 )
 				{
 					$dropshipProducts[] = $lineVals;
+					dcs_dropship_insertProductIntoDatabase( $lineVals, $useKeys );
 	
 					//Collect Categories and numbers for each.
 					if( !in_array($lineVals['category'], $dropshipCategories) )
@@ -425,25 +428,25 @@ function dcs_dropship_loadProductsFromFile()
 					}
 					$dropshipBrandNumbers[$lineVals['brand']]++;
 				}
-	
+
+				dcsLogToFile( "Number of products: " . $numLines );
 				$numLines++;
 			}
 			$numCols = 0;
 		}
 
-		dcsLogToFile( "Sorting categories" );
-		asort( $dropshipCategories );
-		dcsLogToFile( "Sorting brands." );
-		asort( $dropshipBrands );
-		dcsLogToFile( "Calling create database." );
-		dcs_dropship_createProductDatabase( $dropshipProducts, $useKeys );
-	
-		//$retval .= dcsVarDumpStr( $dropshipProducts ) . "<br />";
+		//dcsLogToFile( "Calling create database." );
+		//dcs_dropship_createProductDatabase( $dropshipProducts, $useKeys );
 	}
 	else
 	{
 		dcsLogToFile( "Error opening " . PRODUCT_TAB_FILE_NAME );
 	}
+
+	dcsLogToFile( "Sorting categories" );
+	asort( $dropshipCategories );
+	dcsLogToFile( "Sorting brands." );
+	asort( $dropshipBrands );
 
 	dcsLogToFile( "LoadProductsFromFile ends..." );
 
@@ -556,6 +559,44 @@ function dcs_dropship_createProductDatabase($products, $useKeys, $dropTable = tr
 	dcsLogToFile( "Create Table result: " . $result );
 
 	//Create the keyStr
+	//$keyStr = "(";
+	//foreach( $useKeys as $key )
+	//{
+	//	$keyStr .= $key.",";
+	//}
+	//$keyStr = substr( $keyStr, 0, strlen($keyStr)-1 );
+	//$keyStr .= ") ";
+
+	//foreach( $products as $product )
+	//{
+	//	dcs_dropship_insertProductIntoDatabase($product, $useKeys);
+
+		//$sql = "INSERT INTO dcs_dropship_products ";
+		//$valStr = "(";
+		//foreach( $useKeys as $key )
+		//{
+		//	$valStr .= "'".$product[$key]."',";
+		//}
+		//$valStr = substr( $valStr, 0, strlen($valStr)-1 );
+		//$valStr .= ");";
+
+		//$sql .= $keyStr . " VALUES " . $valStr;
+		//dcsLogToFile( "Insert statement: " . $sql );
+		//$result = $wpdb->query( $sql );
+		//dcsLogToFile( "Insert result: " . $result );
+	//}
+
+	dcsLogToFile( "createProductDatabase ends..." );
+}
+
+/**
+ * Insert a product into the database.
+ */
+function dcs_dropship_insertProductIntoDatabase($product, $useKeys)
+{
+	global $wpdb;
+
+	//Create the keyStr
 	$keyStr = "(";
 	foreach( $useKeys as $key )
 	{
@@ -564,24 +605,19 @@ function dcs_dropship_createProductDatabase($products, $useKeys, $dropTable = tr
 	$keyStr = substr( $keyStr, 0, strlen($keyStr)-1 );
 	$keyStr .= ") ";
 
-	foreach( $products as $product )
+	$sql = "INSERT INTO dcs_dropship_products ";
+	$valStr = "(";
+	foreach( $useKeys as $key )
 	{
-		$sql = "INSERT INTO dcs_dropship_products ";
-		$valStr = "(";
-		foreach( $useKeys as $key )
-		{
-			$valStr .= "'".$product[$key]."',";
-		}
-		$valStr = substr( $valStr, 0, strlen($valStr)-1 );
-		$valStr .= ");";
-
-		$sql .= $keyStr . " VALUES " . $valStr;
-		dcsLogToFile( "Insert statement: " . $sql );
-		$result = $wpdb->query( $sql );
-		dcsLogToFile( "Insert result: " . $result );
+		$valStr .= "'".$product[$key]."',";
 	}
+	$valStr = substr( $valStr, 0, strlen($valStr)-1 );
+	$valStr .= ");";
 
-	dcsLogToFile( "createProductDatabase ends..." );
+	$sql .= $keyStr . " VALUES " . $valStr;
+	//dcsLogToFile( "Insert statement: " . $sql );
+	$result = $wpdb->query( $sql );
+	//dcsLogToFile( "Insert result: " . $result );
 }
 
 /**
