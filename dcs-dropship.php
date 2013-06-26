@@ -150,6 +150,12 @@ add_shortcode( 'dcs_dropship_order_invoice_page', 'dcs_dropship_order_invoice_pa
  */
 function dcs_dropship_product_page_shortcode($atts, $content=null)
 {
+	//TEST CODE
+	//dcs_dropship_loadProductsFromFile();
+	//dcs_dropship_loadInventoryFromFile();
+	//$retval = "Inventory Loaded.";
+	//TEST CODE ENDS
+
 	$retval = dcs_dropship_product_page();
 
 	return $retval;
@@ -253,7 +259,6 @@ function dcs_dropship_uninstall()
 }
 register_deactivation_hook( __FILE__, 'dcs_dropship_uninstall' );
 
-
 /**
  * Called on init of WordPress.
  */
@@ -273,12 +278,6 @@ add_action('init', 'dcs_dropship_init');
  */
 function dcs_dropship_js_header()
 {
-	?>
-	<script type='text/javascript'>
-	</script>
-	<?php
 }
 add_action('wp_head', 'dcs_dropship_js_header' );
-
-?>
 

@@ -1,6 +1,7 @@
 <?php
 
 define( 'PRODUCT_TAB_FILE_NAME', DCS_DROPSHIP_DIR."files/product.tab" );
+define( 'INVENTORY_TAB_FILE_NAME', DCS_DROPSHIP_DIR."files/Inventory.tab" );
 define( 'PRODUCT_NUM_LINES', 6 );
 define( 'PRODUCT_NUM_COLS', 3 );
 define( 'PRODUCT_NUM', 50000 );
@@ -372,7 +373,7 @@ function dcs_dropship_loadProductsFromFile()
 	$dropshipBrands = array();
 	$dropshipBrandNumbers = array();
 
-	while( !feof($file_handle) && ($numLines < PRODUCT_NUM))
+	while( !feof($file_handle) /*&& ($numLines < PRODUCT_NUM)*/)
 	{
 		$line = fgets($file_handle);
 		$line = str_replace( array("\t") , array("[tAbul*Ator]") , $line ); 
@@ -442,7 +443,8 @@ function dcs_dropship_loadInventoryFromFile()
 					  "status",
 					  "quantity_available",
 					  "product_cost",
-					  "wholesale_cost"
+					  "wholesale_cost",
+					  "street_price"
 					);
 
 	$retval = "";
@@ -452,11 +454,13 @@ function dcs_dropship_loadInventoryFromFile()
 	$numCols = 0;
 	$keys = array();
 
-	while( !feof($file_handle) && ($numLines < PRODUCT_NUM))
+	while( !feof($file_handle) )
 	{
 		$line = fgets($file_handle);
 		$line = str_replace( array("\t") , array("[tAbul*Ator]") , $line ); 
 		$lineVals = array();
+
+		//dcsLogToFile( "Line: " . $line );
 
 		//Parse the line.
 		foreach( explode("[tAbul*Ator]", $line) as $li ) 
@@ -472,6 +476,8 @@ function dcs_dropship_loadInventoryFromFile()
 			$numCols++;
 		} 
 
+		//dcsLogToFile( "Inventory lineVals: " . dcsVarDumpStr(lineVals) );
+
 		//Let's not bother with discontinued products.
 		if( $lineVals['status'] != "discontinued" )
 		{
@@ -482,16 +488,16 @@ function dcs_dropship_loadInventoryFromFile()
 				$sql = "UPDATE dcs_dropship_products SET ";
 				foreach( $lineVals as $key => $val )
 				{
-					if( $key != 'sku' )
+					if( ($key != 'sku') && (in_array($key, $useKeys)) && ($val != "") )
 					{
 						$sql .= "$key = '$val',";
 					}
 				}
 				$sql = substr( $sql, 0, strlen($sql)-1 );
 				$sql .= " WHERE sku='".$lineVals['sku']."';";
-				dcsLogToFile( "Update sql: " . $sql );
+				//dcsLogToFile( "Update sql: " . $sql );
 				$result = $wpdb->query( $sql );
-				dcsLogToFile( "Update result: " . $result );
+				//dcsLogToFile( "Update result: " . $result );
 			}
 
 			$numLines++;

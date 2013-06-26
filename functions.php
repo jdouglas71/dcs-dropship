@@ -32,9 +32,9 @@ function dcs_dropship_order_invoice_page()
  */ 
 function dcs_dropship_product_page()
 {
-	//$retval = dcs_dropship_generatePrettyProductTable( );
-	$retval = "<h3>Categories</h3>".dcs_dropship_generateProductCategoryTable();
-	$retval .= "<br/><h3>Brands</h3>".dcs_dropship_generateProductBrandTable();
+	$retval = dcs_dropship_generatePrettyProductTable( );
+	//$retval = "<h3>Categories</h3>".dcs_dropship_generateProductCategoryTable();
+	//$retval .= "<br/><h3>Brands</h3>".dcs_dropship_generateProductBrandTable();
 
 	return $retval;
 }
