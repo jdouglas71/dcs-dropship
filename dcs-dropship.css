@@ -117,4 +117,12 @@ table.dcs_dropship_brand_table
 
 }
 
-
+input.dcs_dropship_order_button
+{
+	border-radius: 5px;
+	background-image: -webkit-linear-gradient(top,#d3d3d3,#708090);
+	font-weight: bold;
+	color: black;
+	text-shadow: 0 0 2px yellow;
+	padding: 1px;
+}

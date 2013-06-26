@@ -4,7 +4,7 @@ define( 'PRODUCT_TAB_FILE_NAME', DCS_DROPSHIP_DIR."files/product.tab" );
 define( 'INVENTORY_TAB_FILE_NAME', DCS_DROPSHIP_DIR."files/Inventory.tab" );
 define( 'PRODUCT_NUM_LINES', 6 );
 define( 'PRODUCT_NUM_COLS', 3 );
-define( 'PRODUCT_NUM', 3000 );
+define( 'PRODUCT_NUM', 2800 );
 
 /**
  * Getter for the products.
@@ -219,6 +219,15 @@ function dcs_dropship_generateProductCell($product)
 	$retval .= "<div class='dcs_dropship_product_price'>"."$".$product['wholesale_cost']."</span><br />";
 	$retval .= "</div>";
 	$retval .= "</div>";
+	$retval .= "<div class='dcs_dropship_product_order'>";
+	$retval .= "Number: <select>";
+	for($i = 1; $i <= $product['quantity_available']; $i++)
+	{
+		$retval .= "<option value='".$i."'>".$i."</option>";
+	}
+	$retval .= "</select>";
+	$retval .= "<input type='button' value='Order' class='dcs_dropship_order_button'></input>";
+	$retval .= "</div>";
 	$retval .= "<div class='dcs_dropship_product_decoration'><!-- decorative --></div>";
 	$retval .= "</div>";
 	$retval .= "</td>";
@@ -338,6 +347,7 @@ function dcs_dropship_loadProductsFromFile()
 					  "manufacturer",
 					  "long_description",
 					  "estimated_shipping_cost",
+					  "street_price",
 					  "wholesale_cost",
 					  "user_defined_name_1",
 					  "user_defined_value_1",
