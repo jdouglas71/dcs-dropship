@@ -594,4 +594,3 @@ if( !function_exists("dcsVarDumpStr") )
 		return $out;
 	}
 }
-?>

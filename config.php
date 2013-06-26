@@ -46,4 +46,3 @@ $dropshipFTPDirectory = "out";
 require_once(DCS_DROPSHIP_DIR.'product-functions.php');
 require_once(DCS_DROPSHIP_DIR.'functions.php');
 
-?>

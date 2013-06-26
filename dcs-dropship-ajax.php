@@ -35,5 +35,3 @@ switch(@$_POST["action"])
 }
 
 die($response);
-
-?>
