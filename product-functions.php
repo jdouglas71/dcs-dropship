@@ -4,7 +4,7 @@ define( 'PRODUCT_TAB_FILE_NAME', DCS_DROPSHIP_DIR."files/product.tab" );
 define( 'INVENTORY_TAB_FILE_NAME', DCS_DROPSHIP_DIR."files/Inventory.tab" );
 define( 'PRODUCT_NUM_LINES', 6 );
 define( 'PRODUCT_NUM_COLS', 3 );
-define( 'PRODUCT_NUM', 50000 );
+define( 'PRODUCT_NUM', 1500 );
 
 /**
  * Getter for the products.
@@ -363,71 +363,89 @@ function dcs_dropship_loadProductsFromFile()
 
 	$retval = "";
 
+	dcsLogToFile( "LoadProductsFromFile begins..." );
+
     $file_handle = fopen(PRODUCT_TAB_FILE_NAME, "r");
-	$numLines = 0;
-	$numCols = 0;
-	$keys = array();
-	$dropshipProducts = array();
-	$dropshipCategories = array();
-	$dropshipCategoryNumbers = array();
-	$dropshipBrands = array();
-	$dropshipBrandNumbers = array();
-
-	while( !feof($file_handle) /*&& ($numLines < PRODUCT_NUM)*/)
+	if( $file_handle != false )
 	{
-		$line = fgets($file_handle);
-		$line = str_replace( array("\t") , array("[tAbul*Ator]") , $line ); 
-		$lineVals = array();
-
-		//Parse the line.
-		foreach( explode("[tAbul*Ator]", $line) as $li ) 
-		{ 
-			if( $numLines == 0 )
-			{
-				$keys[] = trim($li);
-			}
-			else
-			{
-				$lineVals[$keys[$numCols]] = trim($li);
-			}
-			$numCols++;
-		} 
-
-		//Let's not bother with discontinued products.
-		if( $lineVals['status'] != "discontinued" )
-		{
-			//First line contains the keys, the rest is values.
-			if( $numLines > 0 )
-			{
-				$dropshipProducts[] = $lineVals;
-
-				//Collect Categories and numbers for each.
-				if( !in_array($lineVals['category'], $dropshipCategories) )
-				{
-					$dropshipCategories[] = $lineVals['category'];
-					$dropshipCategoryNumbers[$lineVals['category']] = 0;
-				}
-				$dropshipCategoryNumbers[$lineVals['category']]++;
-		
-				//Collect brands and numbers for each.
-				if( !in_array($lineVals['brand'], $dropshipBrands) )
-				{
-					$dropshipBrands[] = $lineVals['brand'];
-					$dropshipBrandNumbers[$lineVals['brand']] = 0;
-				}
-				$dropshipBrandNumbers[$lineVals['brand']]++;
-			}
-
-			$numLines++;
-		}
+		$numLines = 0;
 		$numCols = 0;
+		$keys = array();
+		$dropshipProducts = array();
+		$dropshipCategories = array();
+		$dropshipCategoryNumbers = array();
+		$dropshipBrands = array();
+		$dropshipBrandNumbers = array();
+	
+		while( !feof($file_handle) && ($numLines <= PRODUCT_NUM) )
+		{
+			$line = fgets($file_handle);
+			$line = str_replace( array("\t") , array("[tAbul*Ator]") , $line ); 
+			$lineVals = array();
+
+			//dcsLogToFile( "line: " . $line );
+	
+			//Parse the line.
+			foreach( explode("[tAbul*Ator]", $line) as $li ) 
+			{ 
+				if( $numLines == 0 )
+				{
+					$keys[] = trim($li);
+				}
+				else
+				{
+					$lineVals[$keys[$numCols]] = trim($li);
+				}
+				$numCols++;
+			} 
+
+			//dcsLogToFile( "Parsed Line: " . dcsVarDumpStr($lineVals) );
+
+			//Let's not bother with discontinued products.
+			if( $lineVals['status'] != "discontinued" )
+			{
+				//First line contains the keys, the rest is values.
+				if( $numLines > 0 )
+				{
+					$dropshipProducts[] = $lineVals;
+	
+					//Collect Categories and numbers for each.
+					if( !in_array($lineVals['category'], $dropshipCategories) )
+					{
+						$dropshipCategories[] = $lineVals['category'];
+						$dropshipCategoryNumbers[$lineVals['category']] = 0;
+					}
+					$dropshipCategoryNumbers[$lineVals['category']]++;
+			
+					//Collect brands and numbers for each.
+					if( !in_array($lineVals['brand'], $dropshipBrands) )
+					{
+						$dropshipBrands[] = $lineVals['brand'];
+						$dropshipBrandNumbers[$lineVals['brand']] = 0;
+					}
+					$dropshipBrandNumbers[$lineVals['brand']]++;
+				}
+	
+				$numLines++;
+			}
+			$numCols = 0;
+		}
+
+		dcsLogToFile( "Sorting categories" );
+		asort( $dropshipCategories );
+		dcsLogToFile( "Sorting brands." );
+		asort( $dropshipBrands );
+		dcsLogToFile( "Calling create database." );
+		dcs_dropship_createProductDatabase( $dropshipProducts, $useKeys );
+	
+		//$retval .= dcsVarDumpStr( $dropshipProducts ) . "<br />";
+	}
+	else
+	{
+		dcsLogToFile( "Error opening " . PRODUCT_TAB_FILE_NAME );
 	}
 
-	asort( $dropshipCategories );
-	asort( $dropshipBrands );
-	dcs_dropship_createProductDatabase( $dropshipProducts, $useKeys );
-
-	//$retval .= dcsVarDumpStr( $dropshipProducts ) . "<br />";
+	dcsLogToFile( "LoadProductsFromFile ends..." );
 
 	return $retval;
 }
@@ -517,6 +535,7 @@ function dcs_dropship_createProductDatabase($products, $useKeys, $dropTable = tr
 {
 	global $wpdb;
 
+	dcsLogToFile( "createProductDatabase begins..." );
 	//Delete existing table if it exists.
 	if( $dropTable )
 	{
@@ -561,6 +580,8 @@ function dcs_dropship_createProductDatabase($products, $useKeys, $dropTable = tr
 		$result = $wpdb->query( $sql );
 		dcsLogToFile( "Insert result: " . $result );
 	}
+
+	dcsLogToFile( "createProductDatabase ends..." );
 }
 
 /**
