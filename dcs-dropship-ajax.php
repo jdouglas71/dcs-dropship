@@ -23,15 +23,22 @@ require(dirname(__FILE__).'/config.php');
 $response = "alert('".@$_POST["action"]."');";
 $dataValues = $_POST;
 
-dcsLogToFile( "testing" );
-
 /** Validate **/
 
 /** Process **/
 
 switch(@$_POST["action"])
 {
+	case "AddToCart":
+		dcs_dropship_addToCart( $dataValues );
+		$response = "window.open('".site_url(get_option(DCS_DROPSHIP_SHOPPING_CART_PAGE))."', '_self');";
+		break;
+	case "ClearCart":
+		dcs_dropship_clearCart();
+		$response = "window.open('".site_url(get_option(DCS_DROPSHIP_SHOPPING_CART_PAGE))."', '_self');";
+		break;
 	default:
 }
 
 die($response);
+?>

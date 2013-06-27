@@ -205,31 +205,37 @@ function dcs_dropship_generateProductCell($product)
 	dcs_dropship_createPageForProduct( $product );
 	$existingPage = get_page_by_title( $product['sku'], ARRAY_A, "page" );
 	$company_url = $existingPage['guid'];
+	$markedupPrice = sprintf("%01.2f", ($product['wholesale_cost']*(1+(get_option(DCS_DROPSHIP_MARKUP)/100))));
+	$marker = $product['sku'];
 
 	$retval .= "<td class='dcs_dropship_product'>";
+	$retval .= "<form id='dcs_dropship_product' method='POST'>";
 	$retval .= "<div class='dcs_dropship_product'>";
 	$retval .= "<div class='dcs_dropship_product_top_div'>";
-	$retval .= "<div class='dcs_dropship_product_title'>".$product['product_title']."</div><br />";
+	$retval .= "<div class='dcs_dropship_product_title'><span id='product_name".$marker."'>".$product['product_title']."</span></div><br />";
 	$retval .= "<div class='dcs_dropship_product_img_div'>";
 	$retval .= "<a href='".$company_url."'><img class='dcs_dropship_product' src='".$product['product_image']."'></a><br />";
 	$retval .= "</div>";
 	$retval .= "<div class='dcs_dropship_product_text'>";
-	$retval .= "SKU: ".$product['sku']."<br />";
-	$retval .= "Quantity: ".$product['quantity_available']."<br />";
-	$retval .= "<div class='dcs_dropship_product_price'>"."$".$product['wholesale_cost']."</span><br />";
+	$retval .= "<span>SKU:<span id='sku".$marker."'> ".$product['sku']."</span></span><br />";
+	$retval .= "<span>Quantity: ".$product['quantity_available']."</span><br />";
+	$retval .= "<div class='dcs_dropship_product_price'><span id='price".$marker."'>$".$markedupPrice."</span><br />";
 	$retval .= "</div>";
 	$retval .= "</div>";
+	$retval .= "<hr class='dcs_dropship_line'>";
 	$retval .= "<div class='dcs_dropship_product_order'>";
-	$retval .= "Number: <select>";
+	$retval .= "Number <select id='quantity".$marker."'>";
 	for($i = 1; $i <= $product['quantity_available']; $i++)
 	{
 		$retval .= "<option value='".$i."'>".$i."</option>";
 	}
 	$retval .= "</select>";
-	$retval .= "<input type='button' value='Order' class='dcs_dropship_order_button'></input>";
+	$retval .= "<input type='button' value='Order' class='dcs_dropship_button' onClick='dcs_dropship_add_to_cart(\"".$marker."\"); return false;'></input>";
 	$retval .= "</div>";
 	$retval .= "<div class='dcs_dropship_product_decoration'><!-- decorative --></div>";
 	$retval .= "</div>";
+	$retval .= "<input type='hidden' id='shipping_cost".$marker."' value='".$product['estimated_shipping_cost']."'>";
+	$retval .= "</form>";
 	$retval .= "</td>";
 
 	return $retval;
@@ -240,20 +246,36 @@ function dcs_dropship_generateProductCell($product)
  */
 function dcs_dropship_generateProductPage($product)
 {
+	$marker = $product['sku'];
+	$markedupPrice = sprintf("%01.2f", ($product['wholesale_cost']*(1+(get_option(DCS_DROPSHIP_MARKUP)/100))));
+
 	$retval = "";
 
 	$retval .= "<div class='dcs_dropship_product'>";
 	$retval .= "<div class='dcs_dropship_product_top_div'>";
-	$retval .= "<div class='dcs_dropship_product_page_title'>".$product['product_title']."</div><br />";
+	$retval .= "<div class='dcs_dropship_product_page_title'><span id='product_name".$marker."'>".$product['product_title']."</span></div><br />";
 	$retval .= "<div class='dcs_dropship_product_img_div'>";
 	$retval .= "<img class='dcs_dropship_product_page' src='".$product['product_image']."'><br />";
 	$retval .= "</div>";
 	$retval .= "<div class='dcs_dropship_product_text'>";
-	$retval .= "SKU: ".$product['sku']."<br />";
-	$retval .= "Quantity: ".$product['quantity_available']."<br />";
-	$retval .= "<div class='dcs_dropship_product_price'>"."$".$product['wholesale_cost']."</span><br />";
+
+	$retval .= "<span>SKU:<span id='sku".$marker."'> ".$product['sku']."</span></span><br />";
+	$retval .= "<span>Quantity: ".$product['quantity_available']."</span><br />";
+	$retval .= "<div class='dcs_dropship_product_price'><span id='price".$marker."'>$".$markedupPrice."</span>";
 	$retval .= "</div>";
 	$retval .= "</div>";
+	$retval .= "<hr class='dcs_dropship_line'>";
+	$retval .= "<div class='dcs_dropship_product_order'>";
+	$retval .= "Number <select id='quantity".$marker."'>";
+	for($i = 1; $i <= $product['quantity_available']; $i++)
+	{
+		$retval .= "<option value='".$i."'>".$i."</option>";
+	}
+	$retval .= "</select>&nbsp;&nbsp;&nbsp;&nbsp;";
+	$retval .= "<input type='button' value='Order' class='dcs_dropship_button' onClick='dcs_dropship_add_to_cart(\"".$marker."\"); return false;'></input>";
+	$retval .= "</div>";
+
+	$retval .= "<input type='hidden' id='shipping_cost".$marker."' value='".$product['estimated_shipping_cost']."'>";
 	$retval .= "<div class='dcs_dropship_product_decoration'><!-- decorative --></div>";
 	$retval .= "</div>";
 
@@ -268,6 +290,8 @@ function dcs_dropship_generateProductPage($product)
 	$retval .= "</div>";
 	$retval .= "<div class='dcs_dropship_product_decoration'><!-- decorative --></div>";
 	$retval .= "</div>";
+
+	dcsLogToFile( $retval );
 
 	return $retval;
 }

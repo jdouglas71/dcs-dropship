@@ -19,15 +19,17 @@ define('DCS_DROPSHIP_PRODUCT_GET_TASK_TIME', 1371121200 ); //6/13/13 6AM EST
 $dcs_dropship_version = "0.5";
 
 /** Properties */
-define('DCS_DROPSHIP_KEY', 'dcs-dropship-key' );
-define('DCS_DROPSHIP_INVENTORY_DATA_URL', 'dcs-dropship-inventory-data-url' );
-define('DCS_DROPSHIP_PRODUCT_DATA_URL', 'dcs-dropship-product-data-url' );
-define('DCS_DROPSHIP_ORDERS_URL', 'dcs-dropship-orders-url' );
-define('DCS_DROPSHIP_ORDER_STATUS_DATA_URL', 'dcs-dropship-order-status-data-url' );
-define('DCS_DROPSHIP_TRACKING_DATA_URL', 'dcs-dropship-tracking-data-url' );
-define('DCS_DROPSHIP_ORDER_INVOICE_DATA_URL', 'dcs-dropship-order-invoice-data-url' );
-define('DCS_DROPSHIP_FTP_USER', 'dcs-dropship-ftp-user' );
-define('DCS_DROPSHIP_FTP_PASSWORD', 'dcs-dropship-ftp-password' );
+define(	'DCS_DROPSHIP_KEY', 'dcs-dropship-key' );
+define(	'DCS_DROPSHIP_INVENTORY_DATA_URL', 'dcs-dropship-inventory-data-url' );
+define(	'DCS_DROPSHIP_PRODUCT_DATA_URL', 'dcs-dropship-product-data-url' );
+define(	'DCS_DROPSHIP_ORDERS_URL', 'dcs-dropship-orders-url' );
+define(	'DCS_DROPSHIP_ORDER_STATUS_DATA_URL', 'dcs-dropship-order-status-data-url' );
+define(	'DCS_DROPSHIP_TRACKING_DATA_URL', 'dcs-dropship-tracking-data-url' );
+define(	'DCS_DROPSHIP_ORDER_INVOICE_DATA_URL', 'dcs-dropship-order-invoice-data-url' );
+define(	'DCS_DROPSHIP_FTP_USER', 'dcs-dropship-ftp-user' );
+define(	'DCS_DROPSHIP_FTP_PASSWORD', 'dcs-dropship-ftp-password' );
+define(	'DCS_DROPSHIP_SHOPPING_CART_PAGE', 'dcs-dropship-shopping-cart-page' );
+define(	'DCS_DROPSHIP_MARKUP', 'dcs-dropship-markup' );
 
 /** Globals */
 global $dropshipProducts;

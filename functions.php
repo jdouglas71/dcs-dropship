@@ -2,6 +2,7 @@
 
 //User functions
 //require_once(ABSPATH . WPINC . '/registration.php');
+remove_filter( 'the_content', 'wpautop' );
 
 /**
  * Inventory Page
@@ -58,6 +59,74 @@ function dcs_dropship_tracking_page()
 	$retval = generateTableFromTabData( file_get_contents(DCS_DROPSHIP_DIR."files/Order_Tracking.tab") );
 
 	return $retval;
+}
+
+/**
+ * Shopping Cart.
+ */
+function dcs_dropship_shopping_cart()
+{
+	$retval = "No Items in Cart.";
+
+	if( !session_id() )
+	{
+		session_start();
+	}
+
+	if( isset($_SESSION['dcs_dropship_shopping_cart']) && !empty($_SESSION['dcs_dropship_shopping_cart']) )
+	{
+		$retval = "<table>";
+		$retval .= "<tr><th>Product Name</th><th>SKU</th><th>Quantity</th><th>Item Price</th><th>Shipping</th><th>Total</th></tr>";
+		foreach( $_SESSION['dcs_dropship_shopping_cart'] as $item )
+		{
+			$retval .= "<tr>";
+			$retval .= "<td>".$item['product_name']."</td>";
+			$retval .= "<td>".$item['sku']."</td>";
+			$retval .= "<td>".$item['quantity']."</td>";
+			$retval .= "<td>".$item['price']."</td>";
+			$retval .= "<td>".$item['shipping']."</td>";
+			$retval .= "<td>$".sprintf('%01.2f',($item['price']*$item['quantity']) )."</td>";
+			$retval .= "</tr>";
+		}
+		$retval .= "</table><br />";
+
+		$retval .= "<input type='button' value='Clear Cart' class='dcs_dropship_button' onClick='dcs_dropship_clear_cart(); return false;'></input>";
+	}
+
+	return $retval;
+}
+
+/**
+ * Add to Cart.
+ */
+function dcs_dropship_addToCart($dataValues)
+{
+	if( !session_id() )
+	{
+		session_start();
+	}
+
+	if( !isset($_SESSION['dcs_dropship_shopping_cart']) )
+	{
+		$_SESSION['dcs_dropship_shopping_cart'] = array();
+	}
+	$_SESSION['dcs_dropship_shopping_cart'][] = $dataValues;
+}
+
+/**
+ * Clear Cart.
+ */
+function dcs_dropship_clearCart()
+{
+	if( !session_id() )
+	{
+		session_start();
+	}
+
+	if( isset($_SESSION['dcs_dropship_shopping_cart']) )
+	{
+		$_SESSION['dcs_dropship_shopping_cart'] = array();
+	}
 }
 
 /**

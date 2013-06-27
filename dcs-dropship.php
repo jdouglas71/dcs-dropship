@@ -184,6 +184,17 @@ function dcs_dropship_tracking_page_shortcode($atts, $content=null)
 }
 add_shortcode( 'dcs_dropship_tracking_page', 'dcs_dropship_tracking_page_shortcode' );
 
+/**
+ * Shopping cart shortcode.
+ */ 
+function dcs_dropship_shopping_cart_shortcode($atts, $content=null)
+{
+	$retval = dcs_dropship_shopping_cart();
+
+	return $retval;
+}
+add_shortcode( 'dcs_dropship_shopping_cart', 'dcs_dropship_shopping_cart_shortcode' );
+
 //******************************************************************************************************************************//
 /** HOOKS **/
 /**
@@ -233,6 +244,16 @@ function dcs_dropship_install()
 		update_option(DCS_DROPSHIP_ORDER_INVOICE_DATA_URL, "test key");
 	}
 
+	if( !add_option(DCS_DROPSHIP_SHOPPING_CART_PAGE, "/dropship-test-2/shopping-cart/") )
+	{
+		update_option(DCS_DROPSHIP_SHOPPING_CART_PAGE, "/dropship-test-2/shopping-cart/");
+	}
+
+	if( !add_option(DCS_DROPSHIP_MARKUP, "50") )
+	{
+		update_option(DCS_DROPSHIP_MARKUP, "50");
+	}
+
 	//Schedule our get tasks.
 	wp_schedule_event( DCS_DROPSHIP_PRODUCT_GET_TASK_TIME, "monthly", "dcs_dropship_get_products" );
 	wp_schedule_event( DCS_DROPSHIP_PRODUCT_GET_TASK_TIME, "hourly", "dcs_dropship_get_inventory" );
@@ -278,6 +299,76 @@ add_action('init', 'dcs_dropship_init');
  */
 function dcs_dropship_js_header()
 {
+	wp_print_scripts( array('sack') );
+	?>
+	<script type="text/javascript">
+
+		//Add to shopping cart.
+		function dcs_dropship_add_to_cart(marker)
+		{
+			try
+			{
+                var mysack = new sack("<?php echo DCS_DROPSHIP_CALLBACK_DIR; ?>dcs-dropship-ajax.php");
+                mysack.execute = 1;
+                mysack.method = 'POST';
+        
+                //Set the variables
+                mysack.setVar("action", "AddToCart");
+				var sku = document.getElementById("sku"+marker).innerHTML;
+				var quantity = document.getElementById("quantity"+marker).options[document.getElementById("quantity"+marker).selectedIndex].value;
+				var price = document.getElementById("price"+marker).innerHTML;
+				var productName = document.getElementById("product_name"+marker).innerHTML;
+				var shippingCost = document.getElementById("shipping_cost"+marker).value;
+
+				//alert( "marker: " + marker + "\nSKU: " + sku + "\nquantity: " + quantity  + "\nprice: " + price + "\nshipping cost: " + shippingCost );
+
+				mysack.setVar("sku", sku);
+				mysack.setVar("quantity", quantity);
+				mysack.setVar("price", price);
+				mysack.setVar("product_name", productName);
+				mysack.setVar("shipping_cost", shippingCost);
+        
+                mysack.onError = function() { alert('An Error occurred. Please reload the page and try again.'); };
+                mysack.runAJAX();
+			}
+			catch(err)
+			{
+                var txt = "There was an error on this page.\n\n";
+                txt += "Error description: " + err.message + "\n\n";
+                txt += "Click OK to continue.\n\n";
+                alert(txt);
+			}
+
+			return true;
+		}
+
+		//Clear the cart
+		function dcs_dropship_clear_cart()
+		{
+			try
+			{
+				var mysack = new sack("<?php echo DCS_DROPSHIP_CALLBACK_DIR; ?>dcs-dropship-ajax.php");
+				mysack.execute = 1;
+				mysack.method = 'POST';
+
+				//Set the variables
+				mysack.setVar("action", "ClearCart");
+				mysack.onError = function() { alert('An Error occurred. Please reload the page and try again.'); };
+				mysack.runAJAX();
+			}
+			catch(err)
+			{
+				var txt = "There was an error on this page.\n\n";
+				txt += "Error description: " + err.message + "\n\n";
+				txt += "Click OK to continue.\n\n";
+				alert(txt);
+			}
+
+			return true;
+		}
+	 
+	</script>
+	<?php
 }
 add_action('wp_head', 'dcs_dropship_js_header' );
 

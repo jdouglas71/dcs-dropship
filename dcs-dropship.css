@@ -55,7 +55,7 @@ div.dcs_dropship_product_title
 	height: 30px;
 	overflow: hidden;
 	text-align: center;
-	line-height: 99%;
+	line-height: 100%;
 	padding: 3px;
 }
 
@@ -67,7 +67,7 @@ div.dcs_dropship_product_page_title
 	height: 30px;
 	overflow: hidden;
 	text-align: center;
-	line-height: 99%;
+	line-height: 100%;
 	padding: 3px;
 }
 
@@ -102,6 +102,22 @@ div.dcs_dropship_product_text
 	padding: 5px;
 }
 
+div.dcs_dropship_product_order
+{
+	padding-top: 3px;
+}
+
+hr.dcs_dropship_line 
+{
+    border: 0;
+    height: 1px;
+	margin: 1px;
+    background-image: -webkit-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,0.75), rgba(0,0,0,0)); 
+    background-image:    -moz-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,0.75), rgba(0,0,0,0)); 
+    background-image:     -ms-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,0.75), rgba(0,0,0,0)); 
+    background-image:      -o-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,0.75), rgba(0,0,0,0)); 
+}
+
 table.dcs_dropship_product_table
 {
 
@@ -117,7 +133,7 @@ table.dcs_dropship_brand_table
 
 }
 
-input.dcs_dropship_order_button
+input.dcs_dropship_button
 {
 	border-radius: 5px;
 	background-image: -webkit-linear-gradient(top,#d3d3d3,#708090);
