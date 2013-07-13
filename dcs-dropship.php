@@ -205,12 +205,6 @@ function dcs_dropship_install()
 	global $wpdb;
 
 	//Install default Options
-	if( !add_option(DCS_DROPSHIP_VERSION, $dcs_dropship_version) )
-	{
-		update_option(DCS_DROPSHIP_VERSION, $dcs_dropship_version);
-	}
-
-	//Install default Options
 	if( !add_option(DCS_DROPSHIP_KEY, "test key") )
 	{
 		update_option(DCS_DROPSHIP_KEY, "test key");
@@ -270,8 +264,6 @@ function dcs_dropship_uninstall()
 	global $wpdb;
 
 	//Clear out options
-	delete_option( DCS_DROPSHIP_VERSION );
-
 	$timestamp = wp_next_scheduled( "dcs_dropship_get_products" );
 	wp_unschedule_event( $timestamp, "dcs_dropship_get_products" );
 
@@ -285,12 +277,6 @@ register_deactivation_hook( __FILE__, 'dcs_dropship_uninstall' );
  */
 function dcs_dropship_init()
 {
-	global $dcs_dropship_version;
-
-	if( !is_admin() )
-	{
-		$dcs_dropship_version = get_option( DCS_DROPSHIP_VERSION );
-	}
 }
 add_action('init', 'dcs_dropship_init');
 

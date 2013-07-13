@@ -9,9 +9,7 @@ define('DCS_DROPSHIP_CALLBACK_DIR', get_option("siteurl").DCS_DROPSHIP_RELATIVE_
 define('DCS_DROPSHIP_CSS', DCS_DROPSHIP_CALLBACK_DIR."dcs-dropship.css");
 
 /** Logfile */
-define('LOGFILE', DCS_DROPSHIP_DIR.'DCS_DROPSHIP.log');
-/** WordPress Script Debug Flag */
-define('SCRIPT_DEBUG', true );
+define('DCS_DROPSHIP_LOGFILE', DCS_DROPSHIP_DIR.'DCS_DROPSHIP.log');
 /**Task start time */
 define('DCS_DROPSHIP_PRODUCT_GET_TASK_TIME', 1371121200 ); //6/13/13 6AM EST
 

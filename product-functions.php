@@ -662,7 +662,7 @@ if( !function_exists("dcsLogToFile") )
 	function dcsLogToFile($msg)
 	{ 
 		// open file
-		$fd = fopen(LOGFILE, "a");
+		$fd = fopen(DCS_DROPSHIP_LOGFILE, "a");
 		// append date/time to message
 		$str = "[" . date("Y/m/d h:i:s", mktime()) . "] " . PHP_EOL . $msg; 
 		// write string
