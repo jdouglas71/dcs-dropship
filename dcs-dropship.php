@@ -44,6 +44,30 @@ function dcs_dropship_add_my_stylesheet()
 add_action( 'wp_enqueue_scripts', 'dcs_dropship_add_my_stylesheet' );
 
 //*******************************************************************************************************************//
+// Scripts 
+/**
+ * Nonce's for our AJAX calls.
+ */
+function dcs_dropship_load_scripts()
+{
+    //This is only reqiured for our test page.
+	wp_enqueue_script('jquery');
+	wp_enqueue_script('dcs_dropship_script', (WP_PLUGIN_URL.'/dcs-dropship/dcs-dropship.js'), array('jquery'), false, true);
+
+    //Register nonce values we can use to verify our ajax calls from the editor.
+    wp_localize_script( "dcs_dropship_script", "dcs_dropship_script_vars",
+                        array(
+								"ajaxurl" => admin_url('admin-ajax.php'),
+                                "dcs_dropship_clear_cart_nonce"=>wp_create_nonce("dcs_dropship_clear_cart"),
+                                "dcs_dropship_add_to_cart_nonce"=>wp_create_nonce("dcs_dropship_add_to_cart")
+                            )
+                      );
+}
+add_action('wp_enqueue_scripts', 'dcs_dropship_load_scripts');
+//JGD: Don't think we need any of this in the admin.
+//add_action('admin_enqueue_scripts', 'dcs_dropship_load_scripts');
+
+//*******************************************************************************************************************//
 // Tasks
 
 /**
@@ -279,82 +303,4 @@ function dcs_dropship_init()
 {
 }
 add_action('init', 'dcs_dropship_init');
-
-/**
- * Set up header for AJAX calls.
- */
-function dcs_dropship_js_header()
-{
-	wp_print_scripts( array('sack') );
-	?>
-	<script type="text/javascript">
-
-		//Add to shopping cart.
-		function dcs_dropship_add_to_cart(marker)
-		{
-			try
-			{
-                var mysack = new sack("<?php echo DCS_DROPSHIP_CALLBACK_DIR; ?>dcs-dropship-ajax.php");
-                mysack.execute = 1;
-                mysack.method = 'POST';
-        
-                //Set the variables
-                mysack.setVar("action", "AddToCart");
-				var sku = document.getElementById("sku"+marker).innerHTML;
-				var quantity = document.getElementById("quantity"+marker).options[document.getElementById("quantity"+marker).selectedIndex].value;
-				var price = document.getElementById("price"+marker).innerHTML;
-				var productName = document.getElementById("product_name"+marker).innerHTML;
-				var shippingCost = document.getElementById("shipping_cost"+marker).value;
-
-				//alert( "marker: " + marker + "\nSKU: " + sku + "\nquantity: " + quantity  + "\nprice: " + price + "\nshipping cost: " + shippingCost );
-
-				mysack.setVar("sku", sku);
-				mysack.setVar("quantity", quantity);
-				mysack.setVar("price", price);
-				mysack.setVar("product_name", productName);
-				mysack.setVar("shipping_cost", shippingCost);
-        
-                mysack.onError = function() { alert('An Error occurred. Please reload the page and try again.'); };
-                mysack.runAJAX();
-			}
-			catch(err)
-			{
-                var txt = "There was an error on this page.\n\n";
-                txt += "Error description: " + err.message + "\n\n";
-                txt += "Click OK to continue.\n\n";
-                alert(txt);
-			}
-
-			return true;
-		}
-
-		//Clear the cart
-		function dcs_dropship_clear_cart()
-		{
-			try
-			{
-				var mysack = new sack("<?php echo DCS_DROPSHIP_CALLBACK_DIR; ?>dcs-dropship-ajax.php");
-				mysack.execute = 1;
-				mysack.method = 'POST';
-
-				//Set the variables
-				mysack.setVar("action", "ClearCart");
-				mysack.onError = function() { alert('An Error occurred. Please reload the page and try again.'); };
-				mysack.runAJAX();
-			}
-			catch(err)
-			{
-				var txt = "There was an error on this page.\n\n";
-				txt += "Error description: " + err.message + "\n\n";
-				txt += "Click OK to continue.\n\n";
-				alert(txt);
-			}
-
-			return true;
-		}
-	 
-	</script>
-	<?php
-}
-add_action('wp_head', 'dcs_dropship_js_header' );
 

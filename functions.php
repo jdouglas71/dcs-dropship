@@ -90,7 +90,7 @@ function dcs_dropship_shopping_cart()
 		}
 		$retval .= "</table><br />";
 
-		$retval .= "<input type='button' value='Clear Cart' class='dcs_dropship_button' onClick='dcs_dropship_clear_cart(); return false;'></input>";
+		$retval .= "<input type='button' id='dcs_dropship_clear_cart' value='Clear Cart' class='dcs_dropship_button'></input>";
 	}
 
 	return $retval;
@@ -99,35 +99,52 @@ function dcs_dropship_shopping_cart()
 /**
  * Add to Cart.
  */
-function dcs_dropship_addToCart($dataValues)
+function dcs_dropship_addToCart()
 {
-	if( !session_id() )
-	{
-		session_start();
-	}
+	check_ajax_referer( "dcs_dropship_add_to_cart", "dcs_dropship_add_to_cart_nonce" );
+
+	$dataValues = array( "sku" => $_POST['sku'],
+						 "quantity" => $_POST['quantity'],
+						 "price" => $_POST['price'],
+						 "product_name" => $_POST['product_name'],
+						 "shipping_cost" => $_POST['shipping_cost']
+					   );
+
+	dcsLogToFile( dcsVarDumpStr($dataValues) );
+
+	if(!session_id()) session_start();
 
 	if( !isset($_SESSION['dcs_dropship_shopping_cart']) )
 	{
 		$_SESSION['dcs_dropship_shopping_cart'] = array();
 	}
 	$_SESSION['dcs_dropship_shopping_cart'][] = $dataValues;
+
+	echo site_url(get_option(DCS_DROPSHIP_SHOPPING_CART_PAGE));
+	exit;
 }
+add_action( 'wp_ajax_dcs_dropship_add_to_cart', 'dcs_dropship_addToCart' );
+add_action( 'wp_ajax_nopriv_dcs_dropship_add_to_cart', 'dcs_dropship_addToCart' );
 
 /**
  * Clear Cart.
  */
 function dcs_dropship_clearCart()
 {
-	if( !session_id() )
-	{
-		session_start();
-	}
+	check_ajax_referer( "dcs_dropship_clear_cart", "dcs_dropship_clear_cart_nonce" );
+
+	if(!session_id()) session_start();
 
 	if( isset($_SESSION['dcs_dropship_shopping_cart']) )
 	{
 		$_SESSION['dcs_dropship_shopping_cart'] = array();
 	}
+
+	echo site_url(get_option(DCS_DROPSHIP_SHOPPING_CART_PAGE));
+	exit;
 }
+add_action( 'wp_ajax_dcs_dropship_clear_cart', 'dcs_dropship_clearCart' );
+add_action( 'wp_ajax_nopriv_dcs_dropship_clear_cart', 'dcs_dropship_clearCart' );
 
 /**
  * Pull from the remote url.

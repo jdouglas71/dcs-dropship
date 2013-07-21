@@ -230,7 +230,7 @@ function dcs_dropship_generateProductCell($product)
 		$retval .= "<option value='".$i."'>".$i."</option>";
 	}
 	$retval .= "</select>";
-	$retval .= "<input type='button' value='Order' class='dcs_dropship_button' onClick='dcs_dropship_add_to_cart(\"".$marker."\"); return false;'></input>";
+	$retval .= "<input type='button' id='".$marker."' value='Order' class='dcs_dropship_order_button'></input>";
 	$retval .= "</div>";
 	$retval .= "<div class='dcs_dropship_product_decoration'><!-- decorative --></div>";
 	$retval .= "</div>";
@@ -272,7 +272,7 @@ function dcs_dropship_generateProductPage($product)
 		$retval .= "<option value='".$i."'>".$i."</option>";
 	}
 	$retval .= "</select>&nbsp;&nbsp;&nbsp;&nbsp;";
-	$retval .= "<input type='button' value='Order' class='dcs_dropship_button' onClick='dcs_dropship_add_to_cart(\"".$marker."\"); return false;'></input>";
+	$retval .= "<input type='button' id='".$marker."' value='Order' class='dcs_dropship_order_button'></input>";
 	$retval .= "</div>";
 
 	$retval .= "<input type='hidden' id='shipping_cost".$marker."' value='".$product['estimated_shipping_cost']."'>";
