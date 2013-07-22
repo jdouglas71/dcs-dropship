@@ -214,7 +214,7 @@ function dcs_dropship_generateProductCell($product)
 	$retval .= "<div class='dcs_dropship_product_top_div'>";
 	$retval .= "<div class='dcs_dropship_product_title'><span id='product_name".$marker."'>".$product['product_title']."</span></div><br />";
 	$retval .= "<div class='dcs_dropship_product_img_div'>";
-	$retval .= "<a href='".$company_url."'><img class='dcs_dropship_product' src='".$product['product_image']."'></a><br />";
+	$retval .= "<a href='".$company_url."'><img class='dcs_dropship_product' src='".$product['product_image']."?maxY=128'></a><br />";
 	$retval .= "</div>";
 	$retval .= "<div class='dcs_dropship_product_text'>";
 	$retval .= "<span>SKU:<span id='sku".$marker."'> ".$product['sku']."</span></span><br />";
@@ -255,7 +255,7 @@ function dcs_dropship_generateProductPage($product)
 	$retval .= "<div class='dcs_dropship_product_top_div'>";
 	$retval .= "<div class='dcs_dropship_product_page_title'><span id='product_name".$marker."'>".$product['product_title']."</span></div><br />";
 	$retval .= "<div class='dcs_dropship_product_img_div'>";
-	$retval .= "<img class='dcs_dropship_product_page' src='".$product['product_image']."'><br />";
+	$retval .= "<img class='dcs_dropship_product_page' src='".$product['product_image']."?maxY=256'><br />";
 	$retval .= "</div>";
 	$retval .= "<div class='dcs_dropship_product_text'>";
 
