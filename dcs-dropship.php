@@ -58,6 +58,7 @@ function dcs_dropship_load_scripts()
     wp_localize_script( "dcs_dropship_script", "dcs_dropship_script_vars",
                         array(
 								"ajaxurl" => admin_url('admin-ajax.php'),
+                                "dcs_dropship_place_order_nonce"=>wp_create_nonce("dcs_dropship_place_order"),
                                 "dcs_dropship_clear_cart_nonce"=>wp_create_nonce("dcs_dropship_clear_cart"),
                                 "dcs_dropship_add_to_cart_nonce"=>wp_create_nonce("dcs_dropship_add_to_cart")
                             )
@@ -110,7 +111,10 @@ function dcs_dropship_getProductDatabase()
 	}
 	dcsLogToFile( "getProductDatabase ends." );
 
-	dcs_dropship_loadProductsFromFile();
+	for($i=0; $i<10; $i++)
+	{
+		dcs_dropship_loadProductsFromFile($i*PRODUCT_NUM);
+	}
 }
 add_action( "dcs_dropship_get_products", "dcs_dropship_getProductDatabase" );
 

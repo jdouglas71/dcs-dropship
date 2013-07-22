@@ -1,11 +1,5 @@
 <?php
 
-define( 'PRODUCT_TAB_FILE_NAME', DCS_DROPSHIP_DIR."files/Product.tab" );
-define( 'INVENTORY_TAB_FILE_NAME', DCS_DROPSHIP_DIR."files/Inventory.tab" );
-define( 'PRODUCT_NUM_LINES', 6 );
-define( 'PRODUCT_NUM_COLS', 3 );
-define( 'PRODUCT_NUM', 2800 );
-
 /**
  * Getter for the products.
  */ 
@@ -291,7 +285,7 @@ function dcs_dropship_generateProductPage($product)
 	$retval .= "<div class='dcs_dropship_product_decoration'><!-- decorative --></div>";
 	$retval .= "</div>";
 
-	dcsLogToFile( $retval );
+	//dcsLogToFile( $retval );
 
 	return $retval;
 }
@@ -351,7 +345,7 @@ function dcs_dropship_createPageForProduct($product)
 /**
  * Parse the product file, creates and loads the database.
  */
-function dcs_dropship_loadProductsFromFile()
+function dcs_dropship_loadProductsFromFile($startLine = 0)
 {
 	global $wpdb;
 	global $dropshipProducts;
@@ -397,9 +391,12 @@ function dcs_dropship_loadProductsFromFile()
 
 	$retval = "";
 
-	dcsLogToFile( "LoadProductsFromFile begins..." );
+	dcsLogToFile( "LoadProductsFromFile begins for startLine: $startLine." );
 
-	dcs_dropship_createProductDatabase( array(), $useKeys );
+	if( $startLine == 0) 
+	{
+		dcs_dropship_createProductDatabase( array(), $useKeys );
+	}
 
     $file_handle = fopen(PRODUCT_TAB_FILE_NAME, "r");
 	if( $file_handle != false )
@@ -412,6 +409,16 @@ function dcs_dropship_loadProductsFromFile()
 		$dropshipCategoryNumbers = array();
 		$dropshipBrands = array();
 		$dropshipBrandNumbers = array();
+
+		//Spin to start line
+		while( !feof($file_handle) && ($numLines <= $startLine) )
+		{
+			fgets($file_handle);
+			$numLines++;
+		}
+
+		//Reset the numLines counter.
+		$numLines = 0;
 	
 		while( !feof($file_handle) && ($numLines <= PRODUCT_NUM) )
 		{
@@ -463,7 +470,7 @@ function dcs_dropship_loadProductsFromFile()
 					$dropshipBrandNumbers[$lineVals['brand']]++;
 				}
 
-				dcsLogToFile( "Number of products: " . $numLines );
+				//dcsLogToFile( "Number of products: " . $numLines );
 				$numLines++;
 			}
 			$numCols = 0;

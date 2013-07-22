@@ -141,6 +141,8 @@ input.dcs_dropship_button
 	color: black;
 	text-shadow: 0 0 2px yellow;
 	padding: 1px;
+	padding-left: 3px;
+	padding-right: 3px;
 }
 
 input.dcs_dropship_order_button
@@ -151,4 +153,6 @@ input.dcs_dropship_order_button
 	color: black;
 	text-shadow: 0 0 2px yellow;
 	padding: 1px;
+	padding-left: 3px;
+	padding-right: 3px;
 }

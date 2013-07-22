@@ -42,7 +42,14 @@ $dropshipFTPServer = "ftp.dropship.com";
 global $dropshipFTPDirectory;
 $dropshipFTPDirectory = "out";
 
-/** Scripts */
+/** Product Related */
+define( 'PRODUCT_TAB_FILE_NAME', DCS_DROPSHIP_DIR."files/Product.tab" );
+define( 'INVENTORY_TAB_FILE_NAME', DCS_DROPSHIP_DIR."files/Inventory.tab" );
+define( 'PRODUCT_NUM_LINES', 6 );
+define( 'PRODUCT_NUM_COLS', 3 );
+define( 'PRODUCT_NUM', 2800 );
+
+/** Functions */
 require_once(DCS_DROPSHIP_DIR.'product-functions.php');
 require_once(DCS_DROPSHIP_DIR.'functions.php');
 

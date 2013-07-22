@@ -1,7 +1,6 @@
 <?php
 
-//User functions
-//require_once(ABSPATH . WPINC . '/registration.php');
+//JGD NOTE: This prevents the auto insertion of paragraphs and line breaks.
 remove_filter( 'the_content', 'wpautop' );
 
 /**
@@ -91,6 +90,7 @@ function dcs_dropship_shopping_cart()
 		$retval .= "</table><br />";
 
 		$retval .= "<input type='button' id='dcs_dropship_clear_cart' value='Clear Cart' class='dcs_dropship_button'></input>";
+		$retval .= "<input type='button' id='dcs_dropship_place_order' value='Place Order' class='dcs_dropship_button'></input>";
 	}
 
 	return $retval;
@@ -121,7 +121,7 @@ function dcs_dropship_addToCart()
 	$_SESSION['dcs_dropship_shopping_cart'][] = $dataValues;
 
 	echo site_url(get_option(DCS_DROPSHIP_SHOPPING_CART_PAGE));
-	exit;
+	die();
 }
 add_action( 'wp_ajax_dcs_dropship_add_to_cart', 'dcs_dropship_addToCart' );
 add_action( 'wp_ajax_nopriv_dcs_dropship_add_to_cart', 'dcs_dropship_addToCart' );
@@ -141,10 +141,32 @@ function dcs_dropship_clearCart()
 	}
 
 	echo site_url(get_option(DCS_DROPSHIP_SHOPPING_CART_PAGE));
-	exit;
+	die();
 }
 add_action( 'wp_ajax_dcs_dropship_clear_cart', 'dcs_dropship_clearCart' );
 add_action( 'wp_ajax_nopriv_dcs_dropship_clear_cart', 'dcs_dropship_clearCart' );
+
+/**
+ * Place Order.
+ */
+function dcs_dropship_placeOrder()
+{
+	check_ajax_referer( "dcs_dropship_place_order", "dcs_dropship_place_order_nonce" );
+
+	if(!session_id()) session_start();
+
+	$shoppingCart = $_SESSION['dcs_dropship_shopping_cart'];
+
+	//JGD TODO:
+	//Calculate Shipping.
+	//Payment gateway.
+	//Put order on dropship server.
+
+	echo "Order Placed.";
+	die();
+}
+add_action( 'wp_ajax_dcs_dropship_place_order', 'dcs_dropship_placeOrder' );
+add_action( 'wp_ajax_nopriv_dcs_dropship_place_order', 'dcs_dropship_placeOrder' );
 
 /**
  * Pull from the remote url.
