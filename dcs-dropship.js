@@ -36,16 +36,9 @@ jQuery(document).ready(function() {
 	/** Place Order */
 	jQuery("#dcs_dropship_place_order").click(function() {
 
+		//Submit the hidden payment form.
 		jQuery("#dcs_dropship_payment_form").submit();
 
-		//var data = {
-		//	action: 'dcs_dropship_place_order',
-		//	dcs_dropship_place_order_nonce: dcs_dropship_script_vars.dcs_dropship_place_order_nonce
-		//};
-
-		//jQuery.post( dcs_dropship_script_vars.ajaxurl, data, function(response) {
-		//	window.open( response, "_self" );
-		//});
 	});
 
 	/** Get Products */

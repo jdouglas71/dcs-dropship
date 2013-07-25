@@ -3,7 +3,7 @@
 Plugin Name: DCS Dropship Plugin
 Plugin URI: http://www.douglasconsulting.net
 Description: A Plugin to interface with the Dropship Distribution Service. 
-Version: 0.5 Alpha
+Version: 0.75 Beta
 Author: Jason Douglas
 Author URI: http://www.douglasconsulting.net
 License: GPL
@@ -50,7 +50,6 @@ function dcs_dropship_load_scripts()
     wp_localize_script( "dcs_dropship_script", "dcs_dropship_script_vars",
                         array(
 								"ajaxurl" => admin_url('admin-ajax.php'),
-                                "dcs_dropship_place_order_nonce"=>wp_create_nonce("dcs_dropship_place_order"),
                                 "dcs_dropship_clear_cart_nonce"=>wp_create_nonce("dcs_dropship_clear_cart"),
                                 "dcs_dropship_add_to_cart_nonce"=>wp_create_nonce("dcs_dropship_add_to_cart")
                             )
@@ -173,12 +172,6 @@ add_shortcode( 'dcs_dropship_order_invoice_page', 'dcs_dropship_order_invoice_pa
  */
 function dcs_dropship_product_page_shortcode($atts, $content=null)
 {
-	//TEST CODE
-	//dcs_dropship_loadProductsFromFile();
-	//dcs_dropship_loadInventoryFromFile();
-	//$retval = "Inventory Loaded.";
-	//TEST CODE ENDS
-
 	$retval = dcs_dropship_product_page();
 
 	return $retval;
@@ -366,42 +359,6 @@ function dcs_dropship_install()
 
 		update_option( DCS_DROPSHIP_DECLINED_PAGE, $page['guid'] );
 	}
-
-	//Create the place orcder page if it doesn't exist.
-	$existingPage = get_page_by_title( "Place Order", ARRAY_A, "page" );
-	if( !$existingPage )
-	{
-		$page = array();
-
-		$page["post_type"] = "page";
-		$page["post_content"] = "";
-		$page["post_parent"] = 0;
-		$page["post_author"] = wp_get_current_user()->ID;
-		$page["post_status"] = "publish";
-		$page["post_title"] = "Place Order";
-		$page["comment_status"] = "closed";
-		$page["ping_status"] = "closed";
-		$pageid = wp_insert_post( $page );
-
-		if( $pageid == 0 )
-		{
-			//Page not created.
-		}
-		else
-		{
-			//Add to excluded list
-			$excluded_ids_str = get_option( "ep_exclude_pages" );
-			$excluded_ids = explode( ",", $excluded_ids_str );
-			array_push( $excluded_ids, $pageid );
-			$excluded_ids = array_unique( $excluded_ids );
-			$excluded_ids_str = implode( ",", $excluded_ids );
-			delete_option( "ep_exclude_pages" );
-			add_option( "ep_exclude_pages", $excluded_ids_str, __( "Comma separated list of post and page IDs to exclude when returning pages from the get_pages function.", "exclude-pages" ) );
-		}
-
-		update_option( DCS_DROPSHIP_PLACE_ORDER_PAGE, $page['guid'] );
-	}
-
 }
 register_activation_hook( __FILE__, 'dcs_dropship_install' );
 
@@ -414,7 +371,7 @@ function dcs_dropship_uninstall()
 {
 	global $wpdb;
 
-	//Clear out options
+	//Clear out tasks
 	$timestamp = wp_next_scheduled( "dcs_dropship_get_products" );
 	wp_unschedule_event( $timestamp, "dcs_dropship_get_products" );
 
