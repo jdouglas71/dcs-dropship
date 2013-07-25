@@ -151,7 +151,7 @@ function dcs_dropship_shopping_cart()
 		$retval .= "<input type='text' name='ShipCountry' value''>";
 		$retval .= "<input type='text' name='ShipPhone' value''>";
 		$retval .= "<input type='text' name='ShipEmail' value''>";
-		$retval .= "<input type='hidden' name'ShippingPrompt' value='Yes'>";
+		$retval .= "<input type='hidden' name='ShippingPrompt' value='Yes'>";
 		$retval .= "</form>";
 
 	}
