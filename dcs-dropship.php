@@ -31,26 +31,18 @@ function dcs_dropship_admin_page()
 	include( 'dcs-dropship-admin.php' );
 }
 
-//******************************************************************************************************************************//
-//** STYLESHEETS **/
-/**
- * Add our stylesheets.
- */
-function dcs_dropship_add_my_stylesheet()
-{
-	wp_register_style( 'dcs-dropship-style', plugins_url('dcs-dropship.css', __FILE__) );
-	wp_enqueue_style( 'dcs-dropship-style' );
-}
-add_action( 'wp_enqueue_scripts', 'dcs_dropship_add_my_stylesheet' );
-
 //*******************************************************************************************************************//
-// Scripts 
+// Scripts and Styles 
 /**
  * Nonce's for our AJAX calls.
  */
 function dcs_dropship_load_scripts()
 {
-    //This is only reqiured for our test page.
+	//Stylesheets
+	wp_register_style( 'dcs-dropship-style', plugins_url('dcs-dropship.css', __FILE__) );
+	wp_enqueue_style( 'dcs-dropship-style' );
+
+	//Scripts
 	wp_enqueue_script('jquery');
 	wp_enqueue_script('dcs_dropship_script', (WP_PLUGIN_URL.'/dcs-dropship/dcs-dropship.js'), array('jquery'), false, true);
 
@@ -374,6 +366,42 @@ function dcs_dropship_install()
 
 		update_option( DCS_DROPSHIP_DECLINED_PAGE, $page['guid'] );
 	}
+
+	//Create the place orcder page if it doesn't exist.
+	$existingPage = get_page_by_title( "Place Order", ARRAY_A, "page" );
+	if( !$existingPage )
+	{
+		$page = array();
+
+		$page["post_type"] = "page";
+		$page["post_content"] = "";
+		$page["post_parent"] = 0;
+		$page["post_author"] = wp_get_current_user()->ID;
+		$page["post_status"] = "publish";
+		$page["post_title"] = "Place Order";
+		$page["comment_status"] = "closed";
+		$page["ping_status"] = "closed";
+		$pageid = wp_insert_post( $page );
+
+		if( $pageid == 0 )
+		{
+			//Page not created.
+		}
+		else
+		{
+			//Add to excluded list
+			$excluded_ids_str = get_option( "ep_exclude_pages" );
+			$excluded_ids = explode( ",", $excluded_ids_str );
+			array_push( $excluded_ids, $pageid );
+			$excluded_ids = array_unique( $excluded_ids );
+			$excluded_ids_str = implode( ",", $excluded_ids );
+			delete_option( "ep_exclude_pages" );
+			add_option( "ep_exclude_pages", $excluded_ids_str, __( "Comma separated list of post and page IDs to exclude when returning pages from the get_pages function.", "exclude-pages" ) );
+		}
+
+		update_option( DCS_DROPSHIP_PLACE_ORDER_PAGE, $page['guid'] );
+	}
+
 }
 register_activation_hook( __FILE__, 'dcs_dropship_install' );
 

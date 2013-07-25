@@ -99,15 +99,61 @@ function dcs_dropship_shopping_cart()
 			$retval .= "<td>".$item['product_name']."</td>";
 			$retval .= "<td>".$item['sku']."</td>";
 			$retval .= "<td>".$item['quantity']."</td>";
-			$retval .= "<td>".$item['price']."</td>";
-			$retval .= "<td>".$item['shipping']."</td>";
-			$retval .= "<td>$".sprintf('%01.2f',($item['price']*$item['quantity']) )."</td>";
+			$retval .= "<td>$".$item['price']."</td>";
+			$retval .= "<td>".$item['shipping_cost']."</td>";
+			$retval .= "<td>$".sprintf('%01.2f',($item['price']*$item['quantity']))."</td>";
 			$retval .= "</tr>";
 		}
 		$retval .= "</table><br />";
 
 		$retval .= "<input type='button' id='dcs_dropship_clear_cart' value='Clear Cart' class='dcs_dropship_button'></input>";
 		$retval .= "<input type='button' id='dcs_dropship_place_order' value='Place Order' class='dcs_dropship_button'></input>";
+
+		//Create the hidden form for submitting to the payment gateway
+		$retval .= "<FORM style='display:none;' id='dcs_dropship_payment_form' METHOD=POST ACTION='https://www.eProcessingNetwork.com/cgi-bin/wo/order.pl'>";
+		//$retval .= "<INPUT TYPE=HIDDEN NAME='ePNAccount' VALUE='06131240'>"; //Real number
+		$retval .= "<INPUT TYPE=HIDDEN NAME='ePNAccount' VALUE='05971'>"; //Testing only
+
+		//Items.
+		foreach( $_SESSION['dcs_dropship_shopping_cart'] as $item )
+		{
+			$retval .= "<br />";
+			$retval .= "<INPUT SIZE=5 NAME='ItemQty' MAXLENGTH=3 VALUE='".$item['quantity']."'>";
+			$retval .= "<INPUT TYPE=HIDDEN NAME='ItemDesc' VALUE='".$item['product_name']."' >";
+			$retval .= "<INPUT TYPE=HIDDEN NAME='ItemCost' VALUE='".$item['price']."'>";
+			$retval .= "<br />";
+		}
+		//Order processing urls.
+		$retval .= "<INPUT TYPE=HIDDEN NAME='ReturnApprovedURL' VALUE='".get_option(DCS_DROPSHIP_APPROVED_PAGE)."'>";
+		$retval .= "<INPUT TYPE=HIDDEN NAME='ReturnDeclinedURL' VALUE='".get_option(DCS_DROPSHIP_DECLINED_PAGE)."'>";
+		//Sales Tax
+		$retval .= "<INPUT NAME='ApplyTax' TYPE=CHECKBOX>";
+		$retval .= "<INPUT TYPE=HIDDEN VALUE='.075' NAME='TaxRate'>";
+		//Billing info
+		$retval .= "<input type='text' name='BillFirstName' value''>";
+		$retval .= "<input type='text' name='BillLastName' value''>";
+		$retval .= "<input type='text' name='BillCompany' value''>";
+		$retval .= "<input type='text' name='BillAddress' value''>";
+		$retval .= "<input type='text' name='BillCity' value''>";
+		$retval .= "<input type='text' name='BillState' value''>";
+		$retval .= "<input type='text' name='BillZip' value''>";
+		$retval .= "<input type='text' name='BillCountry' value''>";
+		$retval .= "<input type='text' name='BillPhone' value''>";
+		$retval .= "<input type='text' name='BillEmail' value''>";
+		//Shipping info
+		$retval .= "<input type='text' name='ShipFirstName' value''>";
+		$retval .= "<input type='text' name='ShipLastName' value''>";
+		$retval .= "<input type='text' name='ShipCompany' value''>";
+		$retval .= "<input type='text' name='ShipAddress' value''>";
+		$retval .= "<input type='text' name='ShipCity' value''>";
+		$retval .= "<input type='text' name='ShipState' value''>";
+		$retval .= "<input type='text' name='ShipZip' value''>";
+		$retval .= "<input type='text' name='ShipCountry' value''>";
+		$retval .= "<input type='text' name='ShipPhone' value''>";
+		$retval .= "<input type='text' name='ShipEmail' value''>";
+		$retval .= "<input type='hidden' name'ShippingPrompt' value='Yes'>";
+		$retval .= "</form>";
+
 	}
 
 	return $retval;
@@ -120,9 +166,11 @@ function dcs_dropship_addToCart()
 {
 	check_ajax_referer( "dcs_dropship_add_to_cart", "dcs_dropship_add_to_cart_nonce" );
 
+	$price = sscanf($_POST['price'], "$%f");
+
 	$dataValues = array( "sku" => $_POST['sku'],
 						 "quantity" => $_POST['quantity'],
-						 "price" => $_POST['price'],
+						 "price" => $price[0],
 						 "product_name" => $_POST['product_name'],
 						 "shipping_cost" => $_POST['shipping_cost']
 					   );
@@ -173,8 +221,9 @@ function dcs_dropship_placeOrder()
 	if(!session_id()) session_start();
 	$shoppingCart = $_SESSION['dcs_dropship_shopping_cart'];
 
-	$retval .= "<FORM METHOD=POST ACTION='https://www.eProcessing Network.com/cgi-bin/wo/order.pl'>";
-	$retval .= "<INPUT TYPE=HIDDEN NAME='ePNAccount' VALUE='06131240'>";
+	$retval .= "<FORM style='display:none;' METHOD=POST ACTION='https://www.eProcessingNetwork.com/cgi-bin/wo/order.pl'>";
+	//$retval .= "<INPUT TYPE=HIDDEN NAME='ePNAccount' VALUE='06131240'>"; //Real number
+	$retval .= "<INPUT TYPE=HIDDEN NAME='ePNAccount' VALUE='05971'>"; //Testing only
 
 	//Items.
 	foreach( $shoppingCart as $item )
@@ -213,11 +262,15 @@ function dcs_dropship_placeOrder()
 	$retval .= "<input type='text' name='ShipCountry' value''>";
 	$retval .= "<input type='text' name='ShipPhone' value''>";
 	$retval .= "<input type='text' name='ShipEmail' value''>";
-	$retval .= "<input type='hidden' name'ShippingPrompt' value='Yes'>";
+	$retval .= "<input type='hidden' name='ShippingPrompt' value='Yes'>";
 	$retval .= "</form>";
 	$retval .= "";
 
-	echo $retval;
+	$orderPage = get_page_by_title( "Place Order", ARRAY_A, "page" );
+	$orderPage['post_content'] = $retval;
+	wp_update_post( $orderPage );
+
+	echo $orderPage['guid'];
 
 	die();
 }

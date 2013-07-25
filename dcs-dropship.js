@@ -1,4 +1,5 @@
 jQuery(document).ready(function() {
+
 	/** Clear Cart */
 	jQuery("#dcs_dropship_clear_cart").click(function() {
 
@@ -35,15 +36,16 @@ jQuery(document).ready(function() {
 	/** Place Order */
 	jQuery("#dcs_dropship_place_order").click(function() {
 
-		var data = {
-			action: 'dcs_dropship_place_order',
-			dcs_dropship_place_order_nonce: dcs_dropship_script_vars.dcs_dropship_place_order_nonce
-		};
+		jQuery("#dcs_dropship_payment_form").submit();
 
-		jQuery.post( dcs_dropship_script_vars.ajaxurl, data, function(response) {
-			alert( "PlaceOrder return: " + response );
-			//window.open( response, "_self" );
-		});
+		//var data = {
+		//	action: 'dcs_dropship_place_order',
+		//	dcs_dropship_place_order_nonce: dcs_dropship_script_vars.dcs_dropship_place_order_nonce
+		//};
+
+		//jQuery.post( dcs_dropship_script_vars.ajaxurl, data, function(response) {
+		//	window.open( response, "_self" );
+		//});
 	});
 
 	/** Get Products */
@@ -54,10 +56,7 @@ jQuery(document).ready(function() {
 		};
 
 		jQuery.post( dcs_dropship_script_vars.ajaxurl, data, function(response) {
-			alert( response );
-			//window.open( response, "_self" );
+			alert( "Product Load Complete." );
 		});
 	});
-
-
 });

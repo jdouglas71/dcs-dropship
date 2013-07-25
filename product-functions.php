@@ -18,7 +18,7 @@ function dcs_dropship_getProducts()
 /**
  * Load the products from the database.
  */
-function dcs_dropship_loadProducts()
+function dcs_dropship_loadProducts($chunkNumber = 1)
 {
 	global $wpdb;
 	global $dropshipProducts;
@@ -33,9 +33,14 @@ function dcs_dropship_loadProducts()
 	$dropshipBrands = array();
 	$dropshipBrandNumbers = array();
 
-	//Load the products from the database
-	$dropshipProducts = $wpdb->get_results( "SELECT * FROM dcs_dropship_products;", ARRAY_A );
+	//Limits.
+	$start = 1*$chunkNumber;
+	$end = PRODUCT_NUM*$chunkNumber;
 
+	//Load the products from the database
+	$dropshipProducts = $wpdb->get_results( "SELECT * FROM dcs_dropship_products LIMIT ".$start.",".$end.";", ARRAY_A );
+
+	/*
 	foreach( $dropshipProducts as $product )
 	{
 		$category = $product['category'];
@@ -55,7 +60,7 @@ function dcs_dropship_loadProducts()
 
 	asort( $dropshipCategories );
 	asort( $dropshipBrands );
-
+	*/
 	return $retval;
 }
 
@@ -201,14 +206,24 @@ function dcs_dropship_generateProductCell($product)
 	$company_url = $existingPage['guid'];
 	$markedupPrice = sprintf("%01.2f", ($product['wholesale_cost']*(1+(get_option(DCS_DROPSHIP_MARKUP)/100))));
 	$marker = $product['sku'];
+	$productImage = $product['product_image'];
+	if( $productImage == "" )
+	{
+		$productImage = plugins_url("/dcs-dropship/res/noImage.png");
+	}
+	else
+	{
+		$productImage = $productImage . "?maxY=128";
+	}
 
 	$retval .= "<td class='dcs_dropship_product'>";
 	$retval .= "<form id='dcs_dropship_product' method='POST'>";
 	$retval .= "<div class='dcs_dropship_product'>";
+	$retval .= "<input type='hidden' class='dcs_dropship_product_hidden'>";
 	$retval .= "<div class='dcs_dropship_product_top_div'>";
 	$retval .= "<div class='dcs_dropship_product_title'><span id='product_name".$marker."'>".$product['product_title']."</span></div><br />";
 	$retval .= "<div class='dcs_dropship_product_img_div'>";
-	$retval .= "<a href='".$company_url."'><img class='dcs_dropship_product' src='".$product['product_image']."?maxY=128'></a><br />";
+	$retval .= "<a href='".$company_url."'><img class='dcs_dropship_product' src='".$productImage."'></a><br />";
 	$retval .= "</div>";
 	$retval .= "<div class='dcs_dropship_product_text'>";
 	$retval .= "<span>SKU:<span id='sku".$marker."'> ".$product['sku']."</span></span><br />";
@@ -242,14 +257,24 @@ function dcs_dropship_generateProductPage($product)
 {
 	$marker = $product['sku'];
 	$markedupPrice = sprintf("%01.2f", ($product['wholesale_cost']*(1+(get_option(DCS_DROPSHIP_MARKUP)/100))));
+	$productImage = $product['product_image'];
+	if( $productImage == "" )
+	{
+		$productImage = plugins_url("/dcs-dropship/res/noImage.png");
+	}
+	else
+	{
+		$productImage = $productImage . "?maxY=256";
+	}
 
 	$retval = "";
 
 	$retval .= "<div class='dcs_dropship_product'>";
+	$retval .= "<input type='hidden' class='dcs_dropship_product_hidden'>";
 	$retval .= "<div class='dcs_dropship_product_top_div'>";
 	$retval .= "<div class='dcs_dropship_product_page_title'><span id='product_name".$marker."'>".$product['product_title']."</span></div><br />";
 	$retval .= "<div class='dcs_dropship_product_img_div'>";
-	$retval .= "<img class='dcs_dropship_product_page' src='".$product['product_image']."?maxY=256'><br />";
+	$retval .= "<img class='dcs_dropship_product_page' src='".$productImage."'><br />";
 	$retval .= "</div>";
 	$retval .= "<div class='dcs_dropship_product_text'>";
 
@@ -347,13 +372,6 @@ function dcs_dropship_createPageForProduct($product)
  */
 function dcs_dropship_loadProductsFromFile($startLine = 0)
 {
-	global $wpdb;
-	global $dropshipProducts;
-	global $dropshipCategories;
-	global $dropshipCategoryNumbers;
-	global $dropshipBrands;
-	global $dropshipBrandNumbers;
-
 	$useKeys = array( "sku",
 					  "category",
 					  "brand",
@@ -404,11 +422,6 @@ function dcs_dropship_loadProductsFromFile($startLine = 0)
 		$numLines = 1;
 		$numCols = 0;
 		$keys = array();
-		$dropshipProducts = array();
-		$dropshipCategories = array();
-		$dropshipCategoryNumbers = array();
-		$dropshipBrands = array();
-		$dropshipBrandNumbers = array();
 
 		//Get the keys from the first line
 		$keyLine = fgets($file_handle);
@@ -439,43 +452,21 @@ function dcs_dropship_loadProductsFromFile($startLine = 0)
 			//Parse the line.
 			foreach( explode("[tAbul*Ator]", $line) as $li ) 
 			{ 
-				if( $numLines == 0 )
-				{
-					$keys[] = trim($li);
-				}
-				else
-				{
-					$lineVals[$keys[$numCols]] = trim($li);
-				}
+				$lineVals[$keys[$numCols]] = trim($li);
 				$numCols++;
 			} 
 
 			//dcsLogToFile( "Parsed Line: " . dcsVarDumpStr($lineVals) );
 
-			//Let's not bother with discontinued products.
-			if( $lineVals['status'] != "discontinued" )
+			//Let's not bother with discontinued products, products with blank or zero costs, or zero quantity
+			if( ($lineVals['status'] != "discontinued") ||
+				($lineVals['wholesale_cost'] == "") ||
+				($lineVals['quantity'] == "0") )
 			{
 				//First line contains the keys, the rest is values.
 				if( $numLines > 0 )
 				{
-					$dropshipProducts[] = $lineVals;
 					dcs_dropship_insertProductIntoDatabase( $lineVals, $useKeys );
-	
-					//Collect Categories and numbers for each.
-					if( !in_array($lineVals['category'], $dropshipCategories) )
-					{
-						$dropshipCategories[] = $lineVals['category'];
-						$dropshipCategoryNumbers[$lineVals['category']] = 0;
-					}
-					$dropshipCategoryNumbers[$lineVals['category']]++;
-			
-					//Collect brands and numbers for each.
-					if( !in_array($lineVals['brand'], $dropshipBrands) )
-					{
-						$dropshipBrands[] = $lineVals['brand'];
-						$dropshipBrandNumbers[$lineVals['brand']] = 0;
-					}
-					$dropshipBrandNumbers[$lineVals['brand']]++;
 				}
 
 				//dcsLogToFile( "Number of products: " . $numLines );
@@ -483,19 +474,11 @@ function dcs_dropship_loadProductsFromFile($startLine = 0)
 			}
 			$numCols = 0;
 		}
-
-		//dcsLogToFile( "Calling create database." );
-		//dcs_dropship_createProductDatabase( $dropshipProducts, $useKeys );
 	}
 	else
 	{
 		dcsLogToFile( "Error opening " . PRODUCT_TAB_FILE_NAME );
 	}
-
-	dcsLogToFile( "Sorting categories" );
-	asort( $dropshipCategories );
-	dcsLogToFile( "Sorting brands." );
-	asort( $dropshipBrands );
 
 	dcsLogToFile( "LoadProductsFromFile ends..." );
 
@@ -594,6 +577,10 @@ function dcs_dropship_createProductDatabase($products, $useKeys, $dropTable = tr
 		$result = $wpdb->query( "DROP TABLE dcs_dropship_products;" );
 		dcsLogToFile( "Drop table Result: " . $result . PHP_EOL );
 		$wpdb->print_error();
+
+		$result = $wpdb->query( "DROP TABLE dcs_dropship_product_categories;" );
+		dcsLogToFile( "Drop table Result: " . $result . PHP_EOL );
+		$wpdb->print_error();
 	}
 
 	//Create the table.
@@ -603,6 +590,13 @@ function dcs_dropship_createProductDatabase($products, $useKeys, $dropTable = tr
 		$sql .= " $key varchar(812),";
 	}
 	$sql .= " PRIMARY KEY(sku) );";
+	dcsLogToFile( "Create table SQL: " . $sql );
+	$result = $wpdb->query( $sql );
+	dcsLogToFile( "Create Table result: " . $result );
+
+	$sql = "CREATE TABLE dcs_dropship_product_categories ( ";
+	$sql .= "id int,";
+	$sql .= "category varchar(255) );";
 	dcsLogToFile( "Create table SQL: " . $sql );
 	$result = $wpdb->query( $sql );
 	dcsLogToFile( "Create Table result: " . $result );
