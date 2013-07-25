@@ -28,6 +28,8 @@ define(	'DCS_DROPSHIP_FTP_USER', 'dcs-dropship-ftp-user' );
 define(	'DCS_DROPSHIP_FTP_PASSWORD', 'dcs-dropship-ftp-password' );
 define(	'DCS_DROPSHIP_SHOPPING_CART_PAGE', 'dcs-dropship-shopping-cart-page' );
 define(	'DCS_DROPSHIP_MARKUP', 'dcs-dropship-markup' );
+define( 'DCS_DROPSHIP_APPROVED_PAGE', 'order-approved' );
+define( 'DCS_DROPSHIP_DECLINED_PAGE', 'order-declined' );
 
 /** Globals */
 global $dropshipProducts;

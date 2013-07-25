@@ -401,7 +401,7 @@ function dcs_dropship_loadProductsFromFile($startLine = 0)
     $file_handle = fopen(PRODUCT_TAB_FILE_NAME, "r");
 	if( $file_handle != false )
 	{
-		$numLines = 0;
+		$numLines = 1;
 		$numCols = 0;
 		$keys = array();
 		$dropshipProducts = array();
@@ -409,6 +409,14 @@ function dcs_dropship_loadProductsFromFile($startLine = 0)
 		$dropshipCategoryNumbers = array();
 		$dropshipBrands = array();
 		$dropshipBrandNumbers = array();
+
+		//Get the keys from the first line
+		$keyLine = fgets($file_handle);
+		$keyLine = str_replace( array("\t") , array("[tAbul*Ator]") , $keyLine ); 
+		foreach( explode("[tAbul*Ator]", $keyLine) as $li ) 
+		{
+			$keys[] = trim($li);
+		}
 
 		//Spin to start line
 		while( !feof($file_handle) && ($numLines <= $startLine) )
@@ -418,7 +426,7 @@ function dcs_dropship_loadProductsFromFile($startLine = 0)
 		}
 
 		//Reset the numLines counter.
-		$numLines = 0;
+		$numLines = 1;
 	
 		while( !feof($file_handle) && ($numLines <= PRODUCT_NUM) )
 		{
@@ -598,34 +606,6 @@ function dcs_dropship_createProductDatabase($products, $useKeys, $dropTable = tr
 	dcsLogToFile( "Create table SQL: " . $sql );
 	$result = $wpdb->query( $sql );
 	dcsLogToFile( "Create Table result: " . $result );
-
-	//Create the keyStr
-	//$keyStr = "(";
-	//foreach( $useKeys as $key )
-	//{
-	//	$keyStr .= $key.",";
-	//}
-	//$keyStr = substr( $keyStr, 0, strlen($keyStr)-1 );
-	//$keyStr .= ") ";
-
-	//foreach( $products as $product )
-	//{
-	//	dcs_dropship_insertProductIntoDatabase($product, $useKeys);
-
-		//$sql = "INSERT INTO dcs_dropship_products ";
-		//$valStr = "(";
-		//foreach( $useKeys as $key )
-		//{
-		//	$valStr .= "'".$product[$key]."',";
-		//}
-		//$valStr = substr( $valStr, 0, strlen($valStr)-1 );
-		//$valStr .= ");";
-
-		//$sql .= $keyStr . " VALUES " . $valStr;
-		//dcsLogToFile( "Insert statement: " . $sql );
-		//$result = $wpdb->query( $sql );
-		//dcsLogToFile( "Insert result: " . $result );
-	//}
 
 	dcsLogToFile( "createProductDatabase ends..." );
 }

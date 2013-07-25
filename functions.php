@@ -61,6 +61,23 @@ function dcs_dropship_tracking_page()
 }
 
 /**
+ * Approved Order.
+ */
+function dcs_dropship_approved_order_page()
+{
+	//JGD TODO: Here's where to create the order file and place it on the dropship server.
+	return "Order Approved.";
+}
+
+/**
+ * Declined Order.
+ */
+function dcs_dropship_declined_order_page()
+{
+	return "Order Declined.";
+}
+
+/**
  * Shopping Cart.
  */
 function dcs_dropship_shopping_cart()
@@ -154,15 +171,54 @@ function dcs_dropship_placeOrder()
 	check_ajax_referer( "dcs_dropship_place_order", "dcs_dropship_place_order_nonce" );
 
 	if(!session_id()) session_start();
-
 	$shoppingCart = $_SESSION['dcs_dropship_shopping_cart'];
 
-	//JGD TODO:
-	//Calculate Shipping.
-	//Payment gateway.
-	//Put order on dropship server.
+	$retval .= "<FORM METHOD=POST ACTION='https://www.eProcessing Network.com/cgi-bin/wo/order.pl'>";
+	$retval .= "<INPUT TYPE=HIDDEN NAME='ePNAccount' VALUE='06131240'>";
 
-	echo "Order Placed.";
+	//Items.
+	foreach( $shoppingCart as $item )
+	{
+		$retval .= "<br />";
+		$retval .= "<INPUT SIZE=5 NAME='ItemQty' MAXLENGTH=3 VALUE='".$item['quantity']."'>";
+		$retval .= "<INPUT TYPE=HIDDEN NAME='ItemDesc' VALUE='".$item['product_name']."' >";
+		$retval .= "<INPUT TYPE=HIDDEN NAME='ItemCost' VALUE='".$item['price']."'>";
+		$retval .= "<br />";
+	}
+	//Order processing urls.
+    $retval .= "<INPUT TYPE=HIDDEN NAME='ReturnApprovedURL' VALUE='".get_option(DCS_DROPSHIP_APPROVED_PAGE)."'>";
+	$retval .= "<INPUT TYPE=HIDDEN NAME='ReturnDeclinedURL' VALUE='".get_option(DCS_DROPSHIP_DECLINED_PAGE)."'>";
+	//Sales Tax
+	$retval .= "<INPUT NAME='ApplyTax' TYPE=CHECKBOX>";
+	$retval .= "<INPUT TYPE=HIDDEN VALUE='.075' NAME='TaxRate'>";
+	//Billing info
+	$retval .= "<input type='text' name='BillFirstName' value''>";
+	$retval .= "<input type='text' name='BillLastName' value''>";
+	$retval .= "<input type='text' name='BillCompany' value''>";
+	$retval .= "<input type='text' name='BillAddress' value''>";
+	$retval .= "<input type='text' name='BillCity' value''>";
+	$retval .= "<input type='text' name='BillState' value''>";
+	$retval .= "<input type='text' name='BillZip' value''>";
+	$retval .= "<input type='text' name='BillCountry' value''>";
+	$retval .= "<input type='text' name='BillPhone' value''>";
+	$retval .= "<input type='text' name='BillEmail' value''>";
+	//Shipping info
+	$retval .= "<input type='text' name='ShipFirstName' value''>";
+	$retval .= "<input type='text' name='ShipLastName' value''>";
+	$retval .= "<input type='text' name='ShipCompany' value''>";
+	$retval .= "<input type='text' name='ShipAddress' value''>";
+	$retval .= "<input type='text' name='ShipCity' value''>";
+	$retval .= "<input type='text' name='ShipState' value''>";
+	$retval .= "<input type='text' name='ShipZip' value''>";
+	$retval .= "<input type='text' name='ShipCountry' value''>";
+	$retval .= "<input type='text' name='ShipPhone' value''>";
+	$retval .= "<input type='text' name='ShipEmail' value''>";
+	$retval .= "<input type='hidden' name'ShippingPrompt' value='Yes'>";
+	$retval .= "</form>";
+	$retval .= "";
+
+	echo $retval;
+
 	die();
 }
 add_action( 'wp_ajax_dcs_dropship_place_order', 'dcs_dropship_placeOrder' );

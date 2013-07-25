@@ -65,8 +65,7 @@ function dcs_dropship_load_scripts()
                       );
 }
 add_action('wp_enqueue_scripts', 'dcs_dropship_load_scripts');
-//JGD: Don't think we need any of this in the admin.
-//add_action('admin_enqueue_scripts', 'dcs_dropship_load_scripts');
+add_action('admin_enqueue_scripts', 'dcs_dropship_load_scripts');
 
 //*******************************************************************************************************************//
 // Tasks
@@ -91,6 +90,9 @@ function dcs_dropship_getProductDatabase()
 {
 	global $dropshipFTPServer;
 	global $dropshipFTPDirectory;
+
+	//JGD: This is a good place to delete the log file, since this only happens once a month (in theory).
+	unlink( DCS_DROPSHIP_LOGFILE );
 
 	dcsLogToFile( "getProductDatabase starts." );
 	$conn_id = ftp_connect( $dropshipFTPServer );
@@ -117,6 +119,7 @@ function dcs_dropship_getProductDatabase()
 	}
 }
 add_action( "dcs_dropship_get_products", "dcs_dropship_getProductDatabase" );
+add_action( "wp_ajax_dcs_dropship_get_products", "dcs_dropship_getProductDatabase" );
 
 /**
 * Get the Inventory database from dropship.
@@ -223,6 +226,28 @@ function dcs_dropship_shopping_cart_shortcode($atts, $content=null)
 }
 add_shortcode( 'dcs_dropship_shopping_cart', 'dcs_dropship_shopping_cart_shortcode' );
 
+/**
+ * Approved Order shortcode.
+ */ 
+function dcs_dropship_approved_order_shortcode($atts, $content=null)
+{
+	$retval = dcs_dropship_approved_order_page();
+
+	return $retval;
+}
+add_shortcode( 'dcs_dropship_approved_order', 'dcs_dropship_approved_order_shortcode' );
+
+/**
+ * Declined Order shortcode.
+ */ 
+function dcs_dropship_declined_order_shortcode($atts, $content=null)
+{
+	$retval = dcs_dropship_declined_order_page();
+
+	return $retval;
+}
+add_shortcode( 'dcs_dropship_declined_order', 'dcs_dropship_declined_order_shortcode' );
+
 //******************************************************************************************************************************//
 /** HOOKS **/
 /**
@@ -279,6 +304,76 @@ function dcs_dropship_install()
 	//Schedule our get tasks.
 	wp_schedule_event( DCS_DROPSHIP_PRODUCT_GET_TASK_TIME, "monthly", "dcs_dropship_get_products" );
 	wp_schedule_event( DCS_DROPSHIP_PRODUCT_GET_TASK_TIME, "hourly", "dcs_dropship_get_inventory" );
+
+	//Create the pages for the order approved and declined (if they don't already exist)
+	$existingPage = get_page_by_title( "Order Approved", ARRAY_A, "page" );
+	if( !$existingPage )
+	{
+        $page = array();
+    
+        $page["post_type"] = "page";
+        $page["post_content"] = "[dcs_dropship_order_approved]";
+        $page["post_parent"] = 0;
+        $page["post_author"] = wp_get_current_user()->ID;
+        $page["post_status"] = "publish";
+        $page["post_title"] = "Order Approved";
+        $page["comment_status"] = "closed";
+        $page["ping_status"] = "closed";
+        $pageid = wp_insert_post( $page );
+
+        if( $pageid == 0 )
+        {
+            //Page not created.
+        }
+        else
+        {
+            //Add to excluded list
+            $excluded_ids_str = get_option( "ep_exclude_pages" );
+            $excluded_ids = explode( ",", $excluded_ids_str );
+            array_push( $excluded_ids, $pageid );
+            $excluded_ids = array_unique( $excluded_ids );
+            $excluded_ids_str = implode( ",", $excluded_ids );
+            delete_option( "ep_exclude_pages" );
+            add_option( "ep_exclude_pages", $excluded_ids_str, __( "Comma separated list of post and page IDs to exclude when returning pages from the get_pages function.", "exclude-pages" ) );
+        }
+
+		update_option( DCS_DROPSHIP_APPROVED_PAGE, $page['guid'] );
+	}
+
+	//Create the declined page if it doesn't exist.
+	$existingPage = get_page_by_title( "Order Declined", ARRAY_A, "page" );
+	if( !$existingPage )
+	{
+		$page = array();
+
+		$page["post_type"] = "page";
+		$page["post_content"] = "[dcs_dropship_order_declined]";
+		$page["post_parent"] = 0;
+		$page["post_author"] = wp_get_current_user()->ID;
+		$page["post_status"] = "publish";
+		$page["post_title"] = "Order Declined";
+		$page["comment_status"] = "closed";
+		$page["ping_status"] = "closed";
+		$pageid = wp_insert_post( $page );
+
+        if( $pageid == 0 )
+        {
+            //Page not created.
+        }
+        else
+        {
+            //Add to excluded list
+            $excluded_ids_str = get_option( "ep_exclude_pages" );
+            $excluded_ids = explode( ",", $excluded_ids_str );
+            array_push( $excluded_ids, $pageid );
+            $excluded_ids = array_unique( $excluded_ids );
+            $excluded_ids_str = implode( ",", $excluded_ids );
+            delete_option( "ep_exclude_pages" );
+            add_option( "ep_exclude_pages", $excluded_ids_str, __( "Comma separated list of post and page IDs to exclude when returning pages from the get_pages function.", "exclude-pages" ) );
+        }
+
+		update_option( DCS_DROPSHIP_DECLINED_PAGE, $page['guid'] );
+	}
 }
 register_activation_hook( __FILE__, 'dcs_dropship_install' );
 

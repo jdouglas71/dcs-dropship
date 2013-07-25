@@ -88,6 +88,7 @@
         <tr><td><?php _e("Markup (in percentage)" ); ?></td><td><input type="text" name="dcs_dropship_markup" value="<?php echo $dcs_dropship_markup; ?>" size="2">%</td></tr> 
         <!-- <tr><td><?php _e(": " ); ?></td><td><input type="text" name="dcs_dropship_" value="<?php echo $dcs_dropship_; ?>" size="128"></td></tr> -->
         </table>
+		<input type="button" class="dcs_dropship_button" id="dcs_dropship_get_products" value="Get Products">
         <p class="submit">
         <input type="submit" style="border-radius:3px;" name="Submit" value="<?php _e('Update Options', 'dcs_dropship_trdom' ) ?>" />
         </p>

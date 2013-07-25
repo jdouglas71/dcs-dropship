@@ -46,4 +46,18 @@ jQuery(document).ready(function() {
 		});
 	});
 
+	/** Get Products */
+	jQuery("#dcs_dropship_get_products").click(function() {
+
+		var data = {
+			action: 'dcs_dropship_get_products',
+		};
+
+		jQuery.post( dcs_dropship_script_vars.ajaxurl, data, function(response) {
+			alert( response );
+			//window.open( response, "_self" );
+		});
+	});
+
+
 });
