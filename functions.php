@@ -123,6 +123,8 @@ function dcs_dropship_shopping_cart()
 			$retval .= "<INPUT TYPE=HIDDEN NAME='ItemCost' VALUE='".$item['price']."'>";
 			$retval .= "<br />";
 		}
+		//Logo URL
+		$retval .= "<INPUT TYPE=HIDDEN NAME='LogoURL' VALUE='".get_option(DCS_DROPSHIP_LOGO_URL)."'>";
 		//Order processing urls.
 		$retval .= "<INPUT TYPE=HIDDEN NAME='ReturnApprovedURL' VALUE='".get_option(DCS_DROPSHIP_APPROVED_PAGE)."'>";
 		$retval .= "<INPUT TYPE=HIDDEN NAME='ReturnDeclinedURL' VALUE='".get_option(DCS_DROPSHIP_DECLINED_PAGE)."'>";
@@ -130,30 +132,34 @@ function dcs_dropship_shopping_cart()
 		$retval .= "<INPUT NAME='ApplyTax' TYPE=CHECKBOX>";
 		$retval .= "<INPUT TYPE=HIDDEN VALUE='.075' NAME='TaxRate'>";
 		//Billing info
-		$retval .= "<input type='text' name='BillFirstName' value''>";
-		$retval .= "<input type='text' name='BillLastName' value''>";
-		$retval .= "<input type='text' name='BillCompany' value''>";
-		$retval .= "<input type='text' name='BillAddress' value''>";
-		$retval .= "<input type='text' name='BillCity' value''>";
-		$retval .= "<input type='text' name='BillState' value''>";
-		$retval .= "<input type='text' name='BillZip' value''>";
-		$retval .= "<input type='text' name='BillCountry' value''>";
-		$retval .= "<input type='text' name='BillPhone' value''>";
-		$retval .= "<input type='text' name='BillEmail' value''>";
+		$retval .= "<input type='text' name='BillFirstName' value=''>";
+		$retval .= "<input type='text' name='BillLastName' value=''>";
+		$retval .= "<input type='text' name='BillCompany' value=''>";
+		$retval .= "<input type='text' name='BillAddress' value=''>";
+		$retval .= "<input type='text' name='BillCity' value=''>";
+		$retval .= "<input type='text' name='BillState' value=''>";
+		$retval .= "<input type='text' name='BillZip' value=''>";
+		$retval .= "<input type='text' name='BillCountry' value=''>";
+		$retval .= "<input type='text' name='BillPhone' value=''>";
+		$retval .= "<input type='text' name='BillEmail' value=''>";
 		//Shipping info
-		$retval .= "<input type='text' name='ShipFirstName' value''>";
-		$retval .= "<input type='text' name='ShipLastName' value''>";
-		$retval .= "<input type='text' name='ShipCompany' value''>";
-		$retval .= "<input type='text' name='ShipAddress' value''>";
-		$retval .= "<input type='text' name='ShipCity' value''>";
-		$retval .= "<input type='text' name='ShipState' value''>";
-		$retval .= "<input type='text' name='ShipZip' value''>";
-		$retval .= "<input type='text' name='ShipCountry' value''>";
-		$retval .= "<input type='text' name='ShipPhone' value''>";
-		$retval .= "<input type='text' name='ShipEmail' value''>";
-		$retval .= "<input type='hidden' name='ShippingPrompt' value='Yes'>";
-		$retval .= "</form>";
+		$retval .= "<input type='text' name='ShipFirstName' value=''>";
+		$retval .= "<input type='text' name='ShipLastName' value=''>";
+		$retval .= "<input type='text' name='ShipCompany' value=''>";
+		$retval .= "<input type='text' name='ShipAddress' value=''>";
+		$retval .= "<input type='text' name='ShipCity' value=''>";
+		$retval .= "<input type='text' name='ShipState' value=''>";
+		$retval .= "<input type='text' name='ShipZip' value=''>";
+		$retval .= "<input type='text' name='ShipCountry' value=''>";
+		$retval .= "<input type='text' name='ShipPhone' value=''>";
+		$retval .= "<input type='text' name='ShipEmail' value=''>";
+		$retval .= "<input type='hidden' name='ShippingPrompt' value='Yes'>";    
+		//Shipping fees (JGD TODO)
+		$retval .= "<INPUT TYPE='HIDDEN' NAME='ServiceDesc' VALUE='Shipping and Handling'>";
+        $retval .= "<INPUT TYPE='HIDDEN' NAME='ServiceFee' VALUE='".get_option(DCS_DROPSHIP_SHIPPING_PERCENTAGE)."'>"; 
+		$retval .= "<INPUT TYPE='HIDDEN' NAME='ServicePercent' VALUE='".get_option(DCS_DROPSHIP_SHIPPING_MINIMUM)."'>"; 
 
+		$retval .= "</form>";
 	}
 
 	return $retval;
@@ -185,7 +191,7 @@ function dcs_dropship_addToCart()
 	}
 	$_SESSION['dcs_dropship_shopping_cart'][] = $dataValues;
 
-	echo site_url(get_option(DCS_DROPSHIP_SHOPPING_CART_PAGE));
+	echo get_option(DCS_DROPSHIP_SHOPPING_CART_PAGE);
 	die();
 }
 add_action( 'wp_ajax_dcs_dropship_add_to_cart', 'dcs_dropship_addToCart' );
@@ -205,7 +211,7 @@ function dcs_dropship_clearCart()
 		$_SESSION['dcs_dropship_shopping_cart'] = array();
 	}
 
-	echo site_url(get_option(DCS_DROPSHIP_SHOPPING_CART_PAGE));
+	echo get_option(DCS_DROPSHIP_SHOPPING_CART_PAGE);
 	die();
 }
 add_action( 'wp_ajax_dcs_dropship_clear_cart', 'dcs_dropship_clearCart' );

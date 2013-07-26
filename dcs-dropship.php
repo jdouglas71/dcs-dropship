@@ -83,7 +83,7 @@ function dcs_dropship_getProductDatabase()
 	global $dropshipFTPDirectory;
 
 	//JGD: This is a good place to delete the log file, since this only happens once a month (in theory).
-	unlink( DCS_DROPSHIP_LOGFILE );
+	//unlink( DCS_DROPSHIP_LOGFILE );
 
 	dcsLogToFile( "getProductDatabase starts." );
 	$conn_id = ftp_connect( $dropshipFTPServer );
@@ -104,7 +104,7 @@ function dcs_dropship_getProductDatabase()
 	}
 	dcsLogToFile( "getProductDatabase ends." );
 
-	for($i=0; $i<10; $i++)
+	for($i=0; $i<20; $i++)
 	{
 		dcs_dropship_loadProductsFromFile($i*PRODUCT_NUM);
 	}
@@ -286,10 +286,18 @@ function dcs_dropship_install()
 		update_option(DCS_DROPSHIP_MARKUP, "50");
 	}
 
-	//Schedule our get tasks.
-	wp_schedule_event( DCS_DROPSHIP_PRODUCT_GET_TASK_TIME, "monthly", "dcs_dropship_get_products" );
-	wp_schedule_event( DCS_DROPSHIP_PRODUCT_GET_TASK_TIME, "hourly", "dcs_dropship_get_inventory" );
+	if( !add_option(DCS_DROPSHIP_APPROVED_PAGE, site_url("/order-approved/")) )
+	{
+		update_option(DCS_DROPSHIP_APPROVED_PAGE, site_url("/order-approved/"));
+	}
 
+	if( !add_option(DCS_DROPSHIP_DECLINED_PAGE, site_url("/order-declined/")) )
+	{
+		update_option(DCS_DROPSHIP_DECLINED_PAGE, site_url("/order-declined/"));
+	}
+
+	//JGD TODO: THis isn't working and I don't know why. I'm punting for now and creating them manually.
+	/**
 	//Create the pages for the order approved and declined (if they don't already exist)
 	$existingPage = get_page_by_title( "Order Approved", ARRAY_A, "page" );
 	if( !$existingPage )
@@ -309,6 +317,7 @@ function dcs_dropship_install()
         if( $pageid == 0 )
         {
             //Page not created.
+			dcsLogToFile( "Approved Page not created!!!" );
         }
         else
         {
@@ -320,9 +329,12 @@ function dcs_dropship_install()
             $excluded_ids_str = implode( ",", $excluded_ids );
             delete_option( "ep_exclude_pages" );
             add_option( "ep_exclude_pages", $excluded_ids_str, __( "Comma separated list of post and page IDs to exclude when returning pages from the get_pages function.", "exclude-pages" ) );
+			update_option( DCS_DROPSHIP_APPROVED_PAGE, get_permalink($pageid) );
         }
-
-		update_option( DCS_DROPSHIP_APPROVED_PAGE, $page['guid'] );
+	}
+	else
+	{
+		update_option( DCS_DROPSHIP_APPROVED_PAGE, get_permalink($existingPage) );
 	}
 
 	//Create the declined page if it doesn't exist.
@@ -344,6 +356,7 @@ function dcs_dropship_install()
         if( $pageid == 0 )
         {
             //Page not created.
+			dcsLogToFile( "Declined Page not created!!!" );
         }
         else
         {
@@ -355,10 +368,51 @@ function dcs_dropship_install()
             $excluded_ids_str = implode( ",", $excluded_ids );
             delete_option( "ep_exclude_pages" );
             add_option( "ep_exclude_pages", $excluded_ids_str, __( "Comma separated list of post and page IDs to exclude when returning pages from the get_pages function.", "exclude-pages" ) );
+			update_option( DCS_DROPSHIP_DECLINED_PAGE, get_permalink($pageid) );
         }
-
-		update_option( DCS_DROPSHIP_DECLINED_PAGE, $page['guid'] );
 	}
+	else
+	{
+		update_option( DCS_DROPSHIP_DECLINED_PAGE, get_permalink($existingPage) );
+	}
+
+	//Create the Shopping Cart page if it doesn't exist.
+	$existingPage = get_page_by_title( "Shopping Cart", ARRAY_A, "page" );
+	if( !$existingPage )
+	{
+		$page = array();
+
+		$page["post_type"] = "page";
+		$page["post_content"] = "[dcs_dropship_shopping_cart]";
+		$page["post_parent"] = 0;
+		$page["post_author"] = wp_get_current_user()->ID;
+		$page["post_status"] = "publish";
+		$page["post_title"] = "Shopping Cart";
+		$page["comment_status"] = "closed";
+		$page["ping_status"] = "closed";
+		$pageid = wp_insert_post( $page );
+
+		if( $pageid != 0 )
+		{
+			update_option( DCS_DROPSHIP_SHOPPING_CART_PAGE, get_permalink($pageid) );
+		}
+		else
+		{
+			dcsLogToFile( "Shopping cart page not created!!!!" );
+		}
+	}
+	else
+	{
+		update_option( DCS_DROPSHIP_SHOPPING_CART_PAGE, get_permalink($existingPage) );
+	}
+
+	dcsLogToFile( "Order Declined: " . get_option(DCS_DROPSHIP_DECLINED_PAGE) );
+	dcsLogToFile( "Order Accepted: " . get_option(DCS_DROPSHIP_ACCEPTED_PAGE) );
+	dcsLogToFile( "Shopping Cart: " . get_option(DCS_DROPSHIP_SHOPPING_CART_PAGE) );
+	*/
+	//Schedule our get tasks.
+	wp_schedule_event( DCS_DROPSHIP_PRODUCT_GET_TASK_TIME, "monthly", "dcs_dropship_get_products" );
+	wp_schedule_event( DCS_DROPSHIP_PRODUCT_GET_TASK_TIME, "hourly", "dcs_dropship_get_inventory" );
 }
 register_activation_hook( __FILE__, 'dcs_dropship_install' );
 
@@ -370,6 +424,10 @@ register_activation_hook( __FILE__, 'dcs_dropship_install' );
 function dcs_dropship_uninstall()
 {
 	global $wpdb;
+
+	delete_option( DCS_DROPSHIP_SHOPPING_CART_PAGE );
+	delete_option( DCS_DROPSHIP_APPROVED_PAGE );
+	delete_option( DCS_DROPSHIP_DECLINED_PAGE );
 
 	//Clear out tasks
 	$timestamp = wp_next_scheduled( "dcs_dropship_get_products" );
