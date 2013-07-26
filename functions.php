@@ -82,12 +82,9 @@ function dcs_dropship_declined_order_page()
  */
 function dcs_dropship_shopping_cart()
 {
-	$retval = "No Items in Cart.";
+	if( !session_id() ) session_start();
 
-	if( !session_id() )
-	{
-		session_start();
-	}
+	$retval = "No Items in Cart.";
 
 	if( isset($_SESSION['dcs_dropship_shopping_cart']) && !empty($_SESSION['dcs_dropship_shopping_cart']) )
 	{

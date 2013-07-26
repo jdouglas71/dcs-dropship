@@ -21,6 +21,7 @@ div.dcs_dropship_product
 	border-radius: 5px;
 	box-shadow: 3px 3px 3px #aaaaaa;
 	background-color: white;
+	margin: 3px;
 }
 
 div.dcs_dropship_product_info
@@ -135,23 +136,24 @@ table.dcs_dropship_brand_table
 
 input.dcs_dropship_button
 {
+	font-family: Arial, sans-serif;
 	border-radius: 5px;
 	background-image: -webkit-linear-gradient(top,#d3d3d3,#708090);
 	font-weight: bold;
-	color: black;
-	text-shadow: 0 0 2px yellow;
-	padding: 1px;
+	color: #ac4a0c;
+	text-shadow: 0 0 2px #5c7a4b;
 	padding-left: 3px;
 	padding-right: 3px;
 }
 
 input.dcs_dropship_order_button
 {
+	font-family: Arial, sans-serif;
 	border-radius: 5px;
 	background-image: -webkit-linear-gradient(top,#d3d3d3,#708090);
 	font-weight: bold;
-	color: black;
-	text-shadow: 0 0 2px yellow;
+	color: #ac4a0c;
+	text-shadow: 0 0 2px #5c7a4b;
 	padding: 1px;
 	padding-left: 3px;
 	padding-right: 3px;

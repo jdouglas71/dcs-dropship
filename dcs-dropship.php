@@ -276,9 +276,9 @@ function dcs_dropship_install()
 		update_option(DCS_DROPSHIP_ORDER_INVOICE_DATA_URL, "test key");
 	}
 
-	if( !add_option(DCS_DROPSHIP_SHOPPING_CART_PAGE, "/dropship-test-2/shopping-cart/") )
+	if( !add_option(DCS_DROPSHIP_SHOPPING_CART_PAGE, site_url("/shopping-cart/")) )
 	{
-		update_option(DCS_DROPSHIP_SHOPPING_CART_PAGE, "/dropship-test-2/shopping-cart/");
+		update_option(DCS_DROPSHIP_SHOPPING_CART_PAGE, site_url("/dropship-test-2/shopping-cart/") );
 	}
 
 	if( !add_option(DCS_DROPSHIP_MARKUP, "50") )

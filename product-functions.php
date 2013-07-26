@@ -332,7 +332,7 @@ function dcs_dropship_createPageForProduct($product)
 		$page["post_type"] = "page";
 		$page["post_content"] = dcs_dropship_generateProductPage($product);
 		$page["post_parent"] = 0;
-		$page["post_author"] = "Dropship Admin";
+		$page["post_author"] = wp_current_user()->ID;
 		$page["post_status"] = "publish";
 		$page["post_title"] = $product['sku'];
 		$page["comment_status"] = "closed";
