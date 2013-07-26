@@ -83,7 +83,7 @@ function dcs_dropship_getProductDatabase()
 	global $dropshipFTPDirectory;
 
 	//JGD: This is a good place to delete the log file, since this only happens once a month (in theory).
-	//unlink( DCS_DROPSHIP_LOGFILE );
+	unlink( DCS_DROPSHIP_LOGFILE );
 
 	dcsLogToFile( "getProductDatabase starts." );
 	$conn_id = ftp_connect( $dropshipFTPServer );
