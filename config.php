@@ -39,9 +39,7 @@ define( 'DCS_DROPSHIP_SHIPPING_MINIMUM', 'dcs-dropship-shipping-minimum' );
 global $dropshipProducts;
 global $dropshipInventory;
 global $dropshipCategories;
-global $dropshipCategoryNumbers;
 global $dropshipBrands;
-global $dropshipBrandNumbers;
 
 global $dropshipFTPServer;
 $dropshipFTPServer = "ftp.dropship.com";

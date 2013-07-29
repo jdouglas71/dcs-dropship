@@ -179,6 +179,28 @@ function dcs_dropship_product_page_shortcode($atts, $content=null)
 add_shortcode( 'dcs_dropship_product_page', 'dcs_dropship_product_page_shortcode' );
 
 /**
+ * Product Category page shortcode.
+ */
+function dcs_dropship_category_page_shortcode($atts, $content=null)
+{
+	$retval = dcs_dropship_category_page();
+
+	return $retval;
+}
+add_shortcode( 'dcs_dropship_category_page', 'dcs_dropship_category_page_shortcode' );
+
+/**
+ * Product Brand page shortcode.
+ */
+function dcs_dropship_brand_page_shortcode($atts, $content=null)
+{
+	$retval = dcs_dropship_brand_page();
+
+	return $retval;
+}
+add_shortcode( 'dcs_dropship_brand_page', 'dcs_dropship_brand_page_shortcode' );
+
+/**
  * Order Status page shortcode.
  */
 function dcs_dropship_order_status_page_shortcode($atts, $content=null)
