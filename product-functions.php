@@ -117,6 +117,8 @@ function dcs_dropship_generateProductCategoryTable()
 		dcs_dropship_loadBrandsAndCats();
 	}
 
+	ksort( $dropshipCategories );
+
 	foreach( $dropshipCategories as $category=>$subCats )
 	{
 		$retval .= "<h2>$category</h2>";
