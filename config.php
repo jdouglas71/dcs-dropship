@@ -50,7 +50,7 @@ $dropshipFTPDirectory = "out";
 define( 'PRODUCT_TAB_FILE_NAME', DCS_DROPSHIP_DIR."files/Product.tab" );
 define( 'INVENTORY_TAB_FILE_NAME', DCS_DROPSHIP_DIR."files/Inventory.tab" );
 define( 'PRODUCT_NUM_LINES', 6 );
-define( 'PRODUCT_NUM_COLS', 3 );
+define( 'PRODUCT_NUM_COLS', 4 );
 define( 'PRODUCT_NUM', 2800 );
 
 /** Functions */

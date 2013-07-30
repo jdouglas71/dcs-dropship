@@ -106,22 +106,24 @@ function dcs_dropship_shopping_cart()
 	if( isset($_SESSION['dcs_dropship_shopping_cart']) && !empty($_SESSION['dcs_dropship_shopping_cart']) )
 	{
 		$retval = "<table>";
-		$retval .= "<tr><th>Product Name</th><th>SKU</th><th>Quantity</th><th>Item Price</th><th>Shipping</th><th>Total</th></tr>";
+		$retval .= "<tr><th>Product Name</th><th>SKU</th><th>Quantity</th><th>Item Price</th><th>Total</th></tr>";
 		foreach( $_SESSION['dcs_dropship_shopping_cart'] as $item )
 		{
 			$retval .= "<tr>";
 			$retval .= "<td>".$item['product_name']."</td>";
 			$retval .= "<td>".$item['sku']."</td>";
 			$retval .= "<td>".$item['quantity']."</td>";
-			$retval .= "<td>$".$item['price']."</td>";
-			$retval .= "<td>".$item['shipping_cost']."</td>";
+			$retval .= "<td>$".sprintf('%01.2f',$item['price'])."</td>";
+			//$retval .= "<td>".$item['shipping_cost']."</td>";
 			$retval .= "<td>$".sprintf('%01.2f',($item['price']*$item['quantity']))."</td>";
 			$retval .= "</tr>";
 		}
 		$retval .= "</table><br />";
 
+		$retval .= "<div style='text-align:right;'>";
 		$retval .= "<input type='button' id='dcs_dropship_clear_cart' value='Clear Cart' class='dcs_dropship_button'></input>";
 		$retval .= "<input type='button' id='dcs_dropship_place_order' value='Place Order' class='dcs_dropship_button'></input>";
+		$retval .= "</div>";
 
 		//Create the hidden form for submitting to the payment gateway
 		$retval .= "<FORM style='display:none;' id='dcs_dropship_payment_form' METHOD=POST ACTION='https://www.eProcessingNetwork.com/cgi-bin/wo/order.pl'>";

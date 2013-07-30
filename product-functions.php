@@ -29,6 +29,7 @@ function dcs_dropship_loadProducts($chunkNumber = 1)
 
 	//Load the products from the database
 	$dropshipProducts = $wpdb->get_results( "SELECT * FROM dcs_dropship_products LIMIT ".$start.",".$end.";", ARRAY_A );
+	asort( $dropshipProducts );
 }
 
 /**
@@ -122,11 +123,6 @@ function dcs_dropship_generateProductCategoryTable()
 	foreach( $dropshipCategories as $category=>$subCats )
 	{
 		$retval .= "<h2>$category</h2>";
-		foreach( $subCats as $cat )
-		{
-			$retval .= "$cat, ";
-		}
-		$retval .= "<br />";
 	}
 
 	return $retval;
@@ -144,8 +140,6 @@ function dcs_dropship_generateProductBrandTable()
 		dcs_dropship_loadBrandsAndCats();
 	}
 
-	$retval .= "<table class='dcs_dropship_brand_table'>";
-
 	$brands = array();
 
 	foreach( $dropshipBrands as $brand )
@@ -162,10 +156,9 @@ function dcs_dropship_generateProductBrandTable()
 
 	foreach( $brands as $brand )
 	{
-		$retval .= "<tr><td>$brand</td></tr>";
+		$retval .= "<h2>$brand</h2>";
 	}
 
-	$retval .= "</table>";
 	return $retval;
 }
 
@@ -175,7 +168,7 @@ function dcs_dropship_generateProductBrandTable()
 function dcs_dropship_generatePrettyProductTable()
 {
 	$dropshipProducts = dcs_dropship_getProducts();
-	$retval = "<table cellpadding='3' class='dcs_dropship_product_table'>";
+	$retval = "<table cellpadding='1' class='dcs_dropship_product_table'>";
 
 	$numCols = 1;
 	$numLines = 1;
@@ -227,7 +220,7 @@ function dcs_dropship_generateProductCell($product)
 	}
 	else
 	{
-		$productImage = $productImage . "?maxY=128";
+		$productImage = $productImage . "?maxY=100";
 	}
 
 	$retval .= "<td class='dcs_dropship_product'>";
@@ -346,7 +339,7 @@ function dcs_dropship_createPageForProduct($product)
 		$page["post_type"] = "page";
 		$page["post_content"] = dcs_dropship_generateProductPage($product);
 		$page["post_parent"] = 0;
-		$page["post_author"] = wp_current_user()->ID;
+		$page["post_author"] = wp_get_current_user()->ID;
 		$page["post_status"] = "publish";
 		$page["post_title"] = $product['sku'];
 		$page["comment_status"] = "closed";
