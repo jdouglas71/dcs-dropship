@@ -18,17 +18,40 @@ function dcs_dropship_getProducts()
 /**
  * Load the products from the database.
  */
-function dcs_dropship_loadProducts($chunkNumber = 1)
+function dcs_dropship_loadProducts($pageNumber = 1, $category="all")
 {
 	global $wpdb;
 	global $dropshipProducts;
 
+	//Clear out the existing pages. We don't want to overload the db.
+	if( isset($dropshipProducts) )
+	{
+		foreach( $dropshipProducts as $product )
+		{
+			$existingPage = get_page_by_title( $product['sku'], ARRAY_A, "page" );
+			if( !$existingPage )
+			{
+				wp_delete_post( $existingPage['ID'], true );
+			}
+		}
+	}
+
 	//Limits.
-	$start = 1*$chunkNumber;
-	$end = PRODUCT_NUM*$chunkNumber;
+	$start = PRODUCT_NUM_COLS*PRODUCT_NUM_LINES*($pageNumber-1);
+	$end = (PRODUCT_NUM_COLS*PRODUCT_NUM_LINES*$pageNumber)+1;
+
+	//Conditions
+	$condition = "";
+	if( $category != "all" )
+	{
+		$category = " WHERE category LIKE (".$category."%)";
+	}
+
+	$sql = "SELECT * FROM dcs_dropship_products LIMIT ".$start.",".$end.$condition.";";
+	dcsLogToFile( "LoadProducts SQL: " . $sql );
 
 	//Load the products from the database
-	$dropshipProducts = $wpdb->get_results( "SELECT * FROM dcs_dropship_products LIMIT ".$start.",".$end.";", ARRAY_A );
+	$dropshipProducts = $wpdb->get_results( $sql, ARRAY_A );
 	asort( $dropshipProducts );
 }
 
@@ -109,7 +132,8 @@ function dcs_dropship_generateProductTable($showKeys=NULL)
  * Display Products Categories in a table.
  */
 function dcs_dropship_generateProductCategoryTable()
-{
+{                               
+	global $wpdb;
 	global $dropshipCategories;
 	$retval = "";
 
@@ -122,7 +146,9 @@ function dcs_dropship_generateProductCategoryTable()
 
 	foreach( $dropshipCategories as $category=>$subCats )
 	{
-		$retval .= "<h2>$category</h2>";
+		$sql = "SELECT COUNT(*) from dcs_dropship_products where category like '".$category."%';";
+		$result = $wpdb->get_results( $sql, ARRAY_A );
+		$retval .= "<h2>$category (".$result[0]['COUNT(*)'].")</h2>";
 	}
 
 	return $retval;
@@ -198,6 +224,8 @@ function dcs_dropship_generatePrettyProductTable()
 
 	$retval .= "</table>";
 
+
+
 	return $retval;
 }
 
@@ -220,7 +248,7 @@ function dcs_dropship_generateProductCell($product)
 	}
 	else
 	{
-		$productImage = $productImage . "?maxY=100";
+		$productImage = $productImage . "?maxX=64&maxY=64";
 	}
 
 	$retval .= "<td class='dcs_dropship_product'>";

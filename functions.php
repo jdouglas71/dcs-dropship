@@ -32,7 +32,16 @@ function dcs_dropship_order_invoice_page()
  */ 
 function dcs_dropship_product_page()
 {
-	$retval = dcs_dropship_generatePrettyProductTable( );
+	$retval = "<table>";
+	$retval .= "<tr><td width='20%'>";
+	$retval .= dcs_dropship_generateProductCategoryTable();
+	$retval .= "</td>";
+
+	$retval .= "<td width='80%'>";
+	$retval .= dcs_dropship_generatePrettyProductTable( );
+	$retval .= "</td></tr>";
+
+	$retval .= "</table>";
 
 	return $retval;
 }
