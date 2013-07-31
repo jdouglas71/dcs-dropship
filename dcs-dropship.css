@@ -7,8 +7,6 @@ td.dcs_dropship_product
 	padding: 3px;
 	margin: 3px;
 	vertical-align: top;
-	//min-width: 50px;
-	//min-height: 100px;
 }
 
 div.dcs_dropship_product
@@ -164,4 +162,19 @@ input.dcs_dropship_order_button
 input.dcs_dropship_search_products
 {
 	text-align: right;
+}
+
+div.dcs_dropship_product_nav
+{
+   	border-bottom: 1px solid #ccc;
+	border-top: 1px solid #ccc;
+	bottom: -1px;
+	left: 0;
+	position: relative;
+	width: 100%;
+	height: 1.7em;
+	background-color: #eee;
+	background-image: -webkit-linear-gradient(top,#e8e8e8,#f4f4f4);
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
 }

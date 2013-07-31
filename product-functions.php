@@ -125,6 +125,13 @@ function dcs_dropship_generateProductTable($showKeys=NULL)
 	}
 
 	$retval .= "</table>";
+
+	$retval .= "<div class='dcs_dropship_product_nav'>";
+	$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?page=1'>1</a>";
+	$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?page=1'>2</a>";
+	$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?page=1'>3</a>";
+	$retval .= "</div>";
+
 	return $retval;
 }
 
@@ -203,6 +210,7 @@ function dcs_dropship_generateProductBrandTable()
  */
 function dcs_dropship_generatePrettyProductTable()
 {
+	global $wpdb;
 	$dropshipProducts = dcs_dropship_getProducts();
 	$retval = "<table cellpadding='1' class='dcs_dropship_product_table'>";
 
@@ -234,7 +242,19 @@ function dcs_dropship_generatePrettyProductTable()
 
 	$retval .= "</table>";
 
+	$sql = "SELECT COUNT(*) from dcs_dropship_products;";
+	$result = $wpdb->get_results($sql,ARRAY_A);
+	$productCount = $result[0]['COUNT(*)'];
+	$pageNum = $productCount / (PRODUCT_NUM_COLS*PRODUCT_NUM_LINES);
 
+	$retval .= "<div class='dcs_dropship_product_nav'>";
+	for($i=1; $i<10; $i++)
+	{
+		$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?page=".$i."'>".$i."</a>&nbsp;";
+	}
+	$retval .= "...&nbsp;";
+	$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?page=".$pageNum."'>Last</a>&nbsp;";
+	$retval .= "</div>";
 
 	return $retval;
 }

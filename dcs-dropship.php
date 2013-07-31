@@ -324,6 +324,11 @@ function dcs_dropship_install()
 		update_option(DCS_DROPSHIP_DECLINED_PAGE, site_url("/order-declined/"));
 	}
 
+	if( !add_option(DCS_DROPSHIP_PRODUCT_PAGE, site_url("/products/")) )
+	{
+		update_option(DCS_DROPSHIP_PRODUCT_PAGE, site_url("/products/"));
+	}
+
 	//JGD TODO: THis isn't working and I don't know why. I'm punting for now and creating them manually.
 	/**
 	//Create the pages for the order approved and declined (if they don't already exist)
@@ -456,6 +461,7 @@ function dcs_dropship_uninstall()
 	delete_option( DCS_DROPSHIP_SHOPPING_CART_PAGE );
 	delete_option( DCS_DROPSHIP_APPROVED_PAGE );
 	delete_option( DCS_DROPSHIP_DECLINED_PAGE );
+	delete_option( DCS_DROPSHIP_PRODUCT_PAGE );
 
 	//Clear out tasks
 	$timestamp = wp_next_scheduled( "dcs_dropship_get_products" );

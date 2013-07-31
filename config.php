@@ -31,6 +31,7 @@ define(	'DCS_DROPSHIP_MARKUP', 'dcs-dropship-markup' );
 define( 'DCS_DROPSHIP_APPROVED_PAGE', 'dcs-dropship-order-approved' );
 define( 'DCS_DROPSHIP_DECLINED_PAGE', 'dcs-dropship-order-declined' );
 define( 'DCS_DROPSHIP_PLACE_ORDER_PAGE', 'dcs-dropship-place-order' );
+define( 'DCS_DROPSHIP_PRODUCT_PAGE', 'dcs-dropship-product-page' );
 define( 'DCS_DROPSHIP_LOGO_URL', 'dcs-dropship-logo-url' );
 define( 'DCS_DROPSHIP_SHIPPING_PERCENTAGE', 'dcs-dropship-shipping-percentage' );
 define( 'DCS_DROPSHIP_SHIPPING_MINIMUM', 'dcs-dropship-shipping-minimum' );
