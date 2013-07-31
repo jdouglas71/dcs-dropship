@@ -88,6 +88,7 @@ function dcs_dropship_getProductDatabase()
 	dcsLogToFile( "getProductDatabase starts." );
 	$conn_id = ftp_connect( $dropshipFTPServer );
 	$login_result = ftp_login( $conn_id, get_option(DCS_DROPSHIP_FTP_USER), get_option(DCS_DROPSHIP_FTP_PASSWORD) );
+	dcsLogToFile( "Login results: " . $login_result );
 	ftp_chdir( $conn_id, $dropshipFTPDirectory );
 	$contents = ftp_nlist( $conn_id, "Product_".date("Ymd")."*.tab" );
 
@@ -101,6 +102,10 @@ function dcs_dropship_getProductDatabase()
 		{
 			dcsLogToFile( "Product FTP get failed." );
 		}
+	}
+	else
+	{
+		dcsLogToFile( "Unabled to get contents of ftp directory." );
 	}
 	dcsLogToFile( "getProductDatabase ends." );
 

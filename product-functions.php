@@ -160,6 +160,7 @@ function dcs_dropship_generateProductCategoryTable()
 function dcs_dropship_generateProductBrandTable()
 {
 	global $dropshipBrands;
+	global $wpdb;
 
 	if( !isset($dropshipBrands) )
 	{
@@ -182,7 +183,12 @@ function dcs_dropship_generateProductBrandTable()
 
 	foreach( $brands as $brand )
 	{
-		$retval .= "<h2>$brand</h2>";
+		$b = $brand;
+		if( $b == "n/a" ) $b = "";
+		$sql = "SELECT COUNT(*) from dcs_dropship_products where brand like '".$b."%';";
+		$result = $wpdb->get_results( $sql, ARRAY_A );
+		//$retval .= dcsVarDumpStr( $result );
+		$retval .= "<h2>$brand (".$result[0]['COUNT(*)'].")</h2>";
 	}
 
 	return $retval;
@@ -649,15 +655,15 @@ function dcs_dropship_createProductDatabase($products, $useKeys, $dropTable = tr
 	if( $dropTable )
 	{
 		$result = $wpdb->query( "DROP TABLE dcs_dropship_products;" );
-		dcsLogToFile( "Drop table Result: " . $result . PHP_EOL );
+		dcsLogToFile( "Drop products table Result: " . $result . PHP_EOL );
 		$wpdb->print_error();
 
 		$result = $wpdb->query( "DROP TABLE dcs_dropship_product_categories;" );
-		dcsLogToFile( "Drop table Result: " . $result . PHP_EOL );
+		dcsLogToFile( "Drop categories table Result: " . $result . PHP_EOL );
 		$wpdb->print_error();
 
 		$result = $wpdb->query( "DROP TABLE dcs_dropship_product_brands;" );
-		dcsLogToFile( "Drop table Result: " . $result . PHP_EOL );
+		dcsLogToFile( "Drop brands table Result: " . $result . PHP_EOL );
 		$wpdb->print_error();
 	}
 
