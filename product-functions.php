@@ -258,10 +258,12 @@ function dcs_dropship_generateProductCell($product)
 	}
 	else
 	{
-		$productImage = $productImage . "?maxX=64&maxY=64";
+		$productImage = $productImage . "?maxY=64";
 	}
 
-	$retval .= "<td class='dcs_dropship_product'>";
+	$tdWidth = 100/PRODUCT_NUM_COLS;
+
+	$retval .= "<td class='dcs_dropship_product' width='".$tdWidth."%'>";
 	$retval .= "<form id='dcs_dropship_product' method='POST'>";
 	$retval .= "<div class='dcs_dropship_product'>";
 	$retval .= "<input type='hidden' class='dcs_dropship_product_hidden'>";
