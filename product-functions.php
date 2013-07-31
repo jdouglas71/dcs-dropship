@@ -3,13 +3,13 @@
 /**
  * Getter for the products.
  */ 
-function dcs_dropship_getProducts()
+function dcs_dropship_getProducts($pageNumber=1)
 {
 	global $dropshipProducts;
 
 	if( $dropshopProducts == NULL )
 	{
-		dcs_dropship_loadProducts();
+		dcs_dropship_loadProducts($pageNumber);
 	}
 
 	return $dropshipProducts;
@@ -22,6 +22,8 @@ function dcs_dropship_loadProducts($pageNumber = 1, $category="all")
 {
 	global $wpdb;
 	global $dropshipProducts;
+
+	dcsLogToFile( "pageNumber: " . $pageNumber );
 
 	//Clear out the existing pages. We don't want to overload the db.
 	if( isset($dropshipProducts) )
@@ -208,10 +210,13 @@ function dcs_dropship_generateProductBrandTable()
 /**
  * Pretty Product Table.
  */
-function dcs_dropship_generatePrettyProductTable()
+function dcs_dropship_generatePrettyProductTable($pageNumber=1)
 {
 	global $wpdb;
-	$dropshipProducts = dcs_dropship_getProducts();
+	global $dropshipProducts;
+
+	dcsLogToFile( "Pretty: $pageNumber" );
+	$dropshipProducts = dcs_dropship_getProducts($pageNumber);
 	$retval = "<table cellpadding='1' class='dcs_dropship_product_table'>";
 
 	$numCols = 1;
@@ -250,10 +255,10 @@ function dcs_dropship_generatePrettyProductTable()
 	$retval .= "<div class='dcs_dropship_product_nav'>";
 	for($i=1; $i<10; $i++)
 	{
-		$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?page=".$i."'>".$i."</a>&nbsp;";
+		$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$i."'>".$i."</a>&nbsp;";
 	}
 	$retval .= "...&nbsp;";
-	$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?page=".$pageNum."'>Last</a>&nbsp;";
+	$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$pageNum."'>Last</a>&nbsp;";
 	$retval .= "</div>";
 
 	return $retval;

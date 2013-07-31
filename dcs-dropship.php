@@ -178,7 +178,13 @@ add_shortcode( 'dcs_dropship_order_invoice_page', 'dcs_dropship_order_invoice_pa
  */
 function dcs_dropship_product_page_shortcode($atts, $content=null)
 {
-	$retval = dcs_dropship_product_page();
+	$pageNumber = 1;
+	if( isset($_GET['pageNumber']) ) 
+	{
+		$pageNumber = $_GET['pageNumber'];
+	}
+
+	$retval = dcs_dropship_product_page($pageNumber);
 
 	return $retval;
 }
