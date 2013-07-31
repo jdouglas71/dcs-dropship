@@ -605,11 +605,11 @@ function dcs_dropship_loadInventoryFromFile()
 
 		//dcsLogToFile( "Inventory lineVals: " . dcsVarDumpStr(lineVals) );
 
-		//Let's not bother with discontinued products.
-		if( $lineVals['status'] != "discontinued" )
+		//Let's not bother with discontinued products, or products with no sku
+		if( ($lineVals['status'] != "discontinued") && ($lineVals['sku'] != "") )
 		{
 			//First line contains the keys, the rest is values.
-			if( $numLines > 0 )
+			if( ($numLines > 0) )
 			{
 				//Update the database
 				$sql = "UPDATE dcs_dropship_products SET ";
