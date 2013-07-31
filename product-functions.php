@@ -40,7 +40,7 @@ function dcs_dropship_loadProducts($pageNumber = 1, $category="all")
 
 	//Limits.
 	$start = PRODUCT_NUM_COLS*PRODUCT_NUM_LINES*($pageNumber-1);
-	$end = (PRODUCT_NUM_COLS*PRODUCT_NUM_LINES*$pageNumber)+1;
+	$end = (PRODUCT_NUM_COLS*PRODUCT_NUM_LINES)+1;
 
 	//Conditions
 	$condition = "";
@@ -54,6 +54,7 @@ function dcs_dropship_loadProducts($pageNumber = 1, $category="all")
 
 	//Load the products from the database
 	$dropshipProducts = $wpdb->get_results( $sql, ARRAY_A );
+	//dcsLogToFile( dcsVarDumpStr( $dropshipProducts ) );
 	asort( $dropshipProducts );
 }
 
@@ -127,12 +128,6 @@ function dcs_dropship_generateProductTable($showKeys=NULL)
 	}
 
 	$retval .= "</table>";
-
-	$retval .= "<div class='dcs_dropship_product_nav'>";
-	$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?page=1'>1</a>";
-	$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?page=1'>2</a>";
-	$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?page=1'>3</a>";
-	$retval .= "</div>";
 
 	return $retval;
 }
@@ -215,7 +210,6 @@ function dcs_dropship_generatePrettyProductTable($pageNumber=1)
 	global $wpdb;
 	global $dropshipProducts;
 
-	dcsLogToFile( "Pretty: $pageNumber" );
 	$dropshipProducts = dcs_dropship_getProducts($pageNumber);
 	$retval = "<table cellpadding='1' class='dcs_dropship_product_table'>";
 
@@ -250,13 +244,30 @@ function dcs_dropship_generatePrettyProductTable($pageNumber=1)
 	$sql = "SELECT COUNT(*) from dcs_dropship_products;";
 	$result = $wpdb->get_results($sql,ARRAY_A);
 	$productCount = $result[0]['COUNT(*)'];
-	$pageNum = $productCount / (PRODUCT_NUM_COLS*PRODUCT_NUM_LINES);
+	$pageNum = round( $productCount / (PRODUCT_NUM_COLS*PRODUCT_NUM_LINES) );
 
 	$retval .= "<div class='dcs_dropship_product_nav'>";
-	for($i=1; $i<10; $i++)
+	if( $pageNumber > 1 )
 	{
-		$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$i."'>".$i."</a>&nbsp;";
+		$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=1'>First</a>&nbsp;";
+		$retval .= "...&nbsp;";
 	}
+
+	if( $pageNumber >= $pageNum ) 
+	{
+		for($i=($pageNum-10); $i<$pageNum; $i++)
+		{
+			$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$i."'>".$i."</a>&nbsp;";
+		}
+	}
+	else
+	{
+		for($i=$pageNumber; $i<(10+$pageNumber); $i++)
+		{
+			$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$i."'>".$i."</a>&nbsp;";
+		}
+	}
+
 	$retval .= "...&nbsp;";
 	$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$pageNum."'>Last</a>&nbsp;";
 	$retval .= "</div>";
@@ -535,9 +546,9 @@ function dcs_dropship_loadProductsFromFile($startLine = 0)
 			//dcsLogToFile( "Parsed Line: " . dcsVarDumpStr($lineVals) );
 
 			//Let's not bother with discontinued products, products with blank or zero costs, or zero quantity
-			if( ($lineVals['status'] != "discontinued") ||
-				($lineVals['wholesale_cost'] == "") ||
-				($lineVals['quantity'] == "0") )
+			if( ($lineVals['status'] != "discontinued") &&
+				(trim($lineVals['wholesale_cost']) != "") &&
+				($lineVals['quantity'] != "0") )
 			{
 				//First line contains the keys, the rest is values.
 				if( $numLines > 0 )
