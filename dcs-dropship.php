@@ -50,6 +50,7 @@ function dcs_dropship_load_scripts()
     wp_localize_script( "dcs_dropship_script", "dcs_dropship_script_vars",
                         array(
 								"ajaxurl" => admin_url('admin-ajax.php'),
+                                "dcs_dropship_search_products_nonce"=>wp_create_nonce("dcs_dropship_search_products"),
                                 "dcs_dropship_clear_cart_nonce"=>wp_create_nonce("dcs_dropship_clear_cart"),
                                 "dcs_dropship_add_to_cart_nonce"=>wp_create_nonce("dcs_dropship_add_to_cart")
                             )

@@ -243,6 +243,19 @@ add_action( 'wp_ajax_dcs_dropship_clear_cart', 'dcs_dropship_clearCart' );
 add_action( 'wp_ajax_nopriv_dcs_dropship_clear_cart', 'dcs_dropship_clearCart' );
 
 /**
+ * Search Products.
+ */
+function dcs_dropship_searchProducts()
+{
+	check_ajax_referer( "dcs_dropship_search_products", "dcs_dropship_search_products_nonce" );
+
+	echo $_POST['terms'];
+	die();
+}
+add_action( 'wp_ajax_dcs_dropship_search_products', 'dcs_dropship_searchProducts' );
+add_action( 'wp_ajax_nopriv_dcs_dropship_search_products', 'dcs_dropship_searchProducts' );
+
+/**
  * Pull from the remote url.
  */ 
 function dcs_dropship_remote_get($option_name)

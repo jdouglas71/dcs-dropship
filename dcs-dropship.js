@@ -52,4 +52,20 @@ jQuery(document).ready(function() {
 			alert( "Product Load Complete." );
 		});
 	});
+
+	/** Search Products */
+	jQuery("#dcs_dropship_search_products").click(function() {
+
+		var data = {
+			action: 'dcs_dropship_search_products',
+			terms: jQuery('#dcs_dropship_search_terms').val(),
+			dcs_dropship_search_products_nonce: dcs_dropship_script_vars.dcs_dropship_search_products_nonce
+		};
+
+		jQuery.post( dcs_dropship_script_vars.ajaxurl, data, function(response) {
+			alert( response );
+			//window.open( response, "_self" );
+		});
+	});
+
 });

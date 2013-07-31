@@ -160,3 +160,8 @@ input.dcs_dropship_order_button
 	padding-right: 3px !important;
 	margin-left: 5px !important;
 }
+
+input.dcs_dropship_search_products
+{
+	text-align: right;
+}

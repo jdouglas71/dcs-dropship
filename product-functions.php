@@ -151,6 +151,10 @@ function dcs_dropship_generateProductCategoryTable()
 		$retval .= "<h2>$category (".$result[0]['COUNT(*)'].")</h2>";
 	}
 
+	//Search box
+	$retval .= "<input type='text' id='dcs_dropship_search_terms' size='25'>";
+	$retval .= "<input type='button' id='dcs_dropship_search_products' value='Search'>";
+
 	return $retval;
 }
 
