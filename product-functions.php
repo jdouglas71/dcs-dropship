@@ -40,7 +40,7 @@ function dcs_dropship_loadProducts($pageNumber = 1, $category="all")
 
 	//Limits.
 	$start = PRODUCT_NUM_COLS*PRODUCT_NUM_LINES*($pageNumber-1);
-	$end = (PRODUCT_NUM_COLS*PRODUCT_NUM_LINES)+1;
+	$end = (PRODUCT_NUM_COLS*PRODUCT_NUM_LINES);
 
 	//Conditions
 	$condition = "";
@@ -218,8 +218,8 @@ function dcs_dropship_generatePrettyProductTable($pageNumber=1)
 
 	foreach( $dropshipProducts as $product )
 	{
-		if( $product['status'] == "in-stock" )
-		{
+		//if( $product['status'] == "in-stock" )
+		//{
 			if( $numCols == 1 )
 			{
 				$retval .= "<tr>";
@@ -236,7 +236,7 @@ function dcs_dropship_generatePrettyProductTable($pageNumber=1)
 				}
 			}
 			$numCols++;
-		}
+		//}
 	}
 
 	$retval .= "</table>";
@@ -244,7 +244,7 @@ function dcs_dropship_generatePrettyProductTable($pageNumber=1)
 	$sql = "SELECT COUNT(*) from dcs_dropship_products;";
 	$result = $wpdb->get_results($sql,ARRAY_A);
 	$productCount = $result[0]['COUNT(*)'];
-	$pageNum = round( $productCount / (PRODUCT_NUM_COLS*PRODUCT_NUM_LINES) );
+	$pageTotal = round( $productCount / (PRODUCT_NUM_COLS*PRODUCT_NUM_LINES) );
 
 	$retval .= "<div class='dcs_dropship_product_nav'>";
 	if( $pageNumber > 1 )
@@ -253,9 +253,9 @@ function dcs_dropship_generatePrettyProductTable($pageNumber=1)
 		$retval .= "...&nbsp;";
 	}
 
-	if( $pageNumber >= $pageNum ) 
+	if( $pageNumber >= ($pageTotal-10) ) 
 	{
-		for($i=($pageNum-10); $i<$pageNum; $i++)
+		for($i=($pageTotal-10); $i<$pageTotal; $i++)
 		{
 			$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$i."'>".$i."</a>&nbsp;";
 		}
@@ -306,7 +306,7 @@ function dcs_dropship_generateProductCell($product)
 	$retval .= "<div class='dcs_dropship_product_top_div'>";
 	$retval .= "<div class='dcs_dropship_product_title'><span id='product_name".$marker."'>".$product['product_title']."</span></div><br />";
 	$retval .= "<div class='dcs_dropship_product_img_div'>";
-	$retval .= "<a href='".$company_url."'><img class='dcs_dropship_product' src='".$productImage."'></a><br />";
+	$retval .= "<a href='".$company_url."'><img height='64' class='dcs_dropship_product' src='".$productImage."'></a><br />";
 	$retval .= "</div>";
 	$retval .= "<div class='dcs_dropship_product_text'>";
 	$retval .= "<span>SKU:<span id='sku".$marker."'> ".$product['sku']."</span></span><br />";
