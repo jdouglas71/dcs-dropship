@@ -148,6 +148,10 @@ function dcs_dropship_generateProductCategoryTable()
 
 	ksort( $dropshipCategories );
 
+	$sql = "SELECT COUNT(*) from dcs_dropship_products;";
+	$result = $wpdb->get_results( $sql, ARRAY_A );
+	$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?category=all'>All (".$result[0]['COUNT(*)'].")</a><br />";
+
 	foreach( $dropshipCategories as $category=>$subCats )
 	{
 		$sql = "SELECT COUNT(*) from dcs_dropship_products where category like '".$category."%';";
