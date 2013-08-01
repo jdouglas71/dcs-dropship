@@ -218,25 +218,22 @@ function dcs_dropship_generatePrettyProductTable($pageNumber=1)
 
 	foreach( $dropshipProducts as $product )
 	{
-		//if( $product['status'] == "in-stock" )
-		//{
-			if( $numCols == 1 )
+		if( $numCols == 1 )
+		{
+			$retval .= "<tr>";
+		}
+		$retval .= dcs_dropship_generateProductCell( $product );
+		if( $numCols == PRODUCT_NUM_COLS )
+		{
+			$retval .= "</tr>";
+			$numCols = 0;
+			$numLines++;
+			if( $numLines > PRODUCT_NUM_LINES )
 			{
-				$retval .= "<tr>";
+				break;
 			}
-			$retval .= dcs_dropship_generateProductCell( $product );
-			if( $numCols == PRODUCT_NUM_COLS )
-			{
-				$retval .= "</tr>";
-				$numCols = 0;
-				$numLines++;
-				if( $numLines > PRODUCT_NUM_LINES )
-				{
-					break;
-				}
-			}
-			$numCols++;
-		//}
+		}
+		$numCols++;
 	}
 
 	$retval .= "</table>";
