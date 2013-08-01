@@ -259,6 +259,7 @@ function dcs_dropship_generatePrettyProductTable($pageNumber=1)
 		{
 			$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$i."'>".$i."</a>&nbsp;";
 		}
+		$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$pageTotal."'>Last</a>&nbsp;";
 	}
 	else
 	{
@@ -266,10 +267,10 @@ function dcs_dropship_generatePrettyProductTable($pageNumber=1)
 		{
 			$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$i."'>".$i."</a>&nbsp;";
 		}
+		$retval .= "...&nbsp;";
+		$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$pageTotal."'>Last</a>&nbsp;";
 	}
 
-	$retval .= "...&nbsp;";
-	$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$pageTotal."'>Last</a>&nbsp;";
 	$retval .= "</div>";
 
 	return $retval;
@@ -294,7 +295,7 @@ function dcs_dropship_generateProductCell($product)
 	}
 	else
 	{
-		$productImage = $productImage . "?maxY=64";
+		$productImage = $productImage . "?maxY=64&maxX=64";
 	}
 
 	$tdWidth = 100/PRODUCT_NUM_COLS;
