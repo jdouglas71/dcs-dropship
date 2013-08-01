@@ -269,7 +269,7 @@ function dcs_dropship_generatePrettyProductTable($pageNumber=1)
 	}
 
 	$retval .= "...&nbsp;";
-	$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$pageNum."'>Last</a>&nbsp;";
+	$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$pageTotal."'>Last</a>&nbsp;";
 	$retval .= "</div>";
 
 	return $retval;
