@@ -184,7 +184,13 @@ function dcs_dropship_product_page_shortcode($atts, $content=null)
 		$pageNumber = $_GET['pageNumber'];
 	}
 
-	$retval = dcs_dropship_product_page($pageNumber);
+	$category = "all";
+	if( isset($_GET['category']) )
+	{
+		$category = $_GET['category'];
+	}
+
+	$retval = dcs_dropship_product_page($pageNumber, $category);
 
 	return $retval;
 }
