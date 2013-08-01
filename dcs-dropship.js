@@ -58,13 +58,12 @@ jQuery(document).ready(function() {
 
 		var data = {
 			action: 'dcs_dropship_search_products',
-			terms: jQuery('#dcs_dropship_search_terms').val(),
+			searchTerms: jQuery('#dcs_dropship_search_terms').val(),
 			dcs_dropship_search_products_nonce: dcs_dropship_script_vars.dcs_dropship_search_products_nonce
 		};
 
 		jQuery.post( dcs_dropship_script_vars.ajaxurl, data, function(response) {
-			alert( response );
-			//window.open( response, "_self" );
+			window.open( response, "_self" );
 		});
 	});
 

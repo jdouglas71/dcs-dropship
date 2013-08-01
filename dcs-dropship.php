@@ -190,7 +190,13 @@ function dcs_dropship_product_page_shortcode($atts, $content=null)
 		$category = $_GET['category'];
 	}
 
-	$retval = dcs_dropship_product_page($pageNumber, $category);
+	$searchTerms = "";
+	if( isset($_GET['searchTerms']) )
+	{
+		$searchTerms = $_GET['searchTerms'];
+	}
+
+	$retval = dcs_dropship_product_page($pageNumber, $category, $searchTerms);
 
 	return $retval;
 }

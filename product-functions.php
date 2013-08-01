@@ -3,13 +3,13 @@
 /**
  * Getter for the products.
  */ 
-function dcs_dropship_getProducts($pageNumber=1,$category="all")
+function dcs_dropship_getProducts($pageNumber=1,$category="all",$searchTerms="")
 {
 	global $dropshipProducts;
 
 	if( $dropshopProducts == NULL )
 	{
-		dcs_dropship_loadProducts($pageNumber,$category);
+		dcs_dropship_loadProducts($pageNumber,$category,$searchTerms);
 	}
 
 	return $dropshipProducts;
@@ -18,12 +18,12 @@ function dcs_dropship_getProducts($pageNumber=1,$category="all")
 /**
  * Load the products from the database.
  */
-function dcs_dropship_loadProducts($pageNumber = 1, $category="all")
+function dcs_dropship_loadProducts($pageNumber = 1, $category="all", $searchTerms="")
 {
 	global $wpdb;
 	global $dropshipProducts;
 
-	dcsLogToFile( "pageNumber: " . $pageNumber . " category: " . $category );
+	dcsLogToFile( "pageNumber: " . $pageNumber . " category: " . $category . " searchTerms: " . $searchTerms );
 
 	//Clear out the existing pages. We don't want to overload the db.
 	if( isset($dropshipProducts) )
@@ -47,6 +47,14 @@ function dcs_dropship_loadProducts($pageNumber = 1, $category="all")
 	if( $category != "all" )
 	{
 		$condition = " WHERE category LIKE '".$category."%'";
+		if( $searchTerms != "" )
+		{
+			$condition .= " AND product_title like '%".$searchTerms."%'";
+		}
+	}
+	else if( $searchTerms != "" )
+	{
+		$condition = " WHERE product_title LIKE '%".$searchTerms."%'";
 	}
 
 	$sql = "SELECT * FROM dcs_dropship_products ".$condition." LIMIT ".$start.",".$amnt.";";
@@ -209,12 +217,12 @@ function dcs_dropship_generateProductBrandTable()
 /**
  * Pretty Product Table.
  */
-function dcs_dropship_generatePrettyProductTable($pageNumber=1, $category="all")
+function dcs_dropship_generatePrettyProductTable($pageNumber=1, $category="all", $searchTerms="")
 {
 	global $wpdb;
 	global $dropshipProducts;
 
-	$dropshipProducts = dcs_dropship_getProducts($pageNumber, $category);
+	$dropshipProducts = dcs_dropship_getProducts($pageNumber, $category, $searchTerms);
 	$retval = "<table cellpadding='1' class='dcs_dropship_product_table'>";
 
 	$numCols = 1;
@@ -246,6 +254,14 @@ function dcs_dropship_generatePrettyProductTable($pageNumber=1, $category="all")
 	if( $category != "all" )
 	{
 		$sql .= " where category like '".$category."%'";
+		if( $searchTerms != "" )
+		{
+			$sql .= " and product_title like '%".$searchTerms."%' ";
+		}
+	}
+	else if( $searchTerms != "" )
+	{
+		$sql .= " where product_title like '%".$searchTerms."%'";
 	}
 	$sql .= ";";
 	$result = $wpdb->get_results($sql,ARRAY_A);
@@ -255,7 +271,7 @@ function dcs_dropship_generatePrettyProductTable($pageNumber=1, $category="all")
 	$retval .= "<div class='dcs_dropship_product_nav'>";
 	if( $pageNumber > 1 )
 	{
-		$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=1&category=$category'>First</a>&nbsp;";
+		$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=1&category=$category&searchTerms=$searchTerms'>First</a>&nbsp;";
 		$retval .= "...&nbsp;";
 	}
 
@@ -263,18 +279,18 @@ function dcs_dropship_generatePrettyProductTable($pageNumber=1, $category="all")
 	{
 		for($i=($pageTotal-10); $i<$pageTotal; $i++)
 		{
-			$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$i."&category=$category'>".$i."</a>&nbsp;";
+			$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$i."&category=$category&searchTerms=$searchTerms'>".$i."</a>&nbsp;";
 		}
-		$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$pageTotal."&category=$category'>Last</a>&nbsp;";
+		$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$pageTotal."&category=$category&searchTerms=$searchTerms'>Last</a>&nbsp;";
 	}
 	else
 	{
 		for($i=$pageNumber; (($i<(10+$pageNumber))&&($i<=$pageTotal)); $i++)
 		{
-			$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$i."&category=$category'>".$i."</a>&nbsp;";
+			$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$i."&category=$category&searchTerms=$searchTerms'>".$i."</a>&nbsp;";
 		}
 		$retval .= "...&nbsp;";
-		$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$pageTotal."&category=$category'>Last</a>&nbsp;";
+		$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$pageTotal."&category=$category&searchTerms=$searchTerms'>Last</a>&nbsp;";
 	}
 
 	$retval .= "</div>";

@@ -30,7 +30,7 @@ function dcs_dropship_order_invoice_page()
 /**
  * Product Page.
  */ 
-function dcs_dropship_product_page($pageNumber, $category)
+function dcs_dropship_product_page($pageNumber, $category, $searchTerms)
 {
 	$retval = "<table>";
 	$retval .= "<tr><td width='20%'>";
@@ -38,7 +38,7 @@ function dcs_dropship_product_page($pageNumber, $category)
 	$retval .= "</td>";
 
 	$retval .= "<td width='80%'>";
-	$retval .= dcs_dropship_generatePrettyProductTable($pageNumber, $category);
+	$retval .= dcs_dropship_generatePrettyProductTable($pageNumber, $category, $searchTerms);
 	$retval .= "</td></tr>";
 
 	$retval .= "</table>";
@@ -249,7 +249,7 @@ function dcs_dropship_searchProducts()
 {
 	check_ajax_referer( "dcs_dropship_search_products", "dcs_dropship_search_products_nonce" );
 
-	echo $_POST['terms'];
+	echo get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?searchTerms=".$_POST['searchTerms'];
 	die();
 }
 add_action( 'wp_ajax_dcs_dropship_search_products', 'dcs_dropship_searchProducts' );
