@@ -178,3 +178,10 @@ div.dcs_dropship_product_nav
 	border-bottom-right-radius: 5px;
 	border-bottom-left-radius: 5px;
 }
+
+input.dcs_dropship_input
+{
+   	border-radius: 3px;
+	padding: 2px;
+	border: 1px solid #b0b0b0 !important;
+}

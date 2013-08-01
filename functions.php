@@ -91,7 +91,40 @@ function dcs_dropship_tracking_page()
  */
 function dcs_dropship_approved_order_page()
 {
-	//JGD TODO: Here's where to create the order file and place it on the dropship server.
+	$fields = array( "po_number",
+					 "line_item_sku",
+					 "line_item_quantity",
+					 "line_item_cost",
+					 "line_item_title",
+					 "ship_first_name",
+					 "ship_last_name",
+					 "ship_company",
+					 "ship_address_1",
+					 "ship_address_2",
+					 "ship_city",
+					 "ship_state",
+					 "ship_zip_code",
+					 "ship_country",
+					 "ship_phone",
+					 "ship_email",
+					 "ship_method",
+					 "ship_carrier",
+					 "user_defined_name_1",
+					 "user_defined_value_1",
+					 "retailer_create_date" );	
+
+	$shippingInfo = unserialize( get_option("dcs-dropship-shipping-info") );
+
+	dcsLogToFile( "Shipping Info: " . dcsVarDumpStr($shippingInfo) );
+
+	if( !session_id() ) session_start();
+	if( isset($_SESSION['dcs_dropship_shopping_cart']) && !empty($_SESSION['dcs_dropship_shopping_cart']) )
+	{
+		foreach( $_SESSION['dcs_dropship_shopping_cart'] as $item )
+		{
+		}
+	}
+
 	return "Order Approved.";
 }
 
@@ -128,6 +161,22 @@ function dcs_dropship_shopping_cart()
 			$retval .= "</tr>";
 		}
 		$retval .= "</table><br />";
+
+		$retval .= "<form id='dcs_dropship_shipping_form'>";
+		$retval .= "<h2>Shipping Info</h2>";
+		$retval .= "<table>";
+		$retval .= "<tr><td width='10%' style='text-align:right;' ><label for='shipping_first_name'>First Name</label></td><td><input type='text' name='shipping_first_name' class='dcs_dropship_input'></td></tr>";
+		$retval .= "<tr><td width='10%' style='text-align:right;' ><label for='shipping_last_name'>Last Name</label></td><td><input type='text' name='shipping_last_name' class='dcs_dropship_input'></td></tr>";
+		$retval .= "<tr><td width='10%' style='text-align:right;' ><label for='shipping_company'>Company</label></td><td><input type='text' name='shipping_company' class='dcs_dropship_input'></td></tr>";
+		$retval .= "<tr><td width='10%' style='text-align:right;' ><label for='shipping_address'>Address</label></td><td><input type='text' name='shipping_address' class='dcs_dropship_input'></td></tr>";
+		$retval .= "<tr><td width='10%' style='text-align:right;' ><label for='shipping_city'>City</label></td><td><input type='text' name='shipping_city' class='dcs_dropship_input'></td></tr>";
+		$retval .= "<tr><td width='10%' style='text-align:right;' ><label for='shipping_state'>State</label></td><td><input type='text' name='shipping_state' class='dcs_dropship_input'></td></tr>";
+		$retval .= "<tr><td width='10%' style='text-align:right;' ><label for='shipping_zip'>Zip</label></td><td><input type='text' name='shipping_zip' class='dcs_dropship_input'></td></tr>";
+		$retval .= "<tr><td width='10%' style='text-align:right;' ><label for='shipping_country'>Country</label></td><td><input type='text' name='shipping_country' class='dcs_dropship_input'></td></tr>";
+		$retval .= "<tr><td width='10%' style='text-align:right;' ><label for='shipping_phone'>Phone</label></td><td><input type='text' name='shipping_phone' class='dcs_dropship_input'></td></tr>";
+		$retval .= "<tr><td width='10%' style='text-align:right;' ><label for='shipping_email'>Email</label></td><td><input type='text' name='shipping_email' class='dcs_dropship_input'></td></tr>";
+		$retval .= "</table>";
+		$retval .= "</form>";
 
 		$retval .= "<div style='text-align:right;'>";
 		$retval .= "<input type='button' id='dcs_dropship_clear_cart' value='Clear Cart' class='dcs_dropship_button'></input>";
@@ -168,17 +217,16 @@ function dcs_dropship_shopping_cart()
 		$retval .= "<input type='text' name='BillPhone' value=''>";
 		$retval .= "<input type='text' name='BillEmail' value=''>";
 		//Shipping info
-		$retval .= "<input type='text' name='ShipFirstName' value=''>";
-		$retval .= "<input type='text' name='ShipLastName' value=''>";
-		$retval .= "<input type='text' name='ShipCompany' value=''>";
-		$retval .= "<input type='text' name='ShipAddress' value=''>";
-		$retval .= "<input type='text' name='ShipCity' value=''>";
-		$retval .= "<input type='text' name='ShipState' value=''>";
-		$retval .= "<input type='text' name='ShipZip' value=''>";
-		$retval .= "<input type='text' name='ShipCountry' value=''>";
-		$retval .= "<input type='text' name='ShipPhone' value=''>";
-		$retval .= "<input type='text' name='ShipEmail' value=''>";
-		$retval .= "<input type='hidden' name='ShippingPrompt' value='Yes'>";    
+		$retval .= "<input type='hidden' name='ShipFirstName' value=''>";
+		$retval .= "<input type='hidden' name='ShipLastName' value=''>";
+		$retval .= "<input type='hidden' name='ShipCompany' value=''>";
+		$retval .= "<input type='hidden' name='ShipAddress' value=''>";
+		$retval .= "<input type='hidden' name='ShipCity' value=''>";
+		$retval .= "<input type='hidden' name='ShipState' value=''>";
+		$retval .= "<input type='hidden' name='ShipZip' value=''>";
+		$retval .= "<input type='hidden' name='ShipCountry' value=''>";
+		$retval .= "<input type='hidden' name='ShipPhone' value=''>";
+		$retval .= "<input type='hidden' name='ShipEmail' value=''>";
 		//Shipping fees (JGD TODO)
 		$retval .= "<INPUT TYPE='HIDDEN' NAME='ServiceDesc' VALUE='Shipping and Handling'>";
         $retval .= "<INPUT TYPE='HIDDEN' NAME='ServiceFee' VALUE='".get_option(DCS_DROPSHIP_SHIPPING_PERCENTAGE)."'>"; 
@@ -254,6 +302,34 @@ function dcs_dropship_searchProducts()
 }
 add_action( 'wp_ajax_dcs_dropship_search_products', 'dcs_dropship_searchProducts' );
 add_action( 'wp_ajax_nopriv_dcs_dropship_search_products', 'dcs_dropship_searchProducts' );
+
+/**
+ * Place order.
+ */
+function dcs_dropship_placeOrder()
+{
+	check_ajax_referer( "dcs_dropship_place_order", "dcs_dropship_place_order_nonce" );
+
+	$shippingInfo = array();
+	$shippingInfo['first_name'] = $_POST['first_name'];
+	$shippingInfo['last_name'] = $_POST['last_name'];
+	$shippingInfo['company'] = $_POST['company'];
+	$shippingInfo['address'] = $_POST['address'];
+	$shippingInfo['city'] = $_POST['city'];
+	$shippingInfo['state'] = $_POST['state'];
+	$shippingInfo['zip'] = $_POST['zip'];
+	$shippingInfo['country'] = $_POST['country'];
+	$shippingInfo['phone'] = $_POST['phone'];
+	$shippingInfo['email'] = $_POST['email'];
+
+	dcsLogToFile( "placeorder: " . dcsVarDumpStr($shippingInfo) );
+
+	update_option( "dcs-dropship-shipping-info", serialize($shippingInfo) );
+
+	die();
+}
+add_action( 'wp_ajax_dcs_dropship_place_order', 'dcs_dropship_placeOrder' );
+add_action( 'wp_ajax_nopriv_dcs_dropship_place_order', 'dcs_dropship_placeOrder' );
 
 /**
  * Pull from the remote url.

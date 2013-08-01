@@ -36,9 +36,86 @@ jQuery(document).ready(function() {
 	/** Place Order */
 	jQuery("#dcs_dropship_place_order").click(function() {
 
-		//Submit the hidden payment form.
-		jQuery("#dcs_dropship_payment_form").submit();
+		var firstName = jQuery("input[name=shipping_first_name]").val();
+		var lastName = jQuery("input[name=shipping_last_name]").val();
+		var company = jQuery("input[name=shipping_company]").val();
+		var address = jQuery("input[name=shipping_address]").val();
+		var city = jQuery("input[name=shipping_city]").val();
+		var state = jQuery("input[name=shipping_state]").val();
+		var zip = jQuery("input[name=shipping_zip]").val();
+		var country = jQuery("input[name=shipping_country]").val();
+		var phone = jQuery("input[name=shipping_phone]").val();
+		var email = jQuery("input[name=shipping_email]").val();
 
+		//Validation
+		if( !firstName )
+		{
+			alert( "The First Name field is required." );
+			return;
+		}
+
+		if( !lastName )
+		{
+			alert( "The Last Name field is required." );
+			return;
+		}
+
+		if( !address )
+		{
+			alert( "The Address field is required." );
+			return;
+		}
+
+		if( !city )
+		{
+			alert( "The City field is required." );
+			return;
+		}
+
+		if( !state )
+		{
+			alert( "The State field is required." );
+			return;
+		}
+
+		if( !zip )
+		{
+			alert( "The Zip Code field is required." );
+			return;
+		}
+
+		//Process shipping data by filling out the values in the form being submitted to the payment gateway.
+		jQuery("input[name=ShipFirstName]").attr("value", firstName);
+		jQuery("input[name=ShipLastName]").attr("value", lastName);
+		jQuery("input[name=ShipCompany]").attr("value", company);
+		jQuery("input[name=ShipAddress]").attr("value", address);
+		jQuery("input[name=ShipCity]").attr("value", city);
+		jQuery("input[name=ShipState]").attr("value", state);
+		jQuery("input[name=ShipZip]").attr("value", zip);
+		jQuery("input[name=ShipCountry]").attr("value", country);
+		jQuery("input[name=ShipPhone]").attr("value", phone);
+		jQuery("input[name=ShipEMail]").attr("value", zip);
+
+
+		//Send the data back to the server so we can store it for sending to the dropship server.
+		var data = {
+			action: 'dcs_dropship_place_order',
+			dcs_dropship_place_order_nonce: dcs_dropship_script_vars.dcs_dropship_place_order_nonce,
+			first_name: firstName,
+			last_name: lastName,
+			company: company,
+			address: address,
+			city: city,
+			state: state,
+			country: country,
+			phone: phone,
+			email: email
+		};
+
+		jQuery.post( dcs_dropship_script_vars.ajaxurl, data, function(response) {
+			//Submit the hidden payment form.
+			jQuery("#dcs_dropship_payment_form").submit();
+		});
 	});
 
 	/** Get Products */
