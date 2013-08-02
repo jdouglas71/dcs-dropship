@@ -1,4 +1,6 @@
 <?php
+//Gotta do this here to get around session start header errors on greengeeks server.
+session_start();
 
 /**
  * Getter for the products.

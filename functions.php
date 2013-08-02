@@ -1,5 +1,8 @@
 <?php
 
+//Gotta do this here to get around session start header errors on greengeeks server.
+session_start();
+
 //JGD NOTE: This prevents the auto insertion of paragraphs and line breaks.
 remove_filter( 'the_content', 'wpautop' );
 
@@ -113,15 +116,20 @@ function dcs_dropship_approved_order_page()
 					 "user_defined_value_1",
 					 "retailer_create_date" );	
 
-	$shippingInfo = unserialize( get_option("dcs-dropship-shipping-info") );
-
-	dcsLogToFile( "Shipping Info: " . dcsVarDumpStr($shippingInfo) );
-
 	if( !session_id() ) session_start();
-	if( isset($_SESSION['dcs_dropship_shopping_cart']) && !empty($_SESSION['dcs_dropship_shopping_cart']) )
+
+	//Get the shipping info
+	if( isset($_SESSION['dcs_dropship_shipping_info']) && !empty($_SESSION['dcs_dropship_shipping_info']) )
 	{
-		foreach( $_SESSION['dcs_dropship_shopping_cart'] as $item )
+		$shippingInfo = $_SESSION['dcs_dropship_shipping_info'];
+		dcsLogToFile( "Shipping Info: " . dcsVarDumpStr($shippingInfo) );
+	
+		if( isset($_SESSION['dcs_dropship_shopping_cart']) && !empty($_SESSION['dcs_dropship_shopping_cart']) )
 		{
+			$shoppingCart = $_SESSION['dcs_dropship_shopping_cart'];
+			foreach( $shoppingCart as $item )
+			{
+			}
 		}
 	}
 
@@ -324,7 +332,8 @@ function dcs_dropship_placeOrder()
 
 	dcsLogToFile( "placeorder: " . dcsVarDumpStr($shippingInfo) );
 
-	update_option( "dcs-dropship-shipping-info", serialize($shippingInfo) );
+	if( !session_id() ) session_start();
+	$_SESSION['dcs_dropship_shipping_info'] = $shippingInfo;
 
 	die();
 }
