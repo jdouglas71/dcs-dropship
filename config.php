@@ -44,8 +44,10 @@ global $dropshipBrands;
 
 global $dropshipFTPServer;
 $dropshipFTPServer = "ftp.dropship.com";
-global $dropshipFTPDirectory;
-$dropshipFTPDirectory = "out";
+global $dropshipFTPOutDirectory;
+$dropshipFTPOutDirectory = "out";
+global $dropshipFTPInDirectory;
+$dropshipFTPInDirectory = "in";
 
 /** Product Related */
 define( 'PRODUCT_TAB_FILE_NAME', DCS_DROPSHIP_DIR."files/Product.tab" );

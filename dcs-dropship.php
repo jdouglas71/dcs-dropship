@@ -3,7 +3,7 @@
 Plugin Name: DCS Dropship Plugin
 Plugin URI: http://www.douglasconsulting.net
 Description: A Plugin to interface with the Dropship Distribution Service. 
-Version: 0.8 Beta
+Version: 0.9 Beta
 Author: Jason Douglas
 Author URI: http://www.douglasconsulting.net
 License: GPL
@@ -82,7 +82,7 @@ add_filter('cron_schedules','dcs_dropship_cron_definer');
 function dcs_dropship_getProductDatabase()
 {
 	global $dropshipFTPServer;
-	global $dropshipFTPDirectory;
+	global $dropshipFTPOutDirectory;
 
 	//JGD: This is a good place to delete the log file, since this only happens once a month (in theory).
 	unlink( DCS_DROPSHIP_LOGFILE );
@@ -91,7 +91,7 @@ function dcs_dropship_getProductDatabase()
 	$conn_id = ftp_connect( $dropshipFTPServer );
 	$login_result = ftp_login( $conn_id, get_option(DCS_DROPSHIP_FTP_USER), get_option(DCS_DROPSHIP_FTP_PASSWORD) );
 	dcsLogToFile( "Login results: " . $login_result );
-	ftp_chdir( $conn_id, $dropshipFTPDirectory );
+	ftp_chdir( $conn_id, $dropshipFTPOutDirectory );
 	$contents = ftp_nlist( $conn_id, "Product_".date("Ymd")."*.tab" );
 
 	if( $contents[0] )

@@ -94,6 +94,10 @@ function dcs_dropship_tracking_page()
  */
 function dcs_dropship_approved_order_page()
 {
+	global $dropshipFTPServer;
+	global $dropshipFTPInDirectory;
+	$retval = "Order Approved.";
+
 	$fields = array( "po_number",
 					 "line_item_sku",
 					 "line_item_quantity",
@@ -118,10 +122,19 @@ function dcs_dropship_approved_order_page()
 
 	if( !session_id() ) session_start();
 
+	$purchaseOrderFile = "";
+	foreach( $fields as $field )
+	{
+		$purchaseOrderFile .= $field . "\t";
+	}
+	$purchaseOrderFile = substr( $purchaseOrderFile, 0, strlen($purchaseOrderFile)-1 );
+	$purchaseOrderFile .= PHP_EOL;
+
 	//Get the shipping info
 	if( isset($_SESSION['dcs_dropship_shipping_info']) && !empty($_SESSION['dcs_dropship_shipping_info']) )
 	{
 		$shippingInfo = $_SESSION['dcs_dropship_shipping_info'];
+		$timeStr = time();
 		dcsLogToFile( "Shipping Info: " . dcsVarDumpStr($shippingInfo) );
 	
 		if( isset($_SESSION['dcs_dropship_shopping_cart']) && !empty($_SESSION['dcs_dropship_shopping_cart']) )
@@ -129,8 +142,37 @@ function dcs_dropship_approved_order_page()
 			$shoppingCart = $_SESSION['dcs_dropship_shopping_cart'];
 			foreach( $shoppingCart as $item )
 			{
+				$purchaseOrderFile .= "\t".$item['sku']."\t".$item['quantity']."\t".$item['price']."\t".$item['product_name']."\t";
+				$purchaseOrderFile .= $shippingInfo['first_name']."\t".$shippingInfo['last_name']."\t".$shippingInfo['company']."\t";
+				$purchaseOrderFile .= $shippingInfo['address']."\t\t".$shippingInfo['city']."\t";
+				$purchaseOrderFile .= $shippingInfo['state']."\t".$shippingInfo['zip']."\t".$shippingInfo['country']."\t";
+				$purchaseOrderFile .= $shippingInfo['phone']."\t".$shippingInfo['email']."\t\t\t\t\t";
+				$purchaseOrderFile .= $timeStr.PHP_EOL;
 			}
 		}
+
+		//Write the file locally
+		$localDir = plugin_dir_path( __FILE__ ) . "/files/";
+		$filename = "Purchase_Order_".$timeStr.".tab"; 
+		$fd = fopen( $localDir.$filename, "w" );
+		fwrite( $fd, $purchaseOrderFile );
+		//Close the file to force a flush and reopen in read-only mode.
+		fclose( $fd );
+		$fd = fopen( $localDir.$filename, "r" );
+
+		//Send the file to the FTP Site.
+		$conn_id = ftp_connect( $dropshipFTPServer );
+		$login_result = ftp_login( $conn_id, get_option(DCS_DROPSHIP_FTP_USER), get_option(DCS_DROPSHIP_FTP_PASSWORD) );
+		dcsLogToFile( "Login results: " . $login_result );
+		ftp_chdir( $conn_id, $dropshipFTPInDirectory );
+		if( !ftp_fput( $conn_id, $filename, $fd, FTP_BINARY ) )
+		{
+			$retval = "Error uploading file.";
+		}
+
+		//Close up shop
+		ftp_close( $conn_id );
+		fclose( $fd );
 	}
 
 	return "Order Approved.";
