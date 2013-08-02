@@ -271,6 +271,7 @@ function dcs_dropship_addToCart()
 		$_SESSION['dcs_dropship_shopping_cart'] = array();
 	}
 	$_SESSION['dcs_dropship_shopping_cart'][] = $dataValues;
+    session_write_close();
 
 	echo get_option(DCS_DROPSHIP_SHOPPING_CART_PAGE);
 	die();
@@ -291,6 +292,7 @@ function dcs_dropship_clearCart()
 	{
 		$_SESSION['dcs_dropship_shopping_cart'] = array();
 	}
+	session_write_close();
 
 	echo get_option(DCS_DROPSHIP_SHOPPING_CART_PAGE);
 	die();
@@ -334,6 +336,7 @@ function dcs_dropship_placeOrder()
 
 	if( !session_id() ) session_start();
 	$_SESSION['dcs_dropship_shipping_info'] = $shippingInfo;
+    session_write_close();
 
 	die();
 }
