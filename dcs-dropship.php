@@ -3,7 +3,7 @@
 Plugin Name: DCS Dropship Plugin
 Plugin URI: http://www.douglasconsulting.net
 Description: A Plugin to interface with the Dropship Distribution Service. 
-Version: 0.9 Beta
+Version: 0.91 Beta
 Author: Jason Douglas
 Author URI: http://www.douglasconsulting.net
 License: GPL
