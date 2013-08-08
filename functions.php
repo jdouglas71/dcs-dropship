@@ -142,12 +142,12 @@ function dcs_dropship_approved_order_page()
 			$shoppingCart = $_SESSION['dcs_dropship_shopping_cart'];
 			foreach( $shoppingCart as $item )
 			{
-				$purchaseOrderFile .= "\t".$item['sku']."\t".$item['quantity']."\t".$item['price']."\t".$item['product_name']."\t";
+				$purchaseOrderFile .= $timeStr."\t".$item['sku']."\t".$item['quantity']."\t".$item['price']."\t".$item['product_name']."\t";
 				$purchaseOrderFile .= $shippingInfo['first_name']."\t".$shippingInfo['last_name']."\t".$shippingInfo['company']."\t";
 				$purchaseOrderFile .= $shippingInfo['address']."\t\t".$shippingInfo['city']."\t";
 				$purchaseOrderFile .= $shippingInfo['state']."\t".$shippingInfo['zip']."\t".$shippingInfo['country']."\t";
-				$purchaseOrderFile .= $shippingInfo['phone']."\t".$shippingInfo['email']."\t\t\t\t\t";
-				$purchaseOrderFile .= $timeStr.PHP_EOL;
+				$purchaseOrderFile .= $shippingInfo['phone']."\t".$shippingInfo['email']."\tGround\tUPS\t\t\t";
+				$purchaseOrderFile .= date("Y-m-d H:i:s",$timeStr).PHP_EOL;
 			}
 		}
 
@@ -173,6 +173,10 @@ function dcs_dropship_approved_order_page()
 		//Close up shop
 		ftp_close( $conn_id );
 		fclose( $fd );
+
+		//Clear the shopping cart
+		$_SESSION['dcs_dropship_shopping_cart'] = null;
+		session_write_close();
 	}
 
 	return "Order Approved.";

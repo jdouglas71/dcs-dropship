@@ -84,6 +84,11 @@ jQuery(document).ready(function() {
 			return;
 		}
 
+		if( !country )
+		{
+			country = "United States";
+		}
+
 		//Process shipping data by filling out the values in the form being submitted to the payment gateway.
 		jQuery("input[name=ShipFirstName]").attr("value", firstName);
 		jQuery("input[name=ShipLastName]").attr("value", lastName);
@@ -94,7 +99,7 @@ jQuery(document).ready(function() {
 		jQuery("input[name=ShipZip]").attr("value", zip);
 		jQuery("input[name=ShipCountry]").attr("value", country);
 		jQuery("input[name=ShipPhone]").attr("value", phone);
-		jQuery("input[name=ShipEMail]").attr("value", zip);
+		jQuery("input[name=ShipEMail]").attr("value", email);
 
 
 		//Send the data back to the server so we can store it for sending to the dropship server.
@@ -107,6 +112,7 @@ jQuery(document).ready(function() {
 			address: address,
 			city: city,
 			state: state,
+			zip: zip,
 			country: country,
 			phone: phone,
 			email: email
