@@ -342,7 +342,12 @@ function dcs_dropship_generateProductCell($product)
 	$retval .= "<hr class='dcs_dropship_line'>";
 	$retval .= "<div class='dcs_dropship_product_order'>";
 	$retval .= "Number <select id='quantity".$marker."'>";
-	for($i = 1; $i <= $product['quantity_available']; $i++)
+	$startingNum = 1;
+	if( is_numeric($product['min_purchase_quantity']) )
+	{
+		$startingNum = $product['min_purchase_quantity'];
+	}
+	for($i = $startingNum; $i <= $product['quantity_available']; $i++)
 	{
 		$retval .= "<option value='".$i."'>".$i."</option>";
 	}
@@ -394,7 +399,12 @@ function dcs_dropship_generateProductPage($product)
 	$retval .= "<hr class='dcs_dropship_line'>";
 	$retval .= "<div class='dcs_dropship_product_order'>";
 	$retval .= "Number <select id='quantity".$marker."'>";
-	for($i = 1; $i <= $product['quantity_available']; $i++)
+	$startingNum = 1;
+	if( is_numeric($product['min_purchase_quantity']) )
+	{
+		$startingNum = $product['min_purchase_quantity'];
+	}
+	for($i = $startingNum; $i <= $product['quantity_available']; $i++)
 	{
 		$retval .= "<option value='".$i."'>".$i."</option>";
 	}
@@ -493,6 +503,7 @@ function dcs_dropship_loadProductsFromFile($startLine = 0)
 					  "manufacturer",
 					  "long_description",
 					  "estimated_shipping_cost",
+					  "min_purchase_quantity",
 					  "street_price",
 					  "wholesale_cost",
 					  "user_defined_name_1",
