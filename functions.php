@@ -36,7 +36,7 @@ function dcs_dropship_order_invoice_page()
 function dcs_dropship_product_page($pageNumber, $category, $searchTerms)
 {
 	$retval = "<table>";
-	$retval .= "<tr><td width='20%'>";
+	$retval .= "<tr><td width='20%' style='vertical-align:top;'>";
 	$retval .= dcs_dropship_generateProductCategoryTable();
 	$retval .= "</td>";
 
