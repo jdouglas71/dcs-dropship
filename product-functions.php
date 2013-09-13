@@ -591,6 +591,9 @@ function dcs_dropship_loadProductsFromFile($startLine = 0)
 				{
 					dcs_dropship_insertProductIntoDatabase( $lineVals, $useKeys );
 
+					//Log the moq
+					dcsLogToFile( "MOQ: " . $lineVals['min_purchase_quantity'] );
+
 					if( (!in_array($lineVals['category'], $categories)) )
 					{
 						//dcsLogToFile( "category: " . $lineVals['category'] );
