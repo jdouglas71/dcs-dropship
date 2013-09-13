@@ -464,7 +464,7 @@ function dcs_dropship_install()
 	*/
 	//Schedule our get tasks.
 	wp_schedule_event( DCS_DROPSHIP_PRODUCT_GET_TASK_TIME, "monthly", "dcs_dropship_get_products" );
-	wp_schedule_event( DCS_DROPSHIP_PRODUCT_GET_TASK_TIME, "hourly", "dcs_dropship_get_inventory" );
+	wp_schedule_event( DCS_DROPSHIP_PRODUCT_GET_TASK_TIME, "daily", "dcs_dropship_get_inventory" );
 }
 register_activation_hook( __FILE__, 'dcs_dropship_install' );
 
