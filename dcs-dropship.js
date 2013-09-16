@@ -127,12 +127,30 @@ jQuery(document).ready(function() {
 	/** Get Products */
 	jQuery("#dcs_dropship_get_products").click(function() {
 
+		jQuery("img.dcs_dropship_get_products_loader").show();
+
 		var data = {
 			action: 'dcs_dropship_get_products',
 		};
 
 		jQuery.post( dcs_dropship_script_vars.ajaxurl, data, function(response) {
+			jQuery("img.dcs_dropship_get_products_loader").hide();
 			alert( "Product Load Complete." );
+		});
+	});
+
+	/** Get Invoices */
+	jQuery("#dcs_dropship_get_invoices").click(function() {
+
+		jQuery("img.dcs_dropship_get_invoices_loader").show();
+
+		var data = {
+			action: 'dcs_dropship_get_invoices',
+		};
+
+		jQuery.post( dcs_dropship_script_vars.ajaxurl, data, function(response) {
+			jQuery("img.dcs_dropship_get_invoices_loader").hide();
+			alert( "Invoices Load Complete." );
 		});
 	});
 

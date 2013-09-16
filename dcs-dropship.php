@@ -150,6 +150,44 @@ function dcs_dropship_getInventoryDatabase()
 }
 add_action( "dcs_dropship_get_inventory", "dcs_dropship_getInventoryDatabase" );
 
+/**
+* Get the order Invoices from dropship.
+*/
+function dcs_dropship_getOrderInvoices()
+{
+	global $dropshipFTPServer;
+	global $dropshipFTPOutDirectory;
+
+	dcsLogToFile( "getOrderInvoices starts." );
+	$conn_id = ftp_connect( $dropshipFTPServer );
+	$login_result = ftp_login( $conn_id, get_option(DCS_DROPSHIP_FTP_USER), get_option(DCS_DROPSHIP_FTP_PASSWORD) );
+	dcsLogToFile( "Login results: " . $login_result );
+	ftp_chdir( $conn_id, $dropshipFTPOutDirectory );
+	$contents = ftp_nlist( $conn_id, "Order_Invoice_*.tab" );
+
+
+	foreach( $contents as $file )
+	{
+		if( ftp_get($conn_id, DCS_DROPSHIP_DIR."files/".$file, $file, FTP_BINARY) )
+		{
+			dcsLogToFile( "Got invoice: " . $file );
+			//JGD TODO Delete from server here.
+
+			//JGD TODO Parse file and put in database.
+			dcs_dropship_loadInvoiceFromFile( $file );
+		}
+		else
+		{
+			dcsLogToFile( "Get for: " . $file . " failed." );
+		}
+	}
+
+	dcsLogToFile( "getOrderInvoices ends." );
+}
+add_action( "dcs_dropship_get_invoices", "dcs_dropship_getOrderInvoices" );
+add_action( "wp_ajax_dcs_dropship_get_invoices", "dcs_dropship_getOrderInvoices" );
+
+
 //******************************************************************************************************************************//
 /** SHORTCODES **/
 /**
@@ -348,6 +386,8 @@ function dcs_dropship_install()
 		update_option(DCS_DROPSHIP_PRODUCT_PAGE, site_url("/products/"));
 	}
 
+	dcs_dropship_createInvoiceDatabase();
+
 	//JGD TODO: THis isn't working and I don't know why. I'm punting for now and creating them manually.
 	/**
 	//Create the pages for the order approved and declined (if they don't already exist)
@@ -463,8 +503,12 @@ function dcs_dropship_install()
 	dcsLogToFile( "Shopping Cart: " . get_option(DCS_DROPSHIP_SHOPPING_CART_PAGE) );
 	*/
 	//Schedule our get tasks.
-	wp_schedule_event( DCS_DROPSHIP_PRODUCT_GET_TASK_TIME, "monthly", "dcs_dropship_get_products" );
-	wp_schedule_event( DCS_DROPSHIP_PRODUCT_GET_TASK_TIME, "daily", "dcs_dropship_get_inventory" );
+	if( strstr(site_url(), "darktower") != FALSE )
+	{
+		wp_schedule_event( DCS_DROPSHIP_PRODUCT_GET_TASK_TIME, "monthly", "dcs_dropship_get_products" );
+		wp_schedule_event( DCS_DROPSHIP_PRODUCT_GET_TASK_TIME, "daily", "dcs_dropship_get_invoices" );
+		wp_schedule_event( DCS_DROPSHIP_PRODUCT_GET_TASK_TIME, "daily", "dcs_dropship_get_inventory" );
+	}
 }
 register_activation_hook( __FILE__, 'dcs_dropship_install' );
 
@@ -482,12 +526,18 @@ function dcs_dropship_uninstall()
 	delete_option( DCS_DROPSHIP_DECLINED_PAGE );
 	delete_option( DCS_DROPSHIP_PRODUCT_PAGE );
 
+	$wpdb->query( "DROP TABLE dcs_dropship_invoices;" );
+
 	//Clear out tasks
 	$timestamp = wp_next_scheduled( "dcs_dropship_get_products" );
 	wp_unschedule_event( $timestamp, "dcs_dropship_get_products" );
 
 	$timestamp = wp_next_scheduled( "dcs_dropship_get_inventory" );
 	wp_unschedule_event( $timestamp, "dcs_dropship_get_inventory" );
+
+	$timestamp = wp_next_scheduled( "dcs_dropship_get_invoices" );
+	wp_unschedule_event( $timestamp, "dcs_dropship_get_inventory" );
+
 }
 register_deactivation_hook( __FILE__, 'dcs_dropship_uninstall' );
 

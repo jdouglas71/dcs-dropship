@@ -725,6 +725,109 @@ function dcs_dropship_loadInventoryFromFile()
 }
 
 /**
+ * Parse an invoice file, update the database.
+ */
+function dcs_dropship_loadInvoiceFromFile($iFile)
+{
+	global $wpdb;
+
+	$useKeys = array( "po_number",
+					  "invoice_id",
+					  "bill_amount",
+					  "package_item_sku",
+					  "package_item_quantity",
+					  "package_ship_date",
+					  "package_tracking_number",
+					  "package_ship_cost",
+					  "line_item_actual_cost",
+					  "bill_of_lading_number",
+					  "miscellaneous_charge_1",
+					  "miscellaneous_charge_reason_1",
+					  "miscellaneous_charge_2",
+					  "miscellaneous_charge_reason_2",
+					  "miscellaneous_charge_3",
+					  "miscellaneous_charge_reason_3",
+					  "user_defined_name_1",
+					  "user_defined_value_1",
+					  "user_defined_name_2",
+					  "user_defined_value_2",
+					  "user_defined_name_3",
+					  "user_defined_value_3",
+					  "user_defined_name_4",
+					  "user_defined_value_4",
+					  "user_defined_name_5",
+					  "user_defined_value_5",
+					  "user_defined_name_6",
+					  "user_defined_value_6",
+					  "user_defined_name_7",
+					  "user_defined_value_7",
+					  "user_defined_name_8",
+					  "user_defined_value_8",
+					  "user_defined_name_9",
+					  "user_defined_value_9",
+					  "user_defined_name_10",
+					  "user_defined_value_10"
+					);
+	$retval = "";
+
+    $file_handle = fopen($iFile, "r");
+	$numLines = 0;
+	$numCols = 0;
+	$keys = array();
+
+	while( !feof($file_handle) )
+	{
+		$line = fgets($file_handle);
+		$line = str_replace( array("\t") , array("[tAbul*Ator]") , $line ); 
+		$lineVals = array();
+
+		//dcsLogToFile( "Line: " . $line );
+
+		//Parse the line.
+		foreach( explode("[tAbul*Ator]", $line) as $li ) 
+		{ 
+			if( $numLines == 0 )
+			{
+				$keys[] = trim($li);
+			}
+			else
+			{
+				$lineVals[$keys[$numCols]] = trim($li);
+			}
+			$numCols++;
+		} 
+
+		//dcsLogToFile( "Inventory lineVals: " . dcsVarDumpStr(lineVals) );
+
+		//First line contains the keys, the rest is values.
+		if( ($numLines > 0) )
+		{
+			//Update the database
+			$sql = "UPDATE dcs_dropship_invoices SET ";
+			foreach( $lineVals as $key => $val )
+			{
+				if( ($key != 'invoice_id') && (in_array($key, $useKeys)) && ($val != "") )
+				{
+					$sql .= "$key = '$val',";
+				}
+			}
+			$sql = substr( $sql, 0, strlen($sql)-1 );
+			$sql .= " WHERE invoice_id='".$lineVals['invoice_id']."';";
+			//dcsLogToFile( "Update sql: " . $sql );
+			$result = $wpdb->query( $sql );
+			//dcsLogToFile( "Update result: " . $result );
+		}
+
+		$numLines++;
+		$numCols = 0;
+	}
+
+	//$retval .= dcsVarDumpStr( $dropshipProducts ) . "<br />";
+
+	return $retval;
+}
+
+/**
  * Create the product database using the passed in keys.
  */
 function dcs_dropship_createProductDatabase($products, $useKeys, $dropTable = true)
@@ -776,6 +879,63 @@ function dcs_dropship_createProductDatabase($products, $useKeys, $dropTable = tr
 	dcsLogToFile( "Create Table result: " . $result );
 
 	dcsLogToFile( "createProductDatabase ends..." );
+}
+
+/**
+ * Create Invoice database.
+ */
+function dcs_dropship_createInvoiceDatabase()
+{
+	global $wpdb;
+
+	$useKeys = array( "po_number",
+					  "invoice_id",
+					  "bill_amount",
+					  "package_item_sku",
+					  "package_item_quantity",
+					  "package_ship_date",
+					  "package_tracking_number",
+					  "package_ship_cost",
+					  "line_item_actual_cost",
+					  "bill_of_lading_number",
+					  "miscellaneous_charge_1",
+					  "miscellaneous_charge_reason_1",
+					  "miscellaneous_charge_2",
+					  "miscellaneous_charge_reason_2",
+					  "miscellaneous_charge_3",
+					  "miscellaneous_charge_reason_3",
+					  "user_defined_name_1",
+					  "user_defined_value_1",
+					  "user_defined_name_2",
+					  "user_defined_value_2",
+					  "user_defined_name_3",
+					  "user_defined_value_3",
+					  "user_defined_name_4",
+					  "user_defined_value_4",
+					  "user_defined_name_5",
+					  "user_defined_value_5",
+					  "user_defined_name_6",
+					  "user_defined_value_6",
+					  "user_defined_name_7",
+					  "user_defined_value_7",
+					  "user_defined_name_8",
+					  "user_defined_value_8",
+					  "user_defined_name_9",
+					  "user_defined_value_9",
+					  "user_defined_name_10",
+					  "user_defined_value_10"
+					);
+
+	//Create the table.
+	$sql = "CREATE TABLE dcs_dropship_invoices ( ";
+	foreach( $useKeys as $key )
+	{
+		$sql .= " $key varchar(812),";
+	}
+	$sql .= " PRIMARY KEY(invoice_id) );";
+	dcsLogToFile( "Create table SQL: " . $sql );
+	$result = $wpdb->query( $sql );
+	dcsLogToFile( "Create Table result: " . $result );
 }
 
 /**

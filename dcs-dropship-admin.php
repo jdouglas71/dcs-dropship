@@ -120,7 +120,8 @@
         <tr><td><?php _e("Order Approved URL" ); ?></td><td><input type="text" name="dcs_dropship_approved_page" value="<?php echo $dcs_dropship_approved_page; ?>" size="128"></td></tr>
         <tr><td><?php _e("Order Declined URL" ); ?></td><td><input type="text" name="dcs_dropship_declined_page" value="<?php echo $dcs_dropship_declined_page; ?>" size="128"></td></tr>
         <tr><td><?php _e("Logo URL (display in payment gateway) " ); ?></td><td><input type="text" name="dcs_dropship_logo_url" value="<?php echo $dcs_dropship_logo_url; ?>" size="128"></td></tr>
-        <tr><td><?php _e("Press to force product update " ); ?></td><td><input type="button" style="border-radius:3px;" id="dcs_dropship_get_products" value="Get Products"></td></tr>
+        <tr><td><?php _e("Press to force product update " ); ?></td><td><input type="button" style="border-radius:3px;" id="dcs_dropship_get_products" value="Get Products"><img class="dcs_dropship_get_products_loader" src="<?php echo DCS_DROPSHIP_CALLBACK_DIR.'res/loader.gif';?>"></td></tr>
+        <tr><td><?php _e("Press to update Order Invoices " ); ?></td><td><input type="button" style="border-radius:3px;" id="dcs_dropship_get_invoices" value="Get Invoices"><img class="dcs_dropship_get_invoices_loader" src="<?php echo DCS_DROPSHIP_CALLBACK_DIR.'res/loader.gif';?>"></td></tr>
         <!-- <tr><td><?php _e(" " ); ?></td><td><input type="text" name="dcs_dropship_" value="<?php echo $dcs_dropship_; ?>" size="128"></td></tr> -->
         </table>
 		

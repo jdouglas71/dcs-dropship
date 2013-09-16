@@ -5,7 +5,7 @@ global $wpdb;
 /** Directories */
 define('DCS_DROPSHIP_DIR', dirname(__FILE__)."/");
 define('DCS_DROPSHIP_RELATIVE_DIR', "/wp-content/plugins/dcs-dropship/");
-define('DCS_DROPSHIP_CALLBACK_DIR', get_option("siteurl").DCS_DROPSHIP_RELATIVE_DIR);
+define('DCS_DROPSHIP_CALLBACK_DIR', site_url(DCS_DROPSHIP_RELATIVE_DIR));
 define('DCS_DROPSHIP_CSS', DCS_DROPSHIP_CALLBACK_DIR."dcs-dropship.css");
 
 /** Logfile */

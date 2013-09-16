@@ -185,3 +185,17 @@ input.dcs_dropship_input
 	padding: 2px;
 	border: 1px solid #b0b0b0 !important;
 }
+
+img.dcs_dropship_get_products_loader
+{
+   	padding: 3px; 
+	vertical-align: middle;
+	display: none;
+}
+
+img.dcs_dropship_get_invoices_loader
+{
+   	padding: 3px; 
+	vertical-align: middle;
+	display: none;
+}
