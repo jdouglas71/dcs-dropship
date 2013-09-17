@@ -3,6 +3,8 @@
     //Vicinity Config File
     require_once(dirname(__FILE__)."/config.php");
 
+	global $wpdb;
+
     $dcs_dropship_inventory_data_url;
     $dcs_dropship_product_data_url;
     $dcs_dropship_orders_url;
@@ -121,7 +123,6 @@
         <tr><td><?php _e("Order Declined URL" ); ?></td><td><input type="text" name="dcs_dropship_declined_page" value="<?php echo $dcs_dropship_declined_page; ?>" size="128"></td></tr>
         <tr><td><?php _e("Logo URL (display in payment gateway) " ); ?></td><td><input type="text" name="dcs_dropship_logo_url" value="<?php echo $dcs_dropship_logo_url; ?>" size="128"></td></tr>
         <tr><td><?php _e("Press to force product update " ); ?></td><td><input type="button" style="border-radius:3px;" id="dcs_dropship_get_products" value="Get Products"><img class="dcs_dropship_get_products_loader" src="<?php echo DCS_DROPSHIP_CALLBACK_DIR.'res/loader.gif';?>"></td></tr>
-        <tr><td><?php _e("Press to update Order Invoices " ); ?></td><td><input type="button" style="border-radius:3px;" id="dcs_dropship_get_invoices" value="Get Invoices"><img class="dcs_dropship_get_invoices_loader" src="<?php echo DCS_DROPSHIP_CALLBACK_DIR.'res/loader.gif';?>"></td></tr>
         <!-- <tr><td><?php _e(" " ); ?></td><td><input type="text" name="dcs_dropship_" value="<?php echo $dcs_dropship_; ?>" size="128"></td></tr> -->
         </table>
 		
@@ -129,4 +130,34 @@
         <input type="submit" style="border-radius:3px;" name="Submit" value="<?php _e('Update Options', 'dcs_dropship_trdom' ) ?>" />
         </p>
     </form>
+
+	<hr>
+
+	<h2>Invoices</h2>
+	<div class="dcs_dropship_invoices">
+		<table class="dcs_dropship_invoices">
+			<tr><th>PO Number</th><th>Invoice ID</th><th>Bill Amount</th><th>SKU</th><th>Quantity</th><th>Ship Date</th><th>Tracking Number</th><th>Ship Cost</th></tr>
+		<?php
+			$invoices = $wpdb->get_results( "SELECT * from dcs_dropship_invoices;", ARRAY_A );
+			foreach( $invoices as $invoice )
+			{
+				$rowStr = "<tr>";
+				$rowStr .= "<td>".$invoices['po_number']."</td>";
+				$rowStr .= "<td>".$invoices['invoice_id']."</td>";
+				$rowStr .= "<td>".$invoices['bill_amount']."</td>";
+				$rowStr .= "<td>".$invoices['package_item_sku']."</td>";
+				$rowStr .= "<td>".$invoices['package_item_quantity']."</td>";
+				$rowStr .= "<td>".$invoices['package_ship_date']."</td>";
+				$rowStr .= "<td>".$invoices['package_tracking_number']."</td>";
+				$rowStr .= "<td>".$invoices['package_ship_cost']."</td>";
+				$rowStr .= "</tr>";
+	
+				echo $rowStr;
+			}
+		?>
+		</table> 
+	</div>
+	<table>
+    <tr><td><?php _e("Press to update Invoices " ); ?></td><td><input type="button" style="border-radius:3px;" id="dcs_dropship_get_invoices" value="Update Invoices"><img class="dcs_dropship_get_invoices_loader" src="<?php echo DCS_DROPSHIP_CALLBACK_DIR.'res/loader.gif';?>"></td></tr>
+	</table>
 </div>

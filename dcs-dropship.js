@@ -150,6 +150,7 @@ jQuery(document).ready(function() {
 
 		jQuery.post( dcs_dropship_script_vars.ajaxurl, data, function(response) {
 			jQuery("img.dcs_dropship_get_invoices_loader").hide();
+			window.location.reload();
 			alert( "Invoices Load Complete." );
 		});
 	});

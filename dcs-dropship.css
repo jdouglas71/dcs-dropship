@@ -199,3 +199,20 @@ img.dcs_dropship_get_invoices_loader
 	vertical-align: middle;
 	display: none;
 }
+
+div.dcs_dropship_invoices
+{
+	height: 200px;  
+	overflow: scroll;
+	border-radius: 3px;
+	border: 1px solid gray;
+}
+
+table.dcs_dropship_invoices th
+{
+   	border-bottom-color: gray;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	padding-left: 10px;
+	padding-right: 10px;
+}

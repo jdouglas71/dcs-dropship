@@ -307,7 +307,7 @@ function dcs_dropship_generateProductCell($product)
 {
 	$retval = "";
 
-	dcs_dropship_createPageForProduct( $product );
+	//dcs_dropship_createPageForProduct( $product );
 	$existingPage = get_page_by_title( $product['sku'], ARRAY_A, "page" );
 	$company_url = $existingPage['guid'];
 	$markedupPrice = sprintf("%01.2f", ($product['wholesale_cost']*(1+(get_option(DCS_DROPSHIP_MARKUP)/100))));
