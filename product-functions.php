@@ -27,19 +27,6 @@ function dcs_dropship_loadProducts($pageNumber = 1, $category="all", $searchTerm
 
 	dcsLogToFile( "pageNumber: " . $pageNumber . " category: " . $category . " searchTerms: " . $searchTerms );
 
-	//Clear out the existing pages. We don't want to overload the db.
-	if( isset($dropshipProducts) )
-	{
-		foreach( $dropshipProducts as $product )
-		{
-			$existingPage = get_page_by_title( $product['sku'], ARRAY_A, "page" );
-			if( !$existingPage )
-			{
-				wp_delete_post( $existingPage['ID'], true );
-			}
-		}
-	}
-
 	//Limits.
 	$start = PRODUCT_NUM_COLS*PRODUCT_NUM_LINES*($pageNumber-1);
 	$amnt = (PRODUCT_NUM_COLS*PRODUCT_NUM_LINES);
@@ -307,9 +294,7 @@ function dcs_dropship_generateProductCell($product)
 {
 	$retval = "";
 
-	//dcs_dropship_createPageForProduct( $product );
-	$existingPage = get_page_by_title( $product['sku'], ARRAY_A, "page" );
-	$company_url = $existingPage['guid'];
+	$company_url = site_url( "/product-info" ) . "?sku=".urlencode($product['sku']);
 	$markedupPrice = sprintf("%01.2f", ($product['wholesale_cost']*(1+(get_option(DCS_DROPSHIP_MARKUP)/100))));
 	$marker = $product['sku'];
 	$productImage = $product['product_image'];
@@ -431,58 +416,6 @@ function dcs_dropship_generateProductPage($product)
 	//dcsLogToFile( $retval );
 
 	return $retval;
-}
-
-/**
- * Create page for product.
- */
-function dcs_dropship_createPageForProduct($product)
-{
-	//Global for WordPress database.
-	global $wpdb;
-
-	$existingPage = get_page_by_title( $product['sku'], ARRAY_A, "page" );
-
-	if( !$existingPage )
-	{
-		$page = array();
-	
-		$page["post_type"] = "page";
-		$page["post_content"] = dcs_dropship_generateProductPage($product);
-		$page["post_parent"] = 0;
-		$page["post_author"] = wp_get_current_user()->ID;
-		$page["post_status"] = "publish";
-		$page["post_title"] = $product['sku'];
-		$page["comment_status"] = "closed";
-		$page["ping_status"] = "closed";
-		$pageid = wp_insert_post( $page );
-	
-		if( $pageid == 0 )
-		{
-			//Page not created.
-		}
-		else
-		{
-			//Add to excluded list
-			$excluded_ids_str = get_option( "ep_exclude_pages" );
-			$excluded_ids = explode( ",", $excluded_ids_str );
-			array_push( $excluded_ids, $pageid );
-			$excluded_ids = array_unique( $excluded_ids );
-			$excluded_ids_str = implode( ",", $excluded_ids );
-			delete_option( "ep_exclude_pages" );
-			add_option( "ep_exclude_pages", $excluded_ids_str, __( "Comma separated list of post and page IDs to exclude when returning pages from the get_pages function.", "exclude-pages" ) );
-		}
-	}
-	else
-	{
-		//Page exists. Make sure the content is updated.
-		$page = array();
-		$page['ID'] = $existingPage['ID'];
-
-		$page['post_content'] = dcs_dropship_generateProductPage($product);
-
-		wp_update_post( $page );
-	}
 }
 
 /**

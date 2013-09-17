@@ -244,6 +244,17 @@ function dcs_dropship_product_page_shortcode($atts, $content=null)
 add_shortcode( 'dcs_dropship_product_page', 'dcs_dropship_product_page_shortcode' );
 
 /**
+ * Product Info page shortcode.
+ */
+function dcs_dropship_product_info_page_shortcode($atts, $content=null)
+{
+	$retval = dcs_dropship_product_info_page($_GET['sku']);
+
+	return $retval;
+}
+add_shortcode( 'dcs_dropship_product_info_page', 'dcs_dropship_product_info_page_shortcode' );
+
+/**
  * Product Category page shortcode.
  */
 function dcs_dropship_category_page_shortcode($atts, $content=null)

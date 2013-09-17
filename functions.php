@@ -50,6 +50,33 @@ function dcs_dropship_product_page($pageNumber, $category, $searchTerms)
 }
 
 /**
+ * Product Info Page.
+ */
+function dcs_dropship_product_info_page($sku)
+{
+	global $wpdb;
+
+	$retval = "No Product Selected.";
+
+	if( isset($sku) )
+	{
+		//Find the product.
+		$sql = "SELECT * FROM dcs_dropship_products where sku='".$sku."';";
+		$product = $wpdb->get_row($sql,ARRAY_A);
+
+		//dcsLogToFile( "product: " . dcsVarDumpStr($product) );
+
+		if( $product != null )
+		{
+			//Generate the Page.
+			$retval = dcs_dropship_generateProductPage($product);
+		}
+	}
+
+	return $retval;
+}
+
+/**
  * Category Page
  */
 function dcs_dropship_category_page()
