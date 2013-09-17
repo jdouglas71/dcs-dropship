@@ -200,6 +200,13 @@ img.dcs_dropship_get_invoices_loader
 	display: none;
 }
 
+img.dcs_dropship_get_inventory_loader
+{
+   	padding: 3px; 
+	vertical-align: middle;
+	display: none;
+}
+
 div.dcs_dropship_invoices
 {
 	height: 200px;  

@@ -102,7 +102,7 @@
 
 <div class="wrap">
     <?php    echo "<p style='font:bold 4.0em Verdana;vertical-align:top;'>"."<img src='http://douglasconsulting.net/favicon.ico' width='64'>"."<img src='http://dropship.com/favicon.ico' width='64'>" . __( 'DCS Dropship Options', 'dcs_dropship_trdom' ) . "</p>"; ?>
-    
+    <hr> 
     <form name="dcs_dropship_form" method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>">
         <input type="hidden" name="dcs_dropship_hidden" value="Y">
         <table>
@@ -122,7 +122,6 @@
         <tr><td><?php _e("Order Approved URL" ); ?></td><td><input type="text" name="dcs_dropship_approved_page" value="<?php echo $dcs_dropship_approved_page; ?>" size="128"></td></tr>
         <tr><td><?php _e("Order Declined URL" ); ?></td><td><input type="text" name="dcs_dropship_declined_page" value="<?php echo $dcs_dropship_declined_page; ?>" size="128"></td></tr>
         <tr><td><?php _e("Logo URL (display in payment gateway) " ); ?></td><td><input type="text" name="dcs_dropship_logo_url" value="<?php echo $dcs_dropship_logo_url; ?>" size="128"></td></tr>
-        <tr><td><?php _e("Press to force product update " ); ?></td><td><input type="button" style="border-radius:3px;" id="dcs_dropship_get_products" value="Get Products"><img class="dcs_dropship_get_products_loader" src="<?php echo DCS_DROPSHIP_CALLBACK_DIR.'res/loader.gif';?>"></td></tr>
         <!-- <tr><td><?php _e(" " ); ?></td><td><input type="text" name="dcs_dropship_" value="<?php echo $dcs_dropship_; ?>" size="128"></td></tr> -->
         </table>
 		
@@ -131,6 +130,12 @@
         </p>
     </form>
 
+	<hr> 
+	<h2> Product and Inventory </h2>
+	<table>
+        <tr><td><?php _e("Press to force product update " ); ?></td><td><input type="button" style="border-radius:3px;" id="dcs_dropship_get_products" value="Get Products"><img class="dcs_dropship_get_products_loader" src="<?php echo DCS_DROPSHIP_CALLBACK_DIR.'res/loader.gif';?>"></td></tr>
+        <tr><td><?php _e("Press to force inventory update " ); ?></td><td><input type="button" style="border-radius:3px;" id="dcs_dropship_get_inventory" value="Update Inventory"><img class="dcs_dropship_get_inventory_loader" src="<?php echo DCS_DROPSHIP_CALLBACK_DIR.'res/loader.gif';?>"></td></tr>
+	</table>
 	<hr>
 
 	<h2>Invoices</h2>

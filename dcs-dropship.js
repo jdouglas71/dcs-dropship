@@ -155,6 +155,21 @@ jQuery(document).ready(function() {
 		});
 	});
 
+	/** Get Inventory */
+	jQuery("#dcs_dropship_get_inventory").click(function() {
+
+		jQuery("img.dcs_dropship_get_inventory_loader").show();
+
+		var data = {
+			action: 'dcs_dropship_get_inventory',
+		};
+
+		jQuery.post( dcs_dropship_script_vars.ajaxurl, data, function(response) {
+			jQuery("img.dcs_dropship_get_inventory_loader").hide();
+			alert( "Inventory Load Complete." );
+		});
+	});
+
 	/** Search Products */
 	jQuery("#dcs_dropship_search_products").click(function() {
 

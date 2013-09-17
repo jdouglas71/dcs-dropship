@@ -144,11 +144,13 @@ function dcs_dropship_getInventoryDatabase()
 			dcsLogToFile( "Inventory FTP get successful." );
 		}
 	}
-	dcsLogToFile( "getProductInventory ends." );
+	dcsLogToFile( "getInventory ends." );
 
+	//Updates database
 	dcs_dropship_loadInventoryFromFile();
 }
 add_action( "dcs_dropship_get_inventory", "dcs_dropship_getInventoryDatabase" );
+add_action( "wp_ajax_dcs_dropship_get_inventory", "dcs_dropship_getInventoryDatabase" );
 
 /**
 * Get the order Invoices from dropship.
