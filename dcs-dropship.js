@@ -184,4 +184,21 @@ jQuery(document).ready(function() {
 		});
 	});
 
+	/** Hook Global Search */
+	jQuery("#searchform").submit(function() {
+
+		var data = {
+			action: 'dcs_dropship_search_products',
+			searchTerms: jQuery('input#s').val(),
+			dcs_dropship_search_products_nonce: dcs_dropship_script_vars.dcs_dropship_search_products_nonce
+		};
+
+		jQuery.post( dcs_dropship_script_vars.ajaxurl, data, function(response) {
+			window.open( response, "_self" );
+		});
+
+		return false;
+	});
+
+
 });
