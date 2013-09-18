@@ -3,7 +3,7 @@
 Plugin Name: DCS Dropship Plugin
 Plugin URI: http://www.douglasconsulting.net
 Description: A Plugin to interface with the Dropship Distribution Service. 
-Version: 0.91 Beta
+Version: 0.95 Beta
 Author: Jason Douglas
 Author URI: http://www.douglasconsulting.net
 License: GPL
@@ -189,31 +189,8 @@ function dcs_dropship_getOrderInvoices()
 add_action( "dcs_dropship_get_invoices", "dcs_dropship_getOrderInvoices" );
 add_action( "wp_ajax_dcs_dropship_get_invoices", "dcs_dropship_getOrderInvoices" );
 
-
 //******************************************************************************************************************************//
 /** SHORTCODES **/
-/**
- * Inventory page shortcode.
- */
-function dcs_dropship_inventory_page_shortcode($atts, $content=null)
-{
-	$retval = dcs_dropship_inventory_page();
-
-	return $retval;
-}
-add_shortcode( 'dcs_dropship_inventory_page', 'dcs_dropship_inventory_page_shortcode' );
-
-/**
- * Order Invoice page shortcode.
- */
-function dcs_dropship_order_invoice_page_shortcode($atts, $content=null)
-{
-	$retval = dcs_dropship_order_invoice_page();
-
-	return $retval;
-}
-add_shortcode( 'dcs_dropship_order_invoice_page', 'dcs_dropship_order_invoice_page_shortcode' );
-
 /**
  * Product page shortcode.
  */
@@ -275,28 +252,6 @@ function dcs_dropship_brand_page_shortcode($atts, $content=null)
 	return $retval;
 }
 add_shortcode( 'dcs_dropship_brand_page', 'dcs_dropship_brand_page_shortcode' );
-
-/**
- * Order Status page shortcode.
- */
-function dcs_dropship_order_status_page_shortcode($atts, $content=null)
-{
-	$retval = dcs_dropship_order_status_page();
-
-	return $retval;
-}
-add_shortcode( 'dcs_dropship_order_status_page', 'dcs_dropship_order_status_page_shortcode' );
-
-/**
- * Tracking page shortcode.
- */
-function dcs_dropship_tracking_page_shortcode($atts, $content=null)
-{
-	$retval = dcs_dropship_tracking_page();
-
-	return $retval;
-}
-add_shortcode( 'dcs_dropship_tracking_page', 'dcs_dropship_tracking_page_shortcode' );
 
 /**
  * Shopping cart shortcode.
