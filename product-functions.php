@@ -261,6 +261,10 @@ function dcs_dropship_generatePrettyProductTable($pageNumber=1, $category="all",
 	if( $pageNumber > 1 )
 	{
 		$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=1&category=$category&searchTerms=$searchTerms'>First</a>&nbsp;";
+		if( $pageNumber > 2 )
+		{
+			$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".($pageNumber-1)."&category=$category&searchTerms=$searchTerms'>Prev</a>&nbsp;";
+		}		
 		$retval .= "...&nbsp;";
 	}
 
@@ -269,6 +273,11 @@ function dcs_dropship_generatePrettyProductTable($pageNumber=1, $category="all",
 		for($i=($pageTotal-10); $i<$pageTotal; $i++)
 		{
 			$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$i."&category=$category&searchTerms=$searchTerms'>".$i."</a>&nbsp;";
+		}
+
+		if( $pageNumber < ($pageTotal-1) )
+		{
+			$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".($pageNumber+1)."&category=$category&searchTerms=$searchTerms'>Next</a>&nbsp;";
 		}
 		$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$pageTotal."&category=$category&searchTerms=$searchTerms'>Last</a>&nbsp;";
 	}
@@ -279,6 +288,11 @@ function dcs_dropship_generatePrettyProductTable($pageNumber=1, $category="all",
 			$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$i."&category=$category&searchTerms=$searchTerms'>".$i."</a>&nbsp;";
 		}
 		$retval .= "...&nbsp;";
+
+		if( $pageNumber != $pageTotal )
+		{
+			$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".($pageNumber+1)."&category=$category&searchTerms=$searchTerms'>Next</a>&nbsp;";
+		}
 		$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."?pageNumber=".$pageTotal."&category=$category&searchTerms=$searchTerms'>Last</a>&nbsp;";
 	}
 
