@@ -210,8 +210,8 @@ img.dcs_dropship_get_inventory_loader
 div.dcs_dropship_invoices
 {
 	height: 200px;  
-	overflow: scroll;
-	border-radius: 3px;
+	overflow: auto;
+	border-radius: 5px;
 	border: 1px solid gray;
 }
 
