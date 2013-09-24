@@ -10,6 +10,7 @@
 	$dcs_dropship_approved_page;
 	$dcs_dropship_declined_page;
 	$dcs_dropship_product_page;
+	$dcs_dropship_product_info_page;
     $dcs_dropship_shopping_cart_page;
 	$dcs_dropship_logo_url;
 
@@ -33,6 +34,9 @@
 
 		$dcs_dropship_product_page = $_POST['dcs_dropship_product_page'];
 		update_option(DCS_DROPSHIP_PRODUCT_PAGE, $dcs_dropship_product_page);
+
+		$dcs_dropship_product_info_page = $_POST['dcs_dropship_product_info_page'];
+		update_option(DCS_DROPSHIP_PRODUCT_INFO_PAGE, $dcs_dropship_product_info_page);
 
         $dcs_dropship_markup = $_POST['dcs_dropship_markup'];
         update_option(DCS_DROPSHIP_MARKUP, $dcs_dropship_markup);
@@ -60,6 +64,7 @@
         $dcs_dropship_ftp_password = get_option(DCS_DROPSHIP_FTP_PASSWORD);
         $dcs_dropship_shopping_cart_page = get_option(DCS_DROPSHIP_SHOPPING_CART_PAGE);
         $dcs_dropship_product_page = get_option(DCS_DROPSHIP_PRODUCT_PAGE);
+        $dcs_dropship_product_info_page = get_option(DCS_DROPSHIP_PRODUCT_INFO_PAGE);
         $dcs_dropship_markup = get_option(DCS_DROPSHIP_MARKUP);
         $dcs_dropship_logo_url = get_option(DCS_DROPSHIP_LOGO_URL);
         $dcs_dropship_shipping_percentage = get_option(DCS_DROPSHIP_SHIPPING_PERCENTAGE);
@@ -76,17 +81,18 @@
     <form name="dcs_dropship_form" method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>">
         <input type="hidden" name="dcs_dropship_hidden" value="Y">
         <table>
-        <tr><td><?php _e("Dropship FTP username" ); ?></td><td><input type="text" name="dcs_dropship_ftp_user" value="<?php echo $dcs_dropship_ftp_user; ?>" size="64"></td></tr>
-        <tr><td><?php _e("Dropship FTP password" ); ?></td><td><input type="text" name="dcs_dropship_ftp_password" value="<?php echo $dcs_dropship_ftp_password; ?>" size="64"></td></tr>
-        <tr><td><?php _e("Markup (in percentage)" ); ?></td><td><input type="text" name="dcs_dropship_markup" value="<?php echo $dcs_dropship_markup; ?>" size="2">%</td></tr> 
-        <tr><td><?php _e("Shipping Percentage" ); ?></td><td><input type="text" name="dcs_dropship_shipping_percentage" value="<?php echo $dcs_dropship_shipping_percentage; ?>" size="2">%</td></tr>
-        <tr><td><?php _e("Shipping Minimum" ); ?></td><td>$<input type="text" name="dcs_dropship_shipping_minimum" value="<?php echo $dcs_dropship_shipping_minimum; ?>" size="4"></td></tr>
-        <tr><td><?php _e("Product Page URL" ); ?></td><td><input type="text" name="dcs_dropship_product_page" value="<?php echo $dcs_dropship_product_page; ?>" size="128"></td></tr>
-        <tr><td><?php _e("Shopping Cart URL" ); ?></td><td><input type="text" name="dcs_dropship_shopping_cart_page" value="<?php echo $dcs_dropship_shopping_cart_page; ?>" size="128"></td></tr>
-        <tr><td><?php _e("Order Approved URL" ); ?></td><td><input type="text" name="dcs_dropship_approved_page" value="<?php echo $dcs_dropship_approved_page; ?>" size="128"></td></tr>
-        <tr><td><?php _e("Order Declined URL" ); ?></td><td><input type="text" name="dcs_dropship_declined_page" value="<?php echo $dcs_dropship_declined_page; ?>" size="128"></td></tr>
-        <tr><td><?php _e("Logo URL (display in payment gateway) " ); ?></td><td><input type="text" name="dcs_dropship_logo_url" value="<?php echo $dcs_dropship_logo_url; ?>" size="128"></td></tr>
-        <!-- <tr><td><?php _e(" " ); ?></td><td><input type="text" name="dcs_dropship_" value="<?php echo $dcs_dropship_; ?>" size="128"></td></tr> -->
+			<tr><td><?php _e("Dropship FTP username" ); ?></td><td><input type="text" name="dcs_dropship_ftp_user" value="<?php echo $dcs_dropship_ftp_user; ?>" size="64"></td></tr>
+			<tr><td><?php _e("Dropship FTP password" ); ?></td><td><input type="text" name="dcs_dropship_ftp_password" value="<?php echo $dcs_dropship_ftp_password; ?>" size="64"></td></tr>
+			<tr><td><?php _e("Markup (in percentage)" ); ?></td><td><input type="text" name="dcs_dropship_markup" value="<?php echo $dcs_dropship_markup; ?>" size="2">%</td></tr> 
+			<tr><td><?php _e("Shipping Percentage" ); ?></td><td><input type="text" name="dcs_dropship_shipping_percentage" value="<?php echo $dcs_dropship_shipping_percentage; ?>" size="2">%</td></tr>
+			<tr><td><?php _e("Shipping Minimum" ); ?></td><td>$<input type="text" name="dcs_dropship_shipping_minimum" value="<?php echo $dcs_dropship_shipping_minimum; ?>" size="4"></td></tr>
+			<tr><td><?php _e("Products Page URL" ); ?></td><td><input type="text" name="dcs_dropship_product_page" value="<?php echo $dcs_dropship_product_page; ?>" size="128"></td></tr>
+			<tr><td><?php _e("Product Info Page URL" ); ?></td><td><input type="text" name="dcs_dropship_product_info_page" value="<?php echo $dcs_dropship_product_info_page; ?>" size="128"></td></tr>
+			<tr><td><?php _e("Shopping Cart URL" ); ?></td><td><input type="text" name="dcs_dropship_shopping_cart_page" value="<?php echo $dcs_dropship_shopping_cart_page; ?>" size="128"></td></tr>
+			<tr><td><?php _e("Order Approved URL" ); ?></td><td><input type="text" name="dcs_dropship_approved_page" value="<?php echo $dcs_dropship_approved_page; ?>" size="128"></td></tr>
+			<tr><td><?php _e("Order Declined URL" ); ?></td><td><input type="text" name="dcs_dropship_declined_page" value="<?php echo $dcs_dropship_declined_page; ?>" size="128"></td></tr>
+			<tr><td><?php _e("Logo URL (display in payment gateway) " ); ?></td><td><input type="text" name="dcs_dropship_logo_url" value="<?php echo $dcs_dropship_logo_url; ?>" size="128"></td></tr>
+			<!-- <tr><td><?php _e(" " ); ?></td><td><input type="text" name="dcs_dropship_" value="<?php echo $dcs_dropship_; ?>" size="128"></td></tr> -->
         </table>
 		
         <p class="submit">

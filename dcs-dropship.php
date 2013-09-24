@@ -3,7 +3,7 @@
 Plugin Name: DCS Dropship Plugin
 Plugin URI: http://www.douglasconsulting.net
 Description: A Plugin to interface with the Dropship Distribution Service. 
-Version: 0.95 Beta
+Version: 0.97 Beta
 Author: Jason Douglas
 Author URI: http://www.douglasconsulting.net
 License: GPL
@@ -324,6 +324,11 @@ function dcs_dropship_install()
 		update_option(DCS_DROPSHIP_PRODUCT_PAGE, site_url("/products/"));
 	}
 
+	if( !add_option(DCS_DROPSHIP_PRODUCT_INFO_PAGE, site_url("/product-info/")) )
+	{
+		update_option(DCS_DROPSHIP_PRODUCT_INFO_PAGE, site_url("/product-info/"));
+	}
+
 	dcs_dropship_createInvoiceDatabase();
 
 	//Schedule our get tasks.
@@ -349,6 +354,7 @@ function dcs_dropship_uninstall()
 	delete_option( DCS_DROPSHIP_APPROVED_PAGE );
 	delete_option( DCS_DROPSHIP_DECLINED_PAGE );
 	delete_option( DCS_DROPSHIP_PRODUCT_PAGE );
+	delete_option( DCS_DROPSHIP_PRODUCT_INFO_PAGE );
 
 	$wpdb->query( "DROP TABLE dcs_dropship_invoices;" );
 
