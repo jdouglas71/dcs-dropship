@@ -179,7 +179,7 @@ function dcs_dropship_shopping_cart()
 {
 	if( !session_id() ) session_start();
 
-	$retval = "No Items in Cart.";
+	$retval = "No Items in Cart.<br />";
 
 	if( isset($_SESSION['dcs_dropship_shopping_cart']) && !empty($_SESSION['dcs_dropship_shopping_cart']) )
 	{
@@ -271,6 +271,8 @@ function dcs_dropship_shopping_cart()
 
 		$retval .= "</form>";
 	}
+
+	$retval .= "<a href='".get_option(DCS_DROPSHIP_PRODUCT_PAGE)."'>Return to shopping.</a>";
 
 	return $retval;
 }
