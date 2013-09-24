@@ -185,7 +185,7 @@ function dcs_dropship_shopping_cart()
 	{
 		$retval = "<table>";
 		$retval .= "<tr><th>Product Name</th><th>SKU</th><th>Quantity</th><th>Item Price</th><th>Total</th></tr>";
-		foreach( $_SESSION['dcs_dropship_shopping_cart'] as $item )
+		foreach( $_SESSION['dcs_dropship_shopping_cart'] as $key=>$item )
 		{
 			$retval .= "<tr>";
 			$retval .= "<td>".$item['product_name']."</td>";
@@ -194,6 +194,7 @@ function dcs_dropship_shopping_cart()
 			$retval .= "<td>$".sprintf('%01.2f',$item['price'])."</td>";
 			//$retval .= "<td>".$item['shipping_cost']."</td>";
 			$retval .= "<td>$".sprintf('%01.2f',($item['price']*$item['quantity']))."</td>";
+			$retval .= "<td><input type='button' id='dcs_dropship_remove_item' value='Remove' class='dcs_dropship_button dcs_dropship_remove_item' index='".$key."'></input></td>";
 			$retval .= "</tr>";
 		}
 		$retval .= "</table><br />";
@@ -306,6 +307,28 @@ function dcs_dropship_addToCart()
 }
 add_action( 'wp_ajax_dcs_dropship_add_to_cart', 'dcs_dropship_addToCart' );
 add_action( 'wp_ajax_nopriv_dcs_dropship_add_to_cart', 'dcs_dropship_addToCart' );
+
+/**
+ * Remove Item from Cart.
+ */
+function dcs_dropship_removeItemFromCart()
+{
+	check_ajax_referer( "dcs_dropship_remove_item", "dcs_dropship_remove_item_nonce" );
+
+	if(!session_id()) session_start();
+
+	//dcsLogToFile( "Removing item: " . $_POST['index'] );
+
+	unset($_SESSION['dcs_dropship_shopping_cart'][$_POST['index']]);
+
+	//dcsLogToFile( dcsVarDumpStr( $_SESSION ) );
+    session_write_close();
+
+	echo get_option(DCS_DROPSHIP_SHOPPING_CART_PAGE);
+	die();
+}
+add_action( 'wp_ajax_dcs_dropship_remove_item', 'dcs_dropship_removeItemFromCart' );
+add_action( 'wp_ajax_nopriv_dcs_dropship_remove_item', 'dcs_dropship_removeItemFromCart' );
 
 /**
  * Clear Cart.

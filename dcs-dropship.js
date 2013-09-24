@@ -13,6 +13,20 @@ jQuery(document).ready(function() {
 		});
 	});
 
+	/** Remove Item from Cart */
+	jQuery(".dcs_dropship_remove_item").click(function() {
+
+		var data = {
+			action: 'dcs_dropship_remove_item',
+			index: jQuery(this).attr('index'),
+			dcs_dropship_remove_item_nonce: dcs_dropship_script_vars.dcs_dropship_remove_item_nonce
+		};
+
+		jQuery.post( dcs_dropship_script_vars.ajaxurl, data, function(response) {
+			window.open( response, "_self" );
+		});
+	});
+
 	/** Add To Cart */
 	jQuery(".dcs_dropship_order_button").click(function() {
 

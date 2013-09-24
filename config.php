@@ -13,9 +13,6 @@ define('DCS_DROPSHIP_LOGFILE', DCS_DROPSHIP_DIR.'DCS_DROPSHIP.log');
 /**Task start time */
 define('DCS_DROPSHIP_PRODUCT_GET_TASK_TIME', 1371121200 ); //6/13/13 6AM EST
 
-/** Version */
-$dcs_dropship_version = "0.5";
-
 /** Properties */
 define(	'DCS_DROPSHIP_KEY', 'dcs-dropship-key' );
 define(	'DCS_DROPSHIP_INVENTORY_DATA_URL', 'dcs-dropship-inventory-data-url' );

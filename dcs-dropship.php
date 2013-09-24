@@ -53,6 +53,7 @@ function dcs_dropship_load_scripts()
                                 "dcs_dropship_place_order_nonce"=>wp_create_nonce("dcs_dropship_place_order"),
                                 "dcs_dropship_search_products_nonce"=>wp_create_nonce("dcs_dropship_search_products"),
                                 "dcs_dropship_clear_cart_nonce"=>wp_create_nonce("dcs_dropship_clear_cart"),
+                                "dcs_dropship_remove_item_nonce"=>wp_create_nonce("dcs_dropship_remove_item"),
                                 "dcs_dropship_add_to_cart_nonce"=>wp_create_nonce("dcs_dropship_add_to_cart")
                             )
                       );
