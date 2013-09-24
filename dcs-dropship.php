@@ -174,9 +174,6 @@ function dcs_dropship_getOrderInvoices()
 		if( ftp_get($conn_id, DCS_DROPSHIP_DIR."files/".$file, $file, FTP_BINARY) )
 		{
 			dcsLogToFile( "Got invoice: " . $file );
-			//JGD TODO Delete from server here.
-
-			//JGD TODO Parse file and put in database.
 			dcs_dropship_loadInvoiceFromFile( $file );
 		}
 		else
@@ -300,34 +297,6 @@ function dcs_dropship_install()
 	if( !add_option(DCS_DROPSHIP_KEY, "test key") )
 	{
 		update_option(DCS_DROPSHIP_KEY, "test key");
-	}
-
-	if( !add_option(DCS_DROPSHIP_INVENTORY_DATA_URL, "test key") )
-	{
-		update_option(DCS_DROPSHIP_INVENTORY_DATA_URL, "test key");
-	}
-	if( !add_option(DCS_DROPSHIP_PRODUCT_DATA_URL, "test key") )
-	{
-		update_option(DCS_DROPSHIP_PRODUCT_DATA_URL, "test key");
-	}
-	if( !add_option(DCS_DROPSHIP_ORDERS_URL, "test key") )
-	{
-		update_option(DCS_DROPSHIP_ORDERS_URL, "test key");
-	}
-
-	if( !add_option(DCS_DROPSHIP_ORDER_STATUS_DATA_URL, "test key") )
-	{
-		update_option(DCS_DROPSHIP_ORDER_STATUS_DATA_URL, "test key");
-	}
-
-	if( !add_option(DCS_DROPSHIP_TRACKING_DATA_URL, "test key") )
-	{
-		update_option(DCS_DROPSHIP_TRACKING_DATA_URL, "test key");
-	}
-
-	if( !add_option(DCS_DROPSHIP_ORDER_INVOICE_DATA_URL, "test key") )
-	{
-		update_option(DCS_DROPSHIP_ORDER_INVOICE_DATA_URL, "test key");
 	}
 
 	if( !add_option(DCS_DROPSHIP_SHOPPING_CART_PAGE, site_url("/shopping-cart/")) )
