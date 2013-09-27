@@ -222,8 +222,8 @@ function dcs_dropship_shopping_cart()
 
 		//Create the hidden form for submitting to the payment gateway
 		$retval .= "<FORM style='display:none;' id='dcs_dropship_payment_form' METHOD=POST ACTION='https://www.eProcessingNetwork.com/cgi-bin/wo/order.pl'>";
-		//$retval .= "<INPUT TYPE=HIDDEN NAME='ePNAccount' VALUE='06131240'>"; //Real number
-		$retval .= "<INPUT TYPE=HIDDEN NAME='ePNAccount' VALUE='05971'>"; //Testing only
+		$retval .= "<INPUT TYPE=HIDDEN NAME='ePNAccount' VALUE='06131240'>"; //Real number
+		//$retval .= "<INPUT TYPE=HIDDEN NAME='ePNAccount' VALUE='05971'>"; //Testing only
 
 		//Items.
 		foreach( $_SESSION['dcs_dropship_shopping_cart'] as $item )
